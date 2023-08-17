@@ -8,12 +8,14 @@ import { UsersModule } from './apis/users/users.module';
 import { AuthModule } from './apis/auth/auth.module';
 import { CategoriesModule } from './apis/categories/cetegories.module';
 import { ChannelsModule } from './apis/channels/channels.module';
+import { LivesModule } from './apis/lives/lives.module';
 
 @Module({
   imports: [
     AuthModule,
     CategoriesModule,
     ChannelsModule,
+    LivesModule,
     UsersModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({

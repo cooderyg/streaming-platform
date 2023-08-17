@@ -30,9 +30,20 @@ export class ChannelsService {
     });
     return channel;
   }
+
+  async findByUserId({ userId }: IChannelsServiceFindByUserId) {
+    const channel = await this.channelsRepository.findOne({
+      where: { user: { id: userId } },
+    });
+    return channel;
+  }
 }
 
 interface IChannelsServiceCreateChannel {
   createChannelDto: CreateChannelDto;
+  userId: string;
+}
+
+interface IChannelsServiceFindByUserId {
   userId: string;
 }
