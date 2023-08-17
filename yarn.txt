@@ -1,0 +1,14 @@
+npm install
+yarn install
+
+npm i <패키지명>
+yarn add <패키지명>
+
+npm i -D <패키지명>
+yarn add <패키지명> --dev
+
+npm uninstall <패키지명>
+yarn remove <패키지명>
+
+npm run start:dev    // nest 실행
+yarn start:dev
