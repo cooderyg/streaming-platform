@@ -24,10 +24,7 @@ export class Live {
   @Column()
   title: string;
 
-  @Column()
-  startDate: Date;
-
-  @Column()
+  @Column({ nullable: true })
   endDate: Date;
 
   @Column({ nullable: true })

@@ -3,12 +3,12 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService, //
   ) {}
-  @Post('/login')
+  @Post('login')
   async login(
     @Body() loginDto: LoginDto, //
     @Res({ passthrough: true }) res: Response,
