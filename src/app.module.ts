@@ -6,10 +6,14 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './apis/users/users.module';
 import { AuthModule } from './apis/auth/auth.module';
+import { CategoriesModule } from './apis/categories/cetegories.module';
+import { ChannelsModule } from './apis/channels/channels.module';
 
 @Module({
   imports: [
     AuthModule,
+    CategoriesModule,
+    ChannelsModule,
     UsersModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
