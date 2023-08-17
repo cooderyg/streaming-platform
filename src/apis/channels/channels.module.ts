@@ -9,5 +9,6 @@ import { CategoriesModule } from '../categories/cetegories.module';
   imports: [TypeOrmModule.forFeature([Channel]), CategoriesModule],
   controllers: [ChannelsController],
   providers: [ChannelsService],
+  exports: [ChannelsService],
 })
 export class ChannelsModule {}
