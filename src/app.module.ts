@@ -14,12 +14,14 @@ import { PaymentsModule } from './apis/payments/payments.module';
 import { SubscribesModule } from './apis/subscribes/subscribes.module';
 import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.module';
 import { ViewHistoriesModule } from './apis/viewHistories/view-histories.module';
+import { ChatsModule } from './apis/chats/chats.module';
 
 @Module({
   imports: [
     AuthModule,
     CategoriesModule,
     ChannelsModule,
+    ChatsModule,
     CreditHistoriesModule,
     LivesModule,
     TagsModule,
