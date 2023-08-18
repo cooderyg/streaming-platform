@@ -1,8 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { LoginDto } from './dto/login.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import {
+  IAuthServiceGetAccessToken,
+  IAuthServiceGetRefreshToken,
+  IAuthServiceLogin,
+  IAuthServiceLoginReturn,
+  IAuthServiceRefresh,
+} from './interfaces/auth-service.interface';
 
 @Injectable()
 export class AuthService {
@@ -10,7 +16,9 @@ export class AuthService {
     private readonly usersService: UsersService, //
     private readonly jwtService: JwtService,
   ) {}
-  async login({ loginDto }: IAuthServiceLogin): Promise<string> {
+  async login({
+    loginDto,
+  }: IAuthServiceLogin): Promise<IAuthServiceLoginReturn> {
     const { email, password } = loginDto;
     const user = await this.usersService.findByEmail({ email });
     if (!user)
@@ -18,17 +26,25 @@ export class AuthService {
     const isAuth = await bcrypt.compare(password, user.password);
     if (!isAuth) throw new UnauthorizedException();
     const accessToken = this.getAccessToken({ userId: user.id });
-    return accessToken;
+    const refreshToken = this.getRefreshToken({ userId: user.id });
+    return { accessToken, refreshToken };
   }
 
-  private getAccessToken({ userId }): string {
+  async refresh({ userId }: IAuthServiceRefresh) {
+    return this.getAccessToken({ userId });
+  }
+
+  private getAccessToken({ userId }: IAuthServiceGetAccessToken): string {
     return this.jwtService.sign(
       { sub: userId },
       { secret: process.env.ACCESS_SECRET_KEY, expiresIn: '1d' },
     );
   }
-}
-
-interface IAuthServiceLogin {
-  loginDto: LoginDto;
+  private getRefreshToken({ userId }: IAuthServiceGetRefreshToken): string {
+    const payload = { sub: userId, tokenType: 'refresh' };
+    return this.jwtService.sign(payload, {
+      secret: process.env.REFRESH_SECRET_KEY,
+      expiresIn: '14d',
+    });
+  }
 }
