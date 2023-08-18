@@ -29,6 +29,8 @@ export class ChannelsService {
       .leftJoin('channel.categories', 'categories')
       .where('channel.name like :keyword', { keyword: `%${keyword}%` })
       .orWhere('categories.name like :keyword', { keyword: `%${keyword}%` })
+      .take(size)
+      .skip((page - 1) * size)
       .getMany();
     return results;
   }
