@@ -11,11 +11,14 @@ import { ChannelsModule } from './apis/channels/channels.module';
 import { LivesModule } from './apis/lives/lives.module';
 import { PaymentsModule } from './apis/payments/payments.module';
 
+import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.module';
+
 @Module({
   imports: [
     AuthModule,
     CategoriesModule,
     ChannelsModule,
+    CreditHistoriesModule,
     LivesModule,
     PaymentsModule,
     UsersModule,
