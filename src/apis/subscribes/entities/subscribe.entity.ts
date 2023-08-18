@@ -1,3 +1,4 @@
+import { Channel } from 'src/apis/channels/entities/channel.entity';
 import { User } from 'src/apis/users/entities/user.entity';
 import {
   CreateDateColumn,
@@ -25,6 +26,8 @@ export class Subscribe {
   @ManyToOne(() => User, (user) => user.subscribes, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToOne(() => User, (user) => user.subscribes, { onDelete: 'CASCADE' })
-  channel: User;
+  @ManyToOne(() => Channel, (channel) => channel.subscribes, {
+    onDelete: 'CASCADE',
+  })
+  channel: Channel;
 }
