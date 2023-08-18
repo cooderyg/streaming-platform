@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -56,5 +57,18 @@ export class ChannelsController {
       updateChannelDto,
     });
     return result;
+  }
+
+  // 채널 폐쇄
+  @UseGuards(AccessAuthGuard)
+  @Delete('/:channelId')
+  async deleteChannel(
+    @Param('channelId') channelId: string,
+    @User() user: UserAfterAuth,
+  ) {
+    const result = await this.channelsService.deleteChannel({
+      userId: user.id,
+      channelId,
+    });
   }
 }

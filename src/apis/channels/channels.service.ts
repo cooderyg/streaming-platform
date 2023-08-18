@@ -88,6 +88,17 @@ export class ChannelsService {
     });
     return result;
   }
+
+  async deleteChannel({ userId, channelId }) {
+    const channel = await this.channelsRepository.findOne({
+      where: { id: channelId },
+      relations: ['user'],
+    });
+    if (channel.user.id !== userId)
+      throw new ForbiddenException('채널 소유자가 아닙니다.');
+    await this.channelsRepository.softDelete({ id: channelId });
+    return '채널이 삭제되었습니다.';
+  }
 }
 
 interface IChannelsServiceCreateChannel {
