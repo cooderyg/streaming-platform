@@ -4,6 +4,7 @@ import { Channel } from './entities/channel.entity';
 import { Repository } from 'typeorm';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { CategoriesService } from '../categories/categories.service';
+import { SearchReqDto } from 'src/commons/dto/page-req.dto';
 
 @Injectable()
 export class ChannelsService {
@@ -13,10 +14,29 @@ export class ChannelsService {
     private readonly categoriesService: CategoriesService,
   ) {}
 
+  async searchChannels(searchReqDto: SearchReqDto) {
+    const { keyword, page, size } = searchReqDto;
+    const results = await this.channelsRepository
+      .createQueryBuilder('channel')
+      .select([
+        'channel.id',
+        'channel.name',
+        'categories.name',
+        'channel.imageUrl',
+        'channel.createdAt',
+      ])
+      // TODO: 태그 검색 추가
+      .leftJoin('channel.categories', 'categories')
+      .where('channel.name like :keyword', { keyword: `%${keyword}%` })
+      .orWhere('categories.name like :keyword', { keyword: `%${keyword}%` })
+      .getMany();
+    return results;
+  }
+
   async createChannel({
     createChannelDto,
     userId,
-  }: IChannelsServiceCreateChannel) {
+  }: IChannelsServiceCreateChannel): Promise<Channel> {
     const { categoryIds, name } = createChannelDto;
 
     const categories = await this.categoriesService.findCategories({
