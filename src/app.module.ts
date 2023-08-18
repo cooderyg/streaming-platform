@@ -16,6 +16,7 @@ import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.m
 import { ViewHistoriesModule } from './apis/viewHistories/view-histories.module';
 import { ChatsModule } from './apis/chats/chats.module';
 import { InterestsModule } from './apis/interests/interests.module';
+import { NoticesModule } from './apis/notices/notices.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { InterestsModule } from './apis/interests/interests.module';
     CreditHistoriesModule,
     InterestsModule,
     LivesModule,
+    NoticesModule,
     TagsModule,
     PaymentsModule,
     UsersModule,
