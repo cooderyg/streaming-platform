@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
@@ -19,6 +19,7 @@ export class AuthController {
       loginDto,
     });
     res.cookie('refreshToken', refreshToken);
+    res.cookie('aaa', 'aaa');
     // , { httpOnly: true, secure: true }
     console.log(accessToken);
     res.setHeader('Authorization', `Bearer ${accessToken}`);
