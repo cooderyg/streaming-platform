@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { UpdateChannelDto } from './dto/update-channel.dto';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Channel } from './entities/channel.entity';
 import { Repository } from 'typeorm';
@@ -59,6 +64,30 @@ export class ChannelsService {
     });
     return channel;
   }
+
+  async updateChannel({
+    userId,
+    channelId,
+    updateChannelDto,
+  }: IChannelServiceUpdateChannel) {
+    const channel = await this.channelsRepository.findOne({
+      where: { id: channelId },
+      relations: ['user', 'categories'],
+    });
+    if (!channel) throw new NotFoundException('없는 채널입니다.');
+    if (channel.user.id !== userId)
+      throw new ForbiddenException('채널 소유자가 아닙니다.');
+    const { categoryIds, ...rest } = updateChannelDto;
+    const categories = await this.categoriesService.findCategories({
+      categoryIds,
+    });
+    const result = await this.channelsRepository.save({
+      ...channel,
+      ...rest,
+      categories,
+    });
+    return result;
+  }
 }
 
 interface IChannelsServiceCreateChannel {
@@ -68,4 +97,10 @@ interface IChannelsServiceCreateChannel {
 
 interface IChannelsServiceFindByUserId {
   userId: string;
+}
+
+interface IChannelServiceUpdateChannel {
+  userId: string;
+  channelId: string;
+  updateChannelDto: UpdateChannelDto;
 }
