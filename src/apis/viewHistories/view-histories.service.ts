@@ -11,6 +11,13 @@ export class ViewHistoriesService {
     private readonly viewHistoriesRepository: Repository<ViewHistory>,
   ) {}
 
+  async findViewHistoryList({ userId }) {
+    const viewHistory = await this.viewHistoriesRepository.find({
+      where: { user: { id: userId } },
+    });
+    return viewHistory;
+  }
+
   async createViewHistory({ userId, createViewHistoryDto }) {
     const { liveId } = createViewHistoryDto;
     const viewHistory = await this.viewHistoriesRepository.save({
