@@ -50,7 +50,6 @@ export class ChannelsController {
     @Body() updateChannelDto: UpdateChannelDto,
     @User() user: UserAfterAuth,
   ) {
-    console.log('요기요');
     const result = await this.channelsService.updateChannel({
       userId: user.id,
       channelId,
