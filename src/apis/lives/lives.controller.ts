@@ -43,17 +43,50 @@ export class LivesController {
     return live;
   }
 
+  /**
+   * Live의 title, tag 변경을 위한 API 입니다.
+   */
   @UseGuards(AccessAuthGuard)
   @Put(':liveId')
-  async updateLive(
+  async updateLiveInfo(
     @Param() params: { liveId: string },
     @Body() updateLiveDto: UpdateLiveDto,
+    @User() user: UserAfterAuth,
   ) {
-    console.log(params);
-    const live = await this.livesService.updateLive({
+    const live = await this.livesService.updateLiveInfo({
+      userId: user.id,
       liveId: params.liveId,
       updateLiveDto,
     });
     return live;
   }
+
+  /**
+   * @todo
+   * [x] 방송 종료 시 해야할 일
+   * [x] 종료 시간 업데이트
+   * [x] 해당 방송에서 발생한 총 수익 책정
+   * [x] 해당 방송을 오픈했던 채널의 총 수익 업데이트
+   * [ ] 트랜잭션 적용 필요
+   */
+  @UseGuards(AccessAuthGuard)
+  @Put(':liveId/turn-off')
+  async turnOff(
+    @Param() params: { liveId: string },
+    @User() user: UserAfterAuth,
+  ) {
+    const live = await this.livesService.turnOff({
+      userId: user.id,
+      liveId: params.liveId,
+    });
+    return live;
+  }
+
+  /**
+   * @todo
+   * 방송종료 후 영상 업로드 관련 로직 작성해야함
+   * 영상 편집(자르기)
+   * 영상 업로드(S3)
+   * 업로드 링크 획득 및 replay_url 업데이트
+   */
 }

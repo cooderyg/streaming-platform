@@ -5,9 +5,16 @@ import { LivesService } from './lives.service';
 import { ChannelsModule } from 'src/apis/channels/channels.module';
 import { Live } from './entities/live.entity';
 import { TagsModule } from '../tags/tags.module';
+import { CreditHistoriesModule } from '../creditHistories/credit-histories.module';
+import { Channel } from '../channels/entities/channel.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Live]), ChannelsModule, TagsModule],
+  imports: [
+    TypeOrmModule.forFeature([Live, Channel]),
+    ChannelsModule,
+    TagsModule,
+    CreditHistoriesModule,
+  ],
   controllers: [LivesController],
   providers: [LivesService],
   exports: [LivesService],

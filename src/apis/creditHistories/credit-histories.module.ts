@@ -14,5 +14,6 @@ import { UsersModule } from '../users/users.module';
   ],
   controllers: [CreditHistoriesController],
   providers: [CreditHistoriesService],
+  exports: [CreditHistoriesService],
 })
 export class CreditHistoriesModule {}
