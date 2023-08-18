@@ -2,8 +2,13 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import {
+  IUsersServiceCreateUser,
+  IUsersServiceFindByEmail,
+  IUsersServiceFindById,
+  IUsersServiceUpdateCreditWithManager,
+} from './interfaces/users-service.interface';
 
 @Injectable()
 export class UsersService {
@@ -27,11 +32,32 @@ export class UsersService {
     return newUser;
   }
 
-  async findByEmail({ email }) {
+  async findByEmail({ email }: IUsersServiceFindByEmail): Promise<User> {
     return await this.usersRepository.findOne({ where: { email } });
   }
-}
 
-interface IUsersServiceCreateUser {
-  createUserDto: CreateUserDto;
+  async findById({ userId }: IUsersServiceFindById): Promise<User> {
+    return await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+  }
+
+  async updateCreditWithManager({
+    manager,
+    user,
+    amount,
+    isDecrement,
+  }: IUsersServiceUpdateCreditWithManager): Promise<void> {
+    if (isDecrement) {
+      await manager.save(User, {
+        ...user,
+        credit: user.credit - amount,
+      });
+    } else {
+      await manager.save(User, {
+        ...user,
+        credit: user.credit + amount,
+      });
+    }
+  }
 }
