@@ -1,4 +1,5 @@
 import { Notice } from 'src/apis/notices/entities/notice.entity';
+import { User } from 'src/apis/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -30,4 +31,9 @@ export class NoticeComment {
     onDelete: 'CASCADE',
   })
   notice: Notice;
+
+  @ManyToOne(() => User, (user) => user.noticeComment, {
+    onDelete: 'CASCADE',
+  })
+  user: User;
 }

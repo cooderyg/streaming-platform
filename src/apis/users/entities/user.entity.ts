@@ -2,6 +2,7 @@ import { Channel } from 'src/apis/channels/entities/channel.entity';
 import { Chat } from 'src/apis/chats/entities/chat.entity';
 import { CreditHistory } from 'src/apis/creditHistories/entities/credit-history.entity';
 import { Interest } from 'src/apis/interests/entities/interest.entity';
+import { NoticeComment } from 'src/apis/noticeComments/entities/notice-comment.entity';
 import { Payment } from 'src/apis/payments/entities/payment.entity';
 import { Subscribe } from 'src/apis/subscribes/entities/subscribe.entity';
 import { ViewHistory } from 'src/apis/viewHistories/entities/view-history.entity';
@@ -67,4 +68,9 @@ export class User {
     cascade: true,
   })
   chats: Chat[];
+
+  @OneToMany(() => NoticeComment, (noticeComment) => noticeComment.user, {
+    cascade: true,
+  })
+  noticeComment: NoticeComment[];
 }
