@@ -3,13 +3,12 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateLiveDto } from './dto/create-live.dto';
 import { ChannelsService } from 'src/apis/channels/channels.service';
 import { Live } from './entities/live.entity';
 import { TagsService } from '../tags/tags.service';
-import { CreateTagDto } from '../tags/dto/create-tag.dto';
 import { UpdateLiveDto } from './dto/update-live.dto';
 import { CreditHistoriesService } from '../creditHistories/credit-histories.service';
 import { Channel } from '../channels/entities/channel.entity';
@@ -19,13 +18,36 @@ export class LivesService {
   constructor(
     @InjectRepository(Live)
     private readonly livesRepository: Repository<Live>,
-    @InjectRepository(Channel)
-    private readonly channelRepository: Repository<Channel>,
     private readonly channelsService: ChannelsService,
     private readonly tagsService: TagsService,
     private readonly creditHistoriesService: CreditHistoriesService,
+    private readonly dataSource: DataSource,
   ) {}
 
+  async getLives({ pageReqDto }) {
+    const { page, size } = pageReqDto;
+    const lives = await this.livesRepository
+      .createQueryBuilder('live')
+      .select([
+        'live.id',
+        'live.title',
+        'channel.id',
+        'channel.name',
+        'tag.id',
+        'tag.name',
+        'user.id',
+        'user.nickname',
+      ])
+      .where('live.endDate IS NULL')
+      .leftJoin('live.channel', 'channel')
+      .leftJoin('live.tags', 'tag')
+      .leftJoin('channel.user', 'user')
+      .take(size)
+      .skip((page - 1) * size)
+      .getMany();
+    console.log(lives);
+    return lives;
+  }
   async getLiveById(liveId: string) {
     return await this.livesRepository
       .createQueryBuilder('live')
@@ -64,27 +86,39 @@ export class LivesService {
   async turnOff({ userId, liveId }: ILivesServiceTurnOff) {
     let { channel, live } = await this.verifyOwner({ userId, liveId });
 
-    // 종료 시간을 업데이트 합니다.
-    live.endDate = new Date();
+    // 트랜잭션
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    const manager = queryRunner.manager;
+    try {
+      // 종료 시간을 업데이트 합니다.
+      live.endDate = new Date();
 
-    // 방송 정산하기
-    const creditHistories =
-      await this.creditHistoriesService.findCreditHistoryListByLive({
-        liveId,
-        userId,
-      });
-    const totalLiveIncome = creditHistories.reduce(
-      (acc, history) => acc + history.amount,
-      0,
-    );
-    live.income = totalLiveIncome;
+      // 방송 정산하기
+      const creditHistories =
+        await this.creditHistoriesService.findCreditHistoryListByLive({
+          liveId,
+          userId,
+        });
+      const totalLiveIncome = creditHistories.reduce(
+        (acc, history) => acc + history.amount,
+        0,
+      );
+      live.income = totalLiveIncome;
 
-    // 채널 정산하기
-    channel.income += totalLiveIncome;
+      // 채널 정산하기
+      channel.income += totalLiveIncome;
 
-    await this.livesRepository.save(live);
-    await this.channelRepository.save(channel);
-    return { message: '방송이 종료되었습니다.' };
+      await manager.save(Live, live);
+      await manager.save(Channel, channel);
+      await queryRunner.commitTransaction();
+      return { message: '방송이 종료되었습니다.' };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async verifyOwner({ userId, liveId }) {

@@ -13,6 +13,7 @@ import { AccessAuthGuard } from 'src/apis/auth/guard/auth.guard';
 import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
 import { CreateLiveDto } from './dto/create-live.dto';
 import { UpdateLiveDto } from './dto/update-live.dto';
+import { PageReqDto } from 'src/commons/dto/page-req.dto';
 
 @Controller('api/lives')
 export class LivesController {
@@ -22,7 +23,14 @@ export class LivesController {
    * @todo
    * 메인페이지 라이브 방송목록 나열용 findAll 필요
    * 페이지네이션 적용 필요
+   * 정렬 기준이 필요함(현재 접속자 수 기준 등)
+   * 종료된 방송을 띄우면 안됨
    */
+  @Get()
+  async getLives(@Query() pageReqDto: PageReqDto) {
+    const lives = await this.livesService.getLives({ pageReqDto });
+    return lives;
+  }
 
   @Get(':liveId')
   async getLiveById(@Param() params: { liveId: string }) {
@@ -67,7 +75,7 @@ export class LivesController {
    * [x] 종료 시간 업데이트
    * [x] 해당 방송에서 발생한 총 수익 책정
    * [x] 해당 방송을 오픈했던 채널의 총 수익 업데이트
-   * [ ] 트랜잭션 적용 필요
+   * [x] 트랜잭션 적용 필요
    */
   @UseGuards(AccessAuthGuard)
   @Put(':liveId/turn-off')
