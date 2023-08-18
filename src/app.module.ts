@@ -13,6 +13,7 @@ import { PaymentsModule } from './apis/payments/payments.module';
 import { SubscribesModule } from './apis/subscribes/subscribes.module';
 
 import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.module';
+import { InterestsModule } from './apis/interests/interests.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.m
     CategoriesModule,
     ChannelsModule,
     CreditHistoriesModule,
+    InterestsModule,
     LivesModule,
     PaymentsModule,
     UsersModule,
