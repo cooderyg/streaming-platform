@@ -9,9 +9,9 @@ import { AuthModule } from './apis/auth/auth.module';
 import { CategoriesModule } from './apis/categories/cetegories.module';
 import { ChannelsModule } from './apis/channels/channels.module';
 import { LivesModule } from './apis/lives/lives.module';
+import { TagsModule } from './apis/tags/tags.module';
 import { PaymentsModule } from './apis/payments/payments.module';
 import { SubscribesModule } from './apis/subscribes/subscribes.module';
-
 import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.module';
 
 @Module({
@@ -21,6 +21,7 @@ import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.m
     ChannelsModule,
     CreditHistoriesModule,
     LivesModule,
+    TagsModule,
     PaymentsModule,
     UsersModule,
     SubscribesModule,
