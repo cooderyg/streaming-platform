@@ -9,10 +9,12 @@ import { AuthModule } from './apis/auth/auth.module';
 import { CategoriesModule } from './apis/categories/cetegories.module';
 import { ChannelsModule } from './apis/channels/channels.module';
 import { LivesModule } from './apis/lives/lives.module';
+import { TagsModule } from './apis/tags/tags.module';
 import { PaymentsModule } from './apis/payments/payments.module';
 import { SubscribesModule } from './apis/subscribes/subscribes.module';
-
 import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.module';
+import { ViewHistoriesModule } from './apis/viewHistories/view-histories.module';
+import { ChatsModule } from './apis/chats/chats.module';
 import { InterestsModule } from './apis/interests/interests.module';
 
 @Module({
@@ -20,11 +22,14 @@ import { InterestsModule } from './apis/interests/interests.module';
     AuthModule,
     CategoriesModule,
     ChannelsModule,
+    ChatsModule,
     CreditHistoriesModule,
     InterestsModule,
     LivesModule,
+    TagsModule,
     PaymentsModule,
     UsersModule,
+    ViewHistoriesModule,
     SubscribesModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
