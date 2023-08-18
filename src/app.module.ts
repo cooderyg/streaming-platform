@@ -17,6 +17,7 @@ import { ViewHistoriesModule } from './apis/viewHistories/view-histories.module'
 import { ChatsModule } from './apis/chats/chats.module';
 import { InterestsModule } from './apis/interests/interests.module';
 import { NoticesModule } from './apis/notices/notices.module';
+import { NoticeCommentsModule } from './apis/noticeComments/notice-comment.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { NoticesModule } from './apis/notices/notices.module';
     InterestsModule,
     LivesModule,
     NoticesModule,
+    NoticeCommentsModule,
     TagsModule,
     PaymentsModule,
     UsersModule,

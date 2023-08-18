@@ -12,8 +12,6 @@ export interface IINoticesServiceGetAllNotice extends PageReqDto {
 }
 
 export interface IINoticesServiceGetNotice {
-  page: number;
-  size: number;
   noticeId: string;
 }
 
