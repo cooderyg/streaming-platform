@@ -29,7 +29,7 @@ export class Channel {
   @Column()
   name: string;
 
-  @Column({ type: 'simple-json', nullable: true })
+  @Column({ type: 'simple-json' })
   role: ChannelRole;
 
   @Column({ default: 0 })

@@ -15,6 +15,7 @@ import { AccessAuthGuard } from '../auth/guard/auth.guard';
 import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
 import { SearchReqDto } from 'src/commons/dto/page-req.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
+import { UpdateChannelManagerDto } from './dto/update-channel-manager.dto';
 
 @Controller('/api/channels')
 export class ChannelsController {
@@ -55,6 +56,38 @@ export class ChannelsController {
       userId: user.id,
       channelId,
       updateChannelDto,
+    });
+    return result;
+  }
+
+  // 채널 매니저 추가
+  @UseGuards(AccessAuthGuard)
+  @Put('/manager-addition/:channelId')
+  async addManager(
+    @Param('channelId') channelId: string,
+    @Body() updateChannelManagerDto: UpdateChannelManagerDto,
+    @User() user: UserAfterAuth,
+  ) {
+    const result = await this.channelsService.addManager({
+      userId: user.id,
+      channelId,
+      updateChannelManagerDto,
+    });
+    return result;
+  }
+
+  // 채널 매니저 삭제
+  @UseGuards(AccessAuthGuard)
+  @Put('/manager-subtraction/:channelId')
+  async subtractManager(
+    @Param('channelId') channelId: string,
+    @Body() updateChannelManagerDto: UpdateChannelManagerDto,
+    @User() user: UserAfterAuth,
+  ) {
+    const result = await this.channelsService.subtractManager({
+      userId: user.id,
+      channelId,
+      updateChannelManagerDto,
     });
     return result;
   }

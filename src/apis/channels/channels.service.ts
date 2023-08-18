@@ -1,3 +1,4 @@
+import { UpdateChannelManagerDto } from './dto/update-channel-manager.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import {
   ForbiddenException,
@@ -5,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Channel } from './entities/channel.entity';
+import { Channel, ChannelRole } from './entities/channel.entity';
 import { Repository } from 'typeorm';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { CategoriesService } from '../categories/categories.service';
@@ -54,6 +55,7 @@ export class ChannelsService {
       name,
       user: { id: userId },
       categories,
+      role: { manager: [] },
     });
     return channel;
   }
@@ -89,6 +91,44 @@ export class ChannelsService {
     return result;
   }
 
+  async addManager({
+    userId,
+    channelId,
+    updateChannelManagerDto,
+  }: IChannelServiceUpdateChannelManager) {
+    const { managerId } = updateChannelManagerDto;
+    const channel = await this.channelsRepository.findOne({
+      where: { id: channelId },
+      relations: ['user'],
+    });
+    if (!channel) throw new NotFoundException('존재하지 않는 채널입니다.');
+    if (managerId === userId)
+      throw new ForbiddenException(
+        '채널 소유자 자신이 매니저가 될 수 없습니다.',
+      );
+    if (channel.user.id !== userId)
+      throw new ForbiddenException('채널 소유자가 아닙니다.');
+    await channel.role.manager.push(managerId);
+    const result = await this.channelsRepository.save(channel);
+    return result;
+  }
+
+  async subtractManager({ userId, channelId, updateChannelManagerDto }) {
+    const { managerId } = updateChannelManagerDto;
+    const channel = await this.channelsRepository.findOne({
+      where: { id: channelId },
+      relations: ['user'],
+    });
+    if (!channel) throw new NotFoundException('존재하지 않는 채널입니다.');
+    if (!channel.role.manager.filter((manager) => manager === managerId))
+      throw new NotFoundException('없는 매니저입니다.');
+    channel.role.manager = channel.role.manager.filter(
+      (manager) => manager !== managerId,
+    );
+    const result = await this.channelsRepository.save(channel);
+    return result;
+  }
+
   async deleteChannel({ userId, channelId }) {
     const channel = await this.channelsRepository.findOne({
       where: { id: channelId },
@@ -114,4 +154,10 @@ interface IChannelServiceUpdateChannel {
   userId: string;
   channelId: string;
   updateChannelDto: UpdateChannelDto;
+}
+
+interface IChannelServiceUpdateChannelManager {
+  userId: string;
+  channelId: string;
+  updateChannelManagerDto: UpdateChannelManagerDto;
 }
