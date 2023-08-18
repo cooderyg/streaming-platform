@@ -25,7 +25,7 @@ export class Payment {
   @Column()
   impUid: string;
 
-  @Column()
+  @Column({ default: PAYMENTSTATUS.PAYMENT })
   status: PAYMENTSTATUS;
 
   @CreateDateColumn()

@@ -9,6 +9,7 @@ import { AuthModule } from './apis/auth/auth.module';
 import { CategoriesModule } from './apis/categories/cetegories.module';
 import { ChannelsModule } from './apis/channels/channels.module';
 import { LivesModule } from './apis/lives/lives.module';
+import { PaymentsModule } from './apis/payments/payments.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { LivesModule } from './apis/lives/lives.module';
     CategoriesModule,
     ChannelsModule,
     LivesModule,
+    PaymentsModule,
     UsersModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
