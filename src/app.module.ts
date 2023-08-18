@@ -13,6 +13,7 @@ import { TagsModule } from './apis/tags/tags.module';
 import { PaymentsModule } from './apis/payments/payments.module';
 import { SubscribesModule } from './apis/subscribes/subscribes.module';
 import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.module';
+import { ViewHistoriesModule } from './apis/viewHistories/view-histories.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.m
     TagsModule,
     PaymentsModule,
     UsersModule,
+    ViewHistoriesModule,
     SubscribesModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({

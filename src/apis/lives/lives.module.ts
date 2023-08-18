@@ -10,5 +10,6 @@ import { TagsModule } from '../tags/tags.module';
   imports: [TypeOrmModule.forFeature([Live]), ChannelsModule, TagsModule],
   controllers: [LivesController],
   providers: [LivesService],
+  exports: [LivesService],
 })
 export class LivesModule {}
