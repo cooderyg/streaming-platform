@@ -9,5 +9,6 @@ import { Live } from './entities/live.entity';
   imports: [TypeOrmModule.forFeature([Live]), ChannelsModule],
   controllers: [LivesController],
   providers: [LivesService],
+  exports: [LivesService],
 })
 export class LivesModule {}

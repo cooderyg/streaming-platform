@@ -12,6 +12,7 @@ import { LivesModule } from './apis/lives/lives.module';
 import { PaymentsModule } from './apis/payments/payments.module';
 
 import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.module';
+import { ViewHistoriesModule } from './apis/viewHistories/view-histories.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CreditHistoriesModule } from './apis/creditHistories/credit-histories.m
     LivesModule,
     PaymentsModule,
     UsersModule,
+    ViewHistoriesModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',
