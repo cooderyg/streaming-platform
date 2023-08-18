@@ -10,6 +10,7 @@ import { CategoriesModule } from './apis/categories/cetegories.module';
 import { ChannelsModule } from './apis/channels/channels.module';
 import { LivesModule } from './apis/lives/lives.module';
 import { PaymentsModule } from './apis/payments/payments.module';
+import { SubscribesModule } from './apis/subscribes/subscribes.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { PaymentsModule } from './apis/payments/payments.module';
     LivesModule,
     PaymentsModule,
     UsersModule,
+    SubscribesModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',
