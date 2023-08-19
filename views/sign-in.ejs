@@ -50,6 +50,7 @@
       data-site="YOUR_DOMAIN_HERE"
       src="https://api.nepcha.com/js/nepcha-analytics.js"
     ></script>
+    <script defer src="/js/sign-in.js"></script>
   </head>
 
   <body class="">
@@ -93,6 +94,7 @@
                       <label>Email</label>
                       <div class="mb-3">
                         <input
+                          id="email"
                           type="email"
                           class="form-control"
                           placeholder="Email"
@@ -103,7 +105,8 @@
                       <label>Password</label>
                       <div class="mb-3">
                         <input
-                          type="email"
+                          id="password"
+                          type="password"
                           class="form-control"
                           placeholder="Password"
                           aria-label="Password"
@@ -112,6 +115,7 @@
                       </div>
                       <div class="text-center">
                         <button
+                          id="signin-btn"
                           type="button"
                           class="btn bg-gradient-info w-100 mt-4 mb-0"
                         >
