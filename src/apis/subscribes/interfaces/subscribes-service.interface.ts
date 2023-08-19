@@ -1,5 +1,9 @@
 import { ToggleSubscribeDto } from '../dto/toggle-subscribe.dto';
 
+export interface ISubscribesServiceGetSubscribeCount {
+  userId: string;
+}
+
 export interface ISubscribesServiceToggleSubscribe {
   toggleSubscribeDto: ToggleSubscribeDto;
   userId: string;
