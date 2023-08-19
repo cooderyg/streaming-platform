@@ -16,12 +16,22 @@ import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
 import { SearchReqDto } from 'src/commons/dto/page-req.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { UpdateChannelManagerDto } from './dto/update-channel-manager.dto';
+import { Channel } from './entities/channel.entity';
 
 @Controller('/api/channels')
 export class ChannelsController {
   constructor(
     private readonly channelsService: ChannelsService, //
   ) {}
+
+  @UseGuards(AccessAuthGuard)
+  @Get()
+  async getChannel(
+    @User() user: UserAfterAuth, //
+  ): Promise<Channel> {
+    const channel = await this.channelsService.getChannel({ userId: user.id });
+    return channel;
+  }
 
   // 채널 검색
   @Get('search')

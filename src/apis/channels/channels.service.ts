@@ -20,6 +20,13 @@ export class ChannelsService {
     private readonly categoriesService: CategoriesService,
   ) {}
 
+  async getChannel({ userId }): Promise<Channel> {
+    const channel = await this.findByUserId({ userId });
+    if (!channel) throw new NotFoundException();
+
+    return channel;
+  }
+
   async searchChannels(searchReqDto: SearchReqDto) {
     const { keyword, page, size } = searchReqDto;
     const results = await this.channelsRepository
