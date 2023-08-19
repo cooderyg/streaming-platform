@@ -33,6 +33,9 @@ export class User {
   @Column({ default: 0 })
   credit: number;
 
+  @Column({ nullable: true })
+  imageUrl: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
