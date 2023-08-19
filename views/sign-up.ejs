@@ -50,6 +50,7 @@
       data-site="YOUR_DOMAIN_HERE"
       src="https://api.nepcha.com/js/nepcha-analytics.js"
     ></script>
+    <script defer src="/js/sign-up.js"></script>
   </head>
 
   <body class="">
@@ -97,15 +98,17 @@
                   <form role="form text-left">
                     <div class="mb-3">
                       <input
+                        id="nickname"
                         type="text"
                         class="form-control"
-                        placeholder="Name"
+                        placeholder="Nickname"
                         aria-label="Name"
                         aria-describedby="email-addon"
                       />
                     </div>
                     <div class="mb-3">
                       <input
+                        id="email"
                         type="email"
                         class="form-control"
                         placeholder="Email"
@@ -115,6 +118,7 @@
                     </div>
                     <div class="mb-3">
                       <input
+                        id="password"
                         type="password"
                         class="form-control"
                         placeholder="Password"
@@ -124,6 +128,7 @@
                     </div>
                     <div class="text-center">
                       <button
+                        id="signup-btn"
                         type="button"
                         class="btn bg-gradient-dark w-100 my-4 mb-2"
                       >
