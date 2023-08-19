@@ -1,6 +1,7 @@
 import { EntityManager } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { User } from '../entities/user.entity';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 export interface IUsersServiceCreateUser {
   createUserDto: CreateUserDto;
@@ -19,4 +20,9 @@ export interface IUsersServiceUpdateCreditWithManager {
   user: User;
   amount: number;
   isDecrement: boolean;
+}
+
+export interface IUsersServiceUpdateUser {
+  userId: string;
+  updateUserDto: UpdateUserDto;
 }
