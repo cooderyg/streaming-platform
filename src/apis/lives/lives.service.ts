@@ -12,6 +12,7 @@ import { TagsService } from '../tags/tags.service';
 import { UpdateLiveDto } from './dto/update-live.dto';
 import { CreditHistoriesService } from '../creditHistories/credit-histories.service';
 import { Channel } from '../channels/entities/channel.entity';
+import { PageReqDto } from 'src/commons/dto/page-req.dto';
 
 @Injectable()
 export class LivesService {
@@ -64,6 +65,24 @@ export class LivesService {
       .leftJoin('live.channel', 'channel')
       .where('live.id = :id', { id: liveId })
       .getOne();
+  }
+
+  async getLivesForAdmin({
+    userId,
+    pageReqDto,
+  }: ILivesServiceGetLivesForAdmin): Promise<Live[]> {
+    const { page, size } = pageReqDto;
+    const lives = await this.livesRepository
+      .createQueryBuilder('live')
+      .select(['live.id', 'live.income', 'live.title', 'live.createdAt'])
+      .leftJoin('live.channel', 'channel')
+      .leftJoin('channel.user', 'user')
+      .where('user.id = :userId', { userId })
+      .orderBy('live.createdAt', 'DESC')
+      .take(size)
+      .skip((page - 1) * size)
+      .getMany();
+    return lives;
   }
 
   async createLive({ userId, createLiveDto }: ILivesServiceCreateLive) {
@@ -150,6 +169,11 @@ export class LivesService {
    * @todo
    * 방송 종료 시 replayUrl을 업데이트 하는 로직 작성
    */
+}
+
+interface ILivesServiceGetLivesForAdmin {
+  userId: string;
+  pageReqDto: PageReqDto;
 }
 
 interface ILivesServiceCreateLive {
