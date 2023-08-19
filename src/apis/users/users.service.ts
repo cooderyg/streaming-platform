@@ -1,7 +1,7 @@
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -33,7 +33,7 @@ export class UsersService {
   async createUser({ createUserDto }: IUsersServiceCreateUser): Promise<void> {
     const { email, nickname, password } = createUserDto;
     const user = await this.findByEmail({ email });
-    if (user) throw new UnauthorizedException('이미 등록된 이메일입니다.');
+    if (user) throw new ConflictException('이미 등록된 이메일입니다.');
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await this.usersRepository.save({
