@@ -1,19 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Subscribe } from './entities/subscribe.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   ISubscribesServiceCountByChannel,
   ISubscribesServiceFindByChannelIdAndUserId,
+  ISubscribesServiceGetSubscribeCount,
   ISubscribesServiceToggleSubscribe,
 } from './interfaces/subscribes-service.interface';
+import { ChannelsService } from '../channels/channels.service';
 
 @Injectable()
 export class SubscribesService {
   constructor(
     @InjectRepository(Subscribe)
     private readonly subscribesRepository: Repository<Subscribe>,
+    private readonly channelsService: ChannelsService,
   ) {}
+
+  async getSubscribeCount({
+    userId,
+  }: ISubscribesServiceGetSubscribeCount): Promise<number> {
+    const channel = await this.channelsService.findByUserId({ userId });
+    if (!channel) throw new NotFoundException();
+
+    const count = await this.countByChannel({ channelId: channel.id });
+
+    return count;
+  }
 
   async toggleSubscribe({
     toggleSubscribeDto,
