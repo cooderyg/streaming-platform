@@ -46,4 +46,10 @@ export class AppController {
   getTables() {
     return { title: 'Title' };
   }
+
+  @Get('streaming')
+  @Render('streaming')
+  getStreaming() {
+    return { title: 'Title' };
+  }
 }

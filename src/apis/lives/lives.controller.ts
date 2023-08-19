@@ -14,7 +14,6 @@ import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
 import { CreateLiveDto } from './dto/create-live.dto';
 import { UpdateLiveDto } from './dto/update-live.dto';
 import { PageReqDto } from 'src/commons/dto/page-req.dto';
-import { Live } from './entities/live.entity';
 
 @Controller('api/lives')
 export class LivesController {
@@ -37,20 +36,6 @@ export class LivesController {
   async getLiveById(@Param() params: { liveId: string }) {
     const live = await this.livesService.getLiveById(params.liveId);
     return live;
-  }
-
-  @UseGuards(AccessAuthGuard)
-  @Get('admin/sales')
-  async getLivesForAdmin(
-    @User() user: UserAfterAuth,
-    @Query() pageReqDto: PageReqDto,
-  ): Promise<Live[]> {
-    const lives = await this.livesService.getLivesForAdmin({
-      userId: user.id,
-      pageReqDto,
-    });
-
-    return lives;
   }
 
   @UseGuards(AccessAuthGuard)
