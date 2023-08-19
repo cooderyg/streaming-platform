@@ -21,12 +21,17 @@ export class AuthService {
   }: IAuthServiceLogin): Promise<IAuthServiceLoginReturn> {
     const { email, password } = loginDto;
     const user = await this.usersService.findByEmail({ email });
+
     if (!user)
       throw new UnauthorizedException('해당하는 이메일의 유저가 없습니다.');
+
     const isAuth = await bcrypt.compare(password, user.password);
+
     if (!isAuth) throw new UnauthorizedException();
+
     const accessToken = this.getAccessToken({ userId: user.id });
     const refreshToken = this.getRefreshToken({ userId: user.id });
+
     return { accessToken, refreshToken };
   }
 

@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -8,6 +12,7 @@ import {
   IUsersServiceFindByEmail,
   IUsersServiceFindById,
   IUsersServiceUpdateCreditWithManager,
+  IUsersServiceUpdateUser,
 } from './interfaces/users-service.interface';
 
 @Injectable()
@@ -17,19 +22,25 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async createUser({ createUserDto }: IUsersServiceCreateUser): Promise<User> {
+  async findUser({ userId }): Promise<User> {
+    const user = await this.findById({ userId });
+
+    if (!user) new NotFoundException();
+
+    return user;
+  }
+
+  async createUser({ createUserDto }: IUsersServiceCreateUser): Promise<void> {
     const { email, nickname, password } = createUserDto;
     const user = await this.findByEmail({ email });
     if (user) throw new UnauthorizedException('이미 등록된 이메일입니다.');
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await this.usersRepository.save({
+    await this.usersRepository.save({
       email,
       nickname,
       password: hashedPassword,
     });
-
-    return newUser;
   }
 
   async findByEmail({ email }: IUsersServiceFindByEmail): Promise<User> {
@@ -39,6 +50,7 @@ export class UsersService {
   async findById({ userId }: IUsersServiceFindById): Promise<User> {
     return await this.usersRepository.findOne({
       where: { id: userId },
+      select: ['id', 'email', 'credit', 'nickname', 'createdAt', 'updatedAt'],
     });
   }
 
@@ -59,5 +71,21 @@ export class UsersService {
         credit: user.credit + amount,
       });
     }
+  }
+
+  async updateUser({
+    userId,
+    updateUserDto,
+  }: IUsersServiceUpdateUser): Promise<User> {
+    const user = await this.findById({ userId });
+
+    if (!user) throw new NotFoundException();
+
+    const updatedUser = await this.usersRepository.save({
+      ...user,
+      ...updateUserDto,
+    });
+
+    return updatedUser;
   }
 }
