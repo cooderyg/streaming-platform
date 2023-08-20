@@ -1,9 +1,13 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { SubscribesService } from './subscribes.service';
 import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
 import { AccessAuthGuard } from '../auth/guard/auth.guard';
 import { ToggleSubscribeDto } from './dto/toggle-subscribe.dto';
-import { ToggleSubscribeResDto, getSubscribeCountResDto } from './dto/res.dto';
+import {
+  CheckSubscribeResDto,
+  ToggleSubscribeResDto,
+  getSubscribeCountResDto,
+} from './dto/res.dto';
 
 @Controller('api/subscribes')
 export class SubscribesController {
@@ -19,6 +23,20 @@ export class SubscribesController {
     });
 
     return { count };
+  }
+
+  @UseGuards(AccessAuthGuard)
+  @Get('check/:channelId')
+  async checkSubscribe(
+    @Param('channelId') channelId: string, //
+    @User() user: UserAfterAuth,
+  ): Promise<CheckSubscribeResDto> {
+    const isSubscribed = await this.subscribesService.checkSubscribe({
+      channelId,
+      userId: user.id,
+    });
+
+    return { isSubscribed };
   }
 
   @UseGuards(AccessAuthGuard)
