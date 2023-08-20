@@ -1,17 +1,24 @@
 // Todo: 채팅, 다시보기, 채널정보, 후원하기 페이지, 알림 연결
+const params = window.location.pathname;
+const splits = params.split('/');
+const liveId = splits[2];
 
+console.log('라이브Id', liveId);
 const subscribeBtn = document.getElementById('channel-subscribe-btn');
-console.log(subscribeBtn);
 
-const getChannelData = () => {
-  fetch(`/api/lives/0bae8e6b-a9c2-4cd0-a71a-094c82ca4fc9`)
+const getData = () => {
+  // 라이브방송 데이터 조회
+  let channelId;
+  let noticeId;
+  fetch(`/api/lives/${liveId}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      console.log('getChannelData', data);
       const liveTitle = document.querySelector('.live-title');
       const channelName = document.querySelector('.channel-name');
       const channelImg = document.querySelector('.channel-img');
       liveTitle.innerText = data.title;
+      channelId = data.channel.id;
       channelName.innerText = data.channel.name;
       channelImg.insertAdjacentHTML(
         'beforeend',
@@ -21,26 +28,41 @@ const getChannelData = () => {
     class="w-100 border-radius-lg shadow-sm"
   />`,
       );
-      subscribeBtn.setAttribute('channelId', `${data.channel.id}`);
-    });
-};
-getChannelData();
+      // 공지 조회
+      fetch(`/api/${channelId}/notices`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log('공지id', data[0].id);
+          noticeId = data[0].id;
+          document.querySelector('.channel-notice').innerText = data[0].content;
+          document
+            .querySelector('.channel-notice-img')
+            .insertAdjacentHTML(
+              'beforeEnd',
+              `<img src="${data[0].imageUrl}" style="max-width: 800px">`,
+            );
+          // 공지 댓글 조회
+          fetch(`/api/${noticeId}/notice-comments`)
+            .then((res) => res.json())
+            .then((data) => {
+              const commentList = document.querySelector('.notice-comments');
+              commentList.insertAdjacentHTML(
+                'beforeEnd',
+                `<p> 댓글(${data.length})</p>`,
+              );
+              data.forEach((comment) => {
+                commentList.insertAdjacentHTML(
+                  'beforeEnd',
+                  `<p style="padding: 0px; margin-bottom: 1px;">${comment.user.nickname} | ${comment.content}</p>`,
+                );
+              });
+            });
+        });
 
-const getNotice = () => {
-  fetch(`api/8870687c-c0c6-4eec-a8b8-60bfa9d174d6/notices`)
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data);
-      document.querySelector('.channel-notice').innerText = data[0].content;
-      document
-        .querySelector('.channel-notice-img')
-        .insertAdjacentHTML(
-          'beforeEnd',
-          `<img src="${data[0].imageUrl}" style="max-width: 800px">`,
-        );
+      subscribeBtn.setAttribute('channelId', `${channelId}`);
     });
 };
-getNotice();
+getData();
 
 document.querySelector('.notice-btn').addEventListener('click', () => {
   getNotice();

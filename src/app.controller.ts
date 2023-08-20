@@ -47,7 +47,7 @@ export class AppController {
     return { title: 'Title' };
   }
 
-  @Get('streaming')
+  @Get('streaming/:liveId')
   @Render('streaming')
   getStreaming() {
     return { title: 'Title' };
