@@ -29,6 +29,19 @@ export class SubscribesService {
     return count;
   }
 
+  async checkSubscribe({ channelId, userId }): Promise<boolean> {
+    const subscribe = await this.findByChannelIdAndUserId({
+      channelId,
+      userId,
+    });
+
+    if (subscribe) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   async toggleSubscribe({
     toggleSubscribeDto,
     userId,
