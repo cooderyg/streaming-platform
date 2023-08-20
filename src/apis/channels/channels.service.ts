@@ -1,16 +1,18 @@
 import { UpdateChannelManagerDto } from './dto/update-channel-manager.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Channel, ChannelRole } from './entities/channel.entity';
+import { Channel } from './entities/channel.entity';
 import { Repository } from 'typeorm';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { CategoriesService } from '../categories/categories.service';
 import { SearchReqDto } from 'src/commons/dto/page-req.dto';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ChannelsService {
@@ -18,6 +20,7 @@ export class ChannelsService {
     @InjectRepository(Channel)
     private readonly channelsRepository: Repository<Channel>, //
     private readonly categoriesService: CategoriesService,
+    private readonly usersService: UsersService,
   ) {}
 
   async getChannel({ userId }): Promise<Channel> {
@@ -100,37 +103,52 @@ export class ChannelsService {
 
   async addManager({
     userId,
-    channelId,
     updateChannelManagerDto,
   }: IChannelServiceUpdateChannelManager) {
-    const { managerId } = updateChannelManagerDto;
+    const { email } = updateChannelManagerDto;
     const channel = await this.channelsRepository.findOne({
-      where: { id: channelId },
+      where: { user: { id: userId } },
       relations: ['user'],
     });
+
     if (!channel) throw new NotFoundException('존재하지 않는 채널입니다.');
-    if (managerId === userId)
+
+    const manager = await this.usersService.findByEmail({ email });
+
+    if (!manager) throw new NotFoundException();
+
+    if (manager.id === userId)
       throw new ForbiddenException(
         '채널 소유자 자신이 매니저가 될 수 없습니다.',
       );
-    if (channel.user.id !== userId)
-      throw new ForbiddenException('채널 소유자가 아닙니다.');
-    await channel.role.manager.push(managerId);
+
+    const filteredRole = channel.role.manager.filter((el) => el === manager.id);
+    if (filteredRole.length)
+      throw new ConflictException('이미 매니저인 유저입니다.');
+
+    channel.role.manager.push(manager.id);
+
     const result = await this.channelsRepository.save(channel);
     return result;
   }
 
-  async subtractManager({ userId, channelId, updateChannelManagerDto }) {
-    const { managerId } = updateChannelManagerDto;
+  async subtractManager({ userId, updateChannelManagerDto }) {
+    const { email } = updateChannelManagerDto;
+
+    const manager = await this.usersService.findByEmail({ email });
+
     const channel = await this.channelsRepository.findOne({
-      where: { id: channelId },
+      where: { user: { id: userId } },
       relations: ['user'],
     });
+
     if (!channel) throw new NotFoundException('존재하지 않는 채널입니다.');
-    if (!channel.role.manager.filter((manager) => manager === managerId))
+
+    if (!channel.role.manager.filter((el) => el === manager.id).length)
       throw new NotFoundException('없는 매니저입니다.');
+
     channel.role.manager = channel.role.manager.filter(
-      (manager) => manager !== managerId,
+      (el) => el !== manager.id,
     );
     const result = await this.channelsRepository.save(channel);
     return result;
@@ -165,6 +183,5 @@ interface IChannelServiceUpdateChannel {
 
 interface IChannelServiceUpdateChannelManager {
   userId: string;
-  channelId: string;
   updateChannelManagerDto: UpdateChannelManagerDto;
 }
