@@ -15,7 +15,10 @@ import { AccessAuthGuard } from '../auth/guard/auth.guard';
 import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
 import { SearchReqDto } from 'src/commons/dto/page-req.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
-import { UpdateChannelManagerDto } from './dto/update-channel-manager.dto';
+import {
+  DeleteChannelManagerDto,
+  UpdateChannelManagerDto,
+} from './dto/update-channel-manager.dto';
 import { Channel } from './entities/channel.entity';
 
 @Controller('/api/channels')
@@ -98,14 +101,14 @@ export class ChannelsController {
   @UseGuards(AccessAuthGuard)
   @Put('/manager-subtraction')
   async subtractManager(
-    @Body() updateChannelManagerDto: UpdateChannelManagerDto,
+    @Body() deleteChannelManagerDto: DeleteChannelManagerDto,
     @User() user: UserAfterAuth,
   ) {
     const result = await this.channelsService.subtractManager({
       userId: user.id,
-      updateChannelManagerDto,
+      deleteChannelManagerDto,
     });
-    return result;
+    return { ok: true };
   }
 
   // 채널 폐쇄
