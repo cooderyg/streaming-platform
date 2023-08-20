@@ -50,6 +50,7 @@
       data-site="YOUR_DOMAIN_HERE"
       src="https://api.nepcha.com/js/nepcha-analytics.js"
     ></script>
+    <script defer src="/js/manager.js"></script>
   </head>
 
   <body class="g-sidenav-show bg-gray-100">
@@ -477,8 +478,16 @@
         <div class="row">
           <div class="col-12">
             <div class="card mb-4">
-              <div class="card-header pb-0">
+              <div class="card-header pb-0 flex-row">
                 <h6>Authors table</h6>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                >
+                  매니저 임명하기
+                </button>
               </div>
               <div class="card-body px-0 pt-0 pb-2">
                 <div class="table-responsive p-0">
@@ -486,29 +495,29 @@
                     <thead>
                       <tr>
                         <th
-                          class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                          class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-4"
                         >
-                          Author
+                          프로필
                         </th>
                         <th
                           class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
                         >
-                          Function
+                          직책
                         </th>
                         <th
                           class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
                         >
-                          Status
+                          접속상태
                         </th>
                         <th
                           class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
                         >
-                          Employed
+                          유저 생성일
                         </th>
                         <th class="text-secondary opacity-7"></th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="managers">
                       <tr>
                         <td>
                           <div class="d-flex px-2 py-1">
@@ -953,6 +962,59 @@
               <i class="fab fa-facebook-square me-1" aria-hidden="true"></i>
               Share
             </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label"
+                  >Email address</label
+                >
+                <input
+                  id="email"
+                  placeholder="Email"
+                  type="email"
+                  class="form-control"
+                  aria-describedby="emailHelp"
+                />
+                <div class="form-text">
+                  매니저 임명하실 유저의 이메일을 입력해주세요.
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              닫기
+            </button>
+            <button type="submit" id="manager-btn" class="btn btn-primary">
+              임명
+            </button>
           </div>
         </div>
       </div>
