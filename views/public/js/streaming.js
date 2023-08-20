@@ -26,6 +26,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
       document.querySelector('.channel-notice').innerText = data[0].content;
       document
         .querySelector('.channel-notice-img')
-        .insertAdjacentHTML('beforeEnd', `<img src="${data[0].imageUrl}">`);
+        .insertAdjacentHTML(
+          'beforeEnd',
+          `<img src="${data[0].imageUrl}" style="max-width: 800px">`,
+        );
     });
 });
