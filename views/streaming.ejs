@@ -50,7 +50,7 @@
       data-site="YOUR_DOMAIN_HERE"
       src="https://api.nepcha.com/js/nepcha-analytics.js"
     ></script>
-    <script src="/js/streaming.js"></script>
+    <script defer src="/js/streaming.js"></script>
   </head>
 
   <body class="g-sidenav-show bg-gray-100">
@@ -279,22 +279,7 @@
         navbar-scroll="true"
       >
         <div class="container-fluid py-1 px-3">
-          <nav aria-label="breadcrumb">
-            <ol
-              class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5"
-            >
-              <li class="breadcrumb-item text-sm">
-                <a class="opacity-5 text-dark" href="javascript:;">Pages</a>
-              </li>
-              <li
-                class="breadcrumb-item text-sm text-dark active"
-                aria-current="page"
-              >
-                Dashboard
-              </li>
-            </ol>
-            <h6 class="font-weight-bolder mb-0">Dashboard</h6>
-          </nav>
+
           <div
             class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4"
             id="navbar"
@@ -314,7 +299,7 @@
             <ul class="navbar-nav justify-content-end">
               <li class="nav-item d-flex align-items-center">
                 <a
-                  href="javascript:;"
+                  href="/sign-in"
                   class="nav-link text-body font-weight-bold px-0"
                 >
                   <i class="fa fa-user me-sm-1"></i>
@@ -475,7 +460,8 @@
       </nav>
       <!-- End Navbar -->
       <div class="container-fluid">
-        <div class="card">
+        <div class="row">
+        <div class="card col-9">
           <img src="https://blog.kakaocdn.net/dn/cu6FRS/btrdswyTELB/zgpbDlAoEaTFcCXf2LI0Jk/img.png" class="card-img-top" alt="...">
           <div class="card card-body blur shadow-blur mx-4 overflow-hidden">
             <div class="row gx-4">
@@ -493,12 +479,23 @@
               <div
                 class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3"
               >
-                <div class="nav-wrapper position-relative end-0" style="display:flex; justify-content: flex-end;">
-                  <button type="button" class="btn btn-outline-primary">구독하기</button><button type="button" class="btn btn-outline-primary">후원하기</button>
+                <div id="channel-subscribe-btn" class="nav-wrapper position-relative end-0" style="display:flex; justify-content: flex-end;">
+                  <button type="button" class="btn btn-outline-primary" >구독하기</button><button type="button" class="btn btn-outline-primary">후원하기</button>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+        <div class="card col-3 chat-list" style="position: relative">
+          <div class>
+            <p style="margin:1px; padding:0px; font-size: 14px;">채팅채팅</p>
+            <p style="margin:1px; padding:0px; font-size: 14px;">채팅채팅</p>
+          </div>
+          <div class="input-group mb-3" style="position: absolute; bottom: 5px;">
+            <input type="text" style="height:40px" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <button class="btn btn-outline-secondary" style="height:40px" type="button" id="button-addon2">Button</button>
+          </div>
+        </div>
         </div>
       </div>
       <div class="container-fluid py-4">
@@ -510,7 +507,7 @@
                   <div class="col-md-8 d-flex align-items-center">
                     <div class="btn-group" role="group" aria-label="Basic example">
                       <!-- Todo: 채널상세페이지 공지사항 링크 -->
-                      <button type="button" class="btn btn-primary">공지사항</button>
+                      <button type="button" class="btn btn-primary notice-btn">공지사항</button>
                       <!-- Todo: 다시보기페이지 링크 -->
                       <button type="button" class="btn btn-primary">다시보기</button>
                       <!-- Todo: 채널정보? -->
