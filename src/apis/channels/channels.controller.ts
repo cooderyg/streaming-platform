@@ -72,15 +72,13 @@ export class ChannelsController {
 
   // 채널 매니저 추가
   @UseGuards(AccessAuthGuard)
-  @Put('/manager-addition/:channelId')
+  @Put('/manager-addition')
   async addManager(
-    @Param('channelId') channelId: string,
     @Body() updateChannelManagerDto: UpdateChannelManagerDto,
     @User() user: UserAfterAuth,
   ) {
     const result = await this.channelsService.addManager({
       userId: user.id,
-      channelId,
       updateChannelManagerDto,
     });
     return result;
@@ -88,15 +86,13 @@ export class ChannelsController {
 
   // 채널 매니저 삭제
   @UseGuards(AccessAuthGuard)
-  @Put('/manager-subtraction/:channelId')
+  @Put('/manager-subtraction')
   async subtractManager(
-    @Param('channelId') channelId: string,
     @Body() updateChannelManagerDto: UpdateChannelManagerDto,
     @User() user: UserAfterAuth,
   ) {
     const result = await this.channelsService.subtractManager({
       userId: user.id,
-      channelId,
       updateChannelManagerDto,
     });
     return result;
@@ -113,5 +109,7 @@ export class ChannelsController {
       userId: user.id,
       channelId,
     });
+
+    return result;
   }
 }
