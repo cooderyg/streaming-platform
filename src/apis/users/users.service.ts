@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import {
   IUsersServiceCreateUser,
@@ -51,6 +51,13 @@ export class UsersService {
     return await this.usersRepository.findOne({
       where: { id: userId },
       select: ['id', 'email', 'credit', 'nickname', 'createdAt', 'updatedAt'],
+    });
+  }
+
+  async findByIds({ userIds }) {
+    return await this.usersRepository.find({
+      where: { id: In(userIds) },
+      select: ['id', 'email', 'nickname', 'imageUrl'],
     });
   }
 
