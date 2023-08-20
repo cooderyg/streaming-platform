@@ -51,7 +51,9 @@
       src="https://api.nepcha.com/js/nepcha-analytics.js"
     ></script>
     <script src="https://kit.fontawesome.com/8691ffe7bb.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
     <script defer src="/js/streaming.js"></script>
+    <script defer src="/js/chat.js"></script>
   </head>
 
   <body class="g-sidenav-show bg-gray-100">
@@ -464,7 +466,7 @@
         <div class="row">
         <div class="card col-9">
           <img src="https://blog.kakaocdn.net/dn/cu6FRS/btrdswyTELB/zgpbDlAoEaTFcCXf2LI0Jk/img.png" class="card-img-top" alt="...">
-          <div class="card card-body blur shadow-blur mx-4 overflow-hidden">
+          <div class="card card-body blur shadow-blur overflow-hidden">
             <div class="row gx-4">
               <div class="col-auto">
                 <div class="avatar avatar-xl position-relative channel-img">
@@ -487,13 +489,13 @@
             </div>
           </div>
         </div>
-        <div class="card col-3 chat-list" style="display: flex; flex-direction: column; justify-content: space-between;">
-          <div class>
+        <div class="card col-3 chat-list" style="display: flex; flex-direction: column; justify-content: space-between; height:var(--bs-card-height); ">
+          <div id="chat-container" class="flex-fill" style="height: 500px; overflow-y:scroll;">
             <p style="margin:1px; padding:0px; font-size: 14px;">채팅채팅</p>
-            <p style="margin:1px; padding:0px; font-size: 14px;">채팅채팅</p>
+            
           </div>
           <div class="input-group mb-3">
-            <input type="text" style="height:40px" class="form-control" placeholder="채팅을 입력하세요" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <input type="text" id="chat-input" style="height:40px" class="form-control" placeholder="채팅을 입력하세요" aria-label="Recipient's username" aria-describedby="button-addon2">
             <button class="btn btn-outline-secondary" style="height:40px" type="button" id="button-addon2">전송</button>
           </div>
         </div>
