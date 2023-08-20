@@ -155,12 +155,13 @@ export class ChannelsService {
     return result;
   }
 
-  async subtractManager({ userId, updateChannelManagerDto }) {
-    const { email } = updateChannelManagerDto;
+  async subtractManager({ userId, deleteChannelManagerDto }) {
+    const { managerId } = deleteChannelManagerDto;
 
     const channel = await this.findByUserId({ userId });
 
-    const manager = await this.usersService.findByEmail({ email });
+    const manager = await this.usersService.findById({ userId: managerId });
+    if (!manager) throw new NotFoundException();
 
     if (!channel) throw new NotFoundException('존재하지 않는 채널입니다.');
 

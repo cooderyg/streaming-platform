@@ -57,7 +57,7 @@ export class UsersService {
   async findByIds({ userIds }) {
     return await this.usersRepository.find({
       where: { id: In(userIds) },
-      select: ['id', 'email', 'nickname', 'imageUrl'],
+      select: ['id', 'email', 'nickname', 'imageUrl', 'createdAt'],
     });
   }
 
