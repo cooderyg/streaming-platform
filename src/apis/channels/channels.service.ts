@@ -23,8 +23,29 @@ export class ChannelsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async getChannel({ userId }): Promise<Channel> {
+  async getMyChannel({ userId }): Promise<Channel> {
     const channel = await this.findByUserId({ userId });
+    if (!channel) throw new NotFoundException();
+
+    return channel;
+  }
+
+  async getChannel({ channelId }) {
+    const channel = await this.channelsRepository
+      .createQueryBuilder('channel')
+      .select([
+        'channel.id',
+        'channel.name',
+        'channel.role',
+        'channel.imageUrl',
+        'channel.createdAt',
+        'subscribes.id',
+        'user.email',
+      ])
+      .leftJoin('channel.subscribes', 'subscribes')
+      .leftJoin('channel.user', 'user')
+      .where('channel.id = :id', { id: channelId })
+      .getOne();
     if (!channel) throw new NotFoundException();
 
     return channel;

@@ -20,6 +20,7 @@ import {
   UpdateChannelManagerDto,
 } from './dto/update-channel-manager.dto';
 import { Channel } from './entities/channel.entity';
+import { access } from 'fs';
 
 @Controller('/api/channels')
 export class ChannelsController {
@@ -27,12 +28,24 @@ export class ChannelsController {
     private readonly channelsService: ChannelsService, //
   ) {}
 
+  // 나의 채널 조회
   @UseGuards(AccessAuthGuard)
   @Get()
-  async getChannel(
+  async getMyChannel(
     @User() user: UserAfterAuth, //
   ): Promise<Channel> {
-    const channel = await this.channelsService.getChannel({ userId: user.id });
+    const channel = await this.channelsService.getMyChannel({
+      userId: user.id,
+    });
+    return channel;
+  }
+
+  // 채널 조회
+  @Get('/:channelId')
+  async getChannel(@Param('channelId') channelId: string) {
+    const channel = await this.channelsService.getChannel({
+      channelId,
+    });
     return channel;
   }
 
