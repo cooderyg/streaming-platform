@@ -12,5 +12,6 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
+  @MaxLength(15)
   nickname: string;
 }

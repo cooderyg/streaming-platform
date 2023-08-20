@@ -24,8 +24,20 @@ chatBtn.addEventListener('click', () => {
 socket.on('chat', (data) => {
   console.log(data);
   const chat = data.chat;
+  const nickname = data.user.nickname;
+  const img = data.user.imageUrl;
+  console.log(data.user.nickname);
   const temp = `
-  <p style="margin:1px; padding:0px; font-size: 14px;">${chat}</p>
+  <div class="d-flex justify-content-start mb-1">
+  <div class="img_cont_msg">
+    <img src="${img}" class="rounded-circle user_img_msg">
+  </div>
+  <span class="user_nick">${nickname}</span>
+  <div class="msg_container">
+  <span class="user_nick">${nickname}</span>
+  <span class="user_chat">${chat}</span></div>
+</div>
+
   `;
   chatContainerEl.insertAdjacentHTML('beforeend', temp);
   chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
