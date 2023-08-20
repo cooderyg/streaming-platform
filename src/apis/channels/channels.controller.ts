@@ -20,7 +20,6 @@ import {
   UpdateChannelManagerDto,
 } from './dto/update-channel-manager.dto';
 import { Channel } from './entities/channel.entity';
-import { access } from 'fs';
 
 @Controller('/api/channels')
 export class ChannelsController {
@@ -57,8 +56,9 @@ export class ChannelsController {
   }
 
   @UseGuards(AccessAuthGuard)
-  @Get('managers')
+  @Get('admin/managers')
   async getManagers(@User() user: UserAfterAuth) {
+    console.log(user);
     const managers = await this.channelsService.getManagers({
       userId: user.id,
     });
@@ -117,7 +117,7 @@ export class ChannelsController {
     @Body() deleteChannelManagerDto: DeleteChannelManagerDto,
     @User() user: UserAfterAuth,
   ) {
-    const result = await this.channelsService.subtractManager({
+    await this.channelsService.subtractManager({
       userId: user.id,
       deleteChannelManagerDto,
     });
