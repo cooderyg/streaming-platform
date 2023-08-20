@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         });
         // Todo: 스트리머 사진, 방송 썸네일 추가 필요
         // 스트리머 사진 -> 스트리머 페이지 / 썸네일 -> 라이브 화면  링크걸기
-        let temp_html = `<div class="col-sm-12 col-md-6 col-lg-4">
+        let temp_html = `<div class="col-sm-12 col-md-4 col-lg-3" style="display:flex;">
                            <div class="card">
                              <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
                               <a href="javascript:;" class="d-block">
