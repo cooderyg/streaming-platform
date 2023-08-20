@@ -1,7 +1,7 @@
 const managersEl = document.querySelector('#managers');
 
 const getData = async () => {
-  const response = await fetch('/api/channels/managers');
+  const response = await fetch('/api/channels/admin/managers');
   const data = await response.json();
 
   console.log(data);
