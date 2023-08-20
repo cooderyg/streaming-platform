@@ -50,7 +50,15 @@ export class UsersService {
   async findById({ userId }: IUsersServiceFindById): Promise<User> {
     return await this.usersRepository.findOne({
       where: { id: userId },
-      select: ['id', 'email', 'credit', 'nickname', 'createdAt', 'updatedAt'],
+      select: [
+        'id',
+        'email',
+        'credit',
+        'nickname',
+        'createdAt',
+        'updatedAt',
+        'imageUrl',
+      ],
     });
   }
 

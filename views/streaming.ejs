@@ -14,7 +14,7 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+  <>
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -43,6 +43,7 @@
       href="../css/soft-ui-dashboard.css?v=1.0.7"
       rel="stylesheet"
     />
+    <link href="/css/streaming.css" rel="stylesheet" />
     <!-- Nepcha Analytics (nepcha.com) -->
     <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
     <script
@@ -492,7 +493,15 @@
         <div class="card col-3 chat-list" style="display: flex; flex-direction: column; justify-content: space-between; height:var(--bs-card-height); ">
           <div id="chat-container" class="flex-fill" style="height: 500px; overflow-y:scroll;">
             <p style="margin:1px; padding:0px; font-size: 14px;">채팅채팅</p>
-            
+            <div class="d-flex justify-content-start mb-4">
+              <div class="img_cont_msg">
+                <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg">
+              </div>
+              <div class="msg_container">
+                안녕하세용 채팅채팅
+                <!-- <span class="msg_time">8:40 AM, Today</span> -->
+              </div>
+            </div>
           </div>
           <div class="input-group mb-3">
             <input type="text" id="chat-input" style="height:40px" class="form-control" placeholder="채팅을 입력하세요" aria-label="Recipient's username" aria-describedby="button-addon2">
