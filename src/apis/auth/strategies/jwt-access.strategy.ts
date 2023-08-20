@@ -1,15 +1,18 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Strategy } from 'passport-jwt';
 
 export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
   constructor() {
     super({
-      //   jwtFromRequest: (req) => {
-      //     const temp = req.headers.Authorization; //Bearer dfpskjmflsvgcklvx
-      //     const accessToken = temp.toLowercase().replace('bearer ', '');
-      //     return accessToken;
-      //   },
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: (req) => {
+        if (!req.cookies.accessToken) throw new UnauthorizedException();
+        const cookie = req.cookies.accessToken; //accessToken=pvgkmjsklfmsk
+        const accessToken = cookie.replace('accessToken=', '');
+        console.log(accessToken);
+        return accessToken;
+      },
+      // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: process.env.ACCESS_SECRET_KEY,
     });
   }

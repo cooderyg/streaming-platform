@@ -19,10 +19,10 @@ export class AuthController {
       loginDto,
     });
     res.cookie('refreshToken', refreshToken);
-    res.cookie('aaa', 'aaa');
+    res.cookie('accessToken', accessToken);
     // , { httpOnly: true, secure: true }
     console.log(accessToken);
-    res.setHeader('Authorization', `Bearer ${accessToken}`);
+    // res.setHeader('Authorization', `Bearer ${accessToken}`);
 
     return { message: '로그인을 성공적으로 완료하였습니다.' };
   }
