@@ -25,7 +25,7 @@ socket.on('chat', (data) => {
   console.log(data);
   const chat = data.chat;
   const nickname = data.user.nickname;
-  const img = data.user.imageUrl;
+  const img = data.user.imageUrl ? data.user.imageUrl : '/img/profile.jpg';
   console.log(data.user.nickname);
   const temp = `
   <div class="d-flex justify-content-start mb-1">
