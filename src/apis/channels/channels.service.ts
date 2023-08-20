@@ -51,6 +51,18 @@ export class ChannelsService {
     return results;
   }
 
+  async getManagers({ userId }) {
+    const channel = await this.findByUserId({ userId });
+
+    if (!channel) throw new NotFoundException();
+
+    const userIds = channel.role.manager;
+
+    const managers = await this.usersService.findByIds({ userIds });
+
+    return managers;
+  }
+
   async createChannel({
     createChannelDto,
     userId,
@@ -71,9 +83,23 @@ export class ChannelsService {
   }
 
   async findByUserId({ userId }: IChannelsServiceFindByUserId) {
-    const channel = await this.channelsRepository.findOne({
-      where: { user: { id: userId } },
-    });
+    const channel = await this.channelsRepository
+      .createQueryBuilder('channel')
+      .select([
+        'channel.id',
+        'channel.name',
+        'channel.role',
+        'channel.income',
+        'channel.imageUrl',
+        'channel.createdAt',
+        'channel.updatedAt',
+        'user.id',
+        'user.email',
+      ])
+      .leftJoin('channel.user', 'user')
+      .where('user.id = :userId', { userId })
+      .getOne();
+
     return channel;
   }
 
@@ -106,10 +132,7 @@ export class ChannelsService {
     updateChannelManagerDto,
   }: IChannelServiceUpdateChannelManager) {
     const { email } = updateChannelManagerDto;
-    const channel = await this.channelsRepository.findOne({
-      where: { user: { id: userId } },
-      relations: ['user'],
-    });
+    const channel = await this.findByUserId({ userId });
 
     if (!channel) throw new NotFoundException('존재하지 않는 채널입니다.');
 
@@ -135,12 +158,9 @@ export class ChannelsService {
   async subtractManager({ userId, updateChannelManagerDto }) {
     const { email } = updateChannelManagerDto;
 
-    const manager = await this.usersService.findByEmail({ email });
+    const channel = await this.findByUserId({ userId });
 
-    const channel = await this.channelsRepository.findOne({
-      where: { user: { id: userId } },
-      relations: ['user'],
-    });
+    const manager = await this.usersService.findByEmail({ email });
 
     if (!channel) throw new NotFoundException('존재하지 않는 채널입니다.');
 

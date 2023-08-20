@@ -40,6 +40,16 @@ export class ChannelsController {
     return results;
   }
 
+  @UseGuards(AccessAuthGuard)
+  @Get('managers')
+  async getManagers(@User() user: UserAfterAuth) {
+    const managers = await this.channelsService.getManagers({
+      userId: user.id,
+    });
+
+    return managers;
+  }
+
   // 채널 생성
   @UseGuards(AccessAuthGuard)
   @Post()
