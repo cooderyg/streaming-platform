@@ -47,6 +47,12 @@ export class AppController {
     return { title: 'Title' };
   }
 
+  @Get('channel/:channelId')
+  @Render('channel')
+  getChannel() {
+    return { title: 'Title' };
+  }
+
   @Get('streaming/:liveId')
   @Render('streaming')
   getStreaming() {
