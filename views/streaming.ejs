@@ -50,6 +50,7 @@
       data-site="YOUR_DOMAIN_HERE"
       src="https://api.nepcha.com/js/nepcha-analytics.js"
     ></script>
+    <script src="https://kit.fontawesome.com/8691ffe7bb.js" crossorigin="anonymous"></script>
     <script defer src="/js/streaming.js"></script>
   </head>
 
@@ -486,14 +487,14 @@
             </div>
           </div>
         </div>
-        <div class="card col-3 chat-list" style="position: relative">
+        <div class="card col-3 chat-list" style="display: flex; flex-direction: column; justify-content: space-between;">
           <div class>
             <p style="margin:1px; padding:0px; font-size: 14px;">채팅채팅</p>
             <p style="margin:1px; padding:0px; font-size: 14px;">채팅채팅</p>
           </div>
-          <div class="input-group mb-3" style="position: absolute; bottom: 5px;">
-            <input type="text" style="height:40px" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
-            <button class="btn btn-outline-secondary" style="height:40px" type="button" id="button-addon2">Button</button>
+          <div class="input-group mb-3">
+            <input type="text" style="height:40px" class="form-control" placeholder="채팅을 입력하세요" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <button class="btn btn-outline-secondary" style="height:40px" type="button" id="button-addon2">전송</button>
           </div>
         </div>
         </div>
@@ -505,7 +506,7 @@
               <div class="card-header pb-0 p-3">
                 <div class="row">
                   <div class="col-md-8 d-flex align-items-center">
-                    <div class="btn-group" role="group" aria-label="Basic example">
+                    <div class="btn-group pt-4 ps-6" role="group" aria-label="Basic example">
                       <!-- Todo: 채널상세페이지 공지사항 링크 -->
                       <button type="button" class="btn btn-primary notice-btn">공지사항</button>
                       <!-- Todo: 다시보기페이지 링크 -->
@@ -526,8 +527,9 @@
                   </div>
                 </div>
               </div>
-              <div class="card-body p-3">
-                <p class="text-sm channel-notice">
+              <div class="row">
+              <div class="card-body ps-6 col-xl-6 col-me-12">
+                  <p class="text-sm channel-notice">
                   <!-- 공지 내용 -->
                 </p>
                 <div class="card channel-notice-img">
@@ -535,6 +537,16 @@
                 </div>
                 <hr class="horizontal gray-light my-4" />
               </div>
+              <div class="card-body col-xl-6 col-md-12" style=" display: flex; flex-direction: column; justify-content: space-between;">
+                <div class="p-6 notice-comments">
+                  <!-- 공지댓글자리 -->
+                </div>
+                <div class="input-group mb-3 p-3">
+                  <input type="text" style="height:40px" class="form-control comment-input" placeholder="댓글을 입력하세요" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary comment-input-btn" style="height:40px" type="button" id="button-addon2">작성</button>
+                </div>
+              </div>
+             </div>
             </div>
           </div>
           <div class="col-12 mt-4">

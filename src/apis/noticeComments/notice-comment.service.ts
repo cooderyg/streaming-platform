@@ -35,8 +35,11 @@ export class NoticeCommentsService {
         'noticeComment.content',
         'noticeComment.createdAt',
         'noticeComment.updatedAt',
+        'user.id',
+        'user.nickname',
       ])
       .leftJoin('noticeComment.notice', 'notice')
+      .leftJoin('noticeComment.user', 'user')
       .where('notice.id = :noticeId', { noticeId })
       .orderBy({ 'noticeComment.createdAt': 'DESC' })
       .take(size)

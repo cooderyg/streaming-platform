@@ -19,7 +19,7 @@ import { NoticeComment } from './entities/notice-comment.entity';
 import { UserAfterAuth, User } from 'src/commons/decorators/user.decorator';
 import { PageReqDto } from 'src/commons/dto/page-req.dto';
 
-@Controller('api/:noticeId/noticeComments')
+@Controller('api/:noticeId/notice-comments')
 export class NoticeCommentsController {
   constructor(private readonly noticeCommentsService: NoticeCommentsService) {}
 
@@ -34,6 +34,7 @@ export class NoticeCommentsController {
       size,
       noticeId,
     });
+    console.log('공지댓글', noticeComment);
     return noticeComment;
   }
 
