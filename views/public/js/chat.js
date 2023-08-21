@@ -13,6 +13,7 @@ chatInput.addEventListener('keydown', (e) => {
   if (e.keyCode === 13) chatBtn.click();
 });
 
+// 채팅보내기
 chatBtn.addEventListener('click', () => {
   if (chatInput.value === '') return alert('채팅을 입력해주세요.');
   socket.emit('chat', {
@@ -21,8 +22,8 @@ chatBtn.addEventListener('click', () => {
   chatInput.value = '';
 });
 
+// 채팅받기
 socket.on('chat', (data) => {
-  console.log(data);
   const chat = data.chat;
   const nickname = data.user.nickname;
   const img = data.user.imageUrl ? data.user.imageUrl : '/img/profile.jpg';
@@ -41,11 +42,74 @@ socket.on('chat', (data) => {
   chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
 });
 
+// 시청자수 받기
 const userConutEl = document.querySelector('#user-count');
-console.log(userConutEl);
 socket.on('userCount', (data) => {
-  console.log(data);
   const { userCount } = data;
-  console.log(userCount);
   userConutEl.innerText = `시청자 ${userCount}` || `시청자 0`;
+});
+
+// 후원하기
+const donationModalBtn = document.querySelector('#donation-modal-btn');
+const donationBtn = document.querySelector('#donation-btn');
+const closeBtn = document.querySelector('#close-btn');
+const creditAmountEl = document.querySelector('#credit-amount');
+
+let creditAmount;
+
+// 후원하기 모달
+donationModalBtn.addEventListener('click', async () => {
+  const response = await fetch('/api/users');
+  const data = await response.json();
+  if (!response.ok) {
+    if (confirm('로그인 후 이용가능한 기능입니다. 로그인 하시겠습니까?')) {
+      window.location.href = '/sign-in';
+    } else {
+      closeBtn.click();
+      return;
+    }
+  }
+  creditAmount = data.credit;
+  creditAmountEl.innerText = `${creditAmount} 원`;
+});
+
+const donationAmountInputEl = document.querySelector('#donation-amount');
+
+// 후원하기 버튼
+donationBtn.addEventListener('click', async () => {
+  const donaitonAmount = Number(donationAmountInputEl.value);
+  if (!donaitonAmount) return alert('금액을 입력해주세요!');
+  if (donaitonAmount > creditAmount)
+    return alert('보유하신 포인트보다 후원금액이 많습니다.');
+  //TODO 프론트 결제기능 만들면 충전하러 갈지 바꾸기
+  const form = JSON.stringify({
+    amount: donaitonAmount,
+    liveId: roomId,
+  });
+  const response = await fetch('/api/credit-histories', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: form,
+  });
+  if (!response.ok) return alert('후원에 실패했습니다 다시 시도해주세요.');
+  const data = await response.json();
+  const amount = data.amount;
+  socket.emit('donation', { roomId, amount });
+  closeBtn.click();
+  donationAmountInputEl.value = '';
+});
+
+socket.on('donation', (data) => {
+  const { amount, nickname } = data;
+
+  const temp = `
+  <div class="d-flex justify-content-center my-4">
+    <div class="d-flex justify-content-center flex-column">
+      <img src="/img/star-img.png" class="mb-1 donation-img" />
+      <div class="user_chat donaiton-msg">${nickname} 님이 <br /> ${amount}원 후원하셨습니다.</div>
+    </div>
+  </div>
+  `;
+  chatContainerEl.insertAdjacentHTML('beforeend', temp);
+  chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
 });
