@@ -75,8 +75,13 @@ donationModalBtn.addEventListener('click', async () => {
 
 const donationAmountInputEl = document.querySelector('#donation-amount');
 
+donationAmountInputEl.addEventListener('keydown', (e) => {
+  if (e.keyCode === 13) e.preventDefault();
+});
+
 // 후원하기 버튼
-donationBtn.addEventListener('click', async () => {
+donationBtn.addEventListener('click', async (e) => {
+  e.preventDefault();
   const donaitonAmount = Number(donationAmountInputEl.value);
   if (!donaitonAmount) return alert('금액을 입력해주세요!');
   if (donaitonAmount > creditAmount)
@@ -110,6 +115,7 @@ socket.on('donation', (data) => {
     </div>
   </div>
   `;
+
   chatContainerEl.insertAdjacentHTML('beforeend', temp);
   chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
 });
