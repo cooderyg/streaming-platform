@@ -60,7 +60,8 @@ export class LivesService {
         'tag.name',
         'channel.id',
         'channel.name',
-        'channel.imageUrl',
+        'channel.profileImgUrl',
+        'channel.bannerImgUrl',
       ])
       .leftJoin('live.tags', 'tag')
       .leftJoin('live.channel', 'channel')
