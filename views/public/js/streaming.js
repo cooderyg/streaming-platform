@@ -1,4 +1,4 @@
-// Todo: 채팅, 다시보기, 채널정보, 후원하기 페이지, 알림 연결
+//\ 다시보기 후원하기 페이지, 알림 연결
 const params = window.location.pathname;
 const splits = params.split('/');
 const liveId = splits[2];
@@ -70,7 +70,7 @@ const getData = async () => {
   const commentList = document.querySelector('.notice-comments');
   commentList.insertAdjacentHTML(
     'beforeEnd',
-    `<p> 댓글(${dataNotice.length})</p>`,
+    `<p> 댓글(${dataComment.length})</p>`,
   );
   dataComment.forEach((comment) => {
     commentList.insertAdjacentHTML(
