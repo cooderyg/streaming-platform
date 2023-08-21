@@ -1,4 +1,3 @@
-import { S3 } from '@aws-sdk/client-s3';
 import {
   Controller,
   Post,
@@ -40,6 +39,12 @@ export class UploadsController {
   @Post('stream-video')
   @UseInterceptors(FileInterceptor('file'))
   uploadStreamVideo(@UploadedFile() file: Express.MulterS3.File) {
+    return this.uploadsService.uploadFile(file);
+  }
+
+  @Post('channel-notice-image')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadChannelNotice(@UploadedFile() file: Express.MulterS3.File) {
     return this.uploadsService.uploadFile(file);
   }
 }

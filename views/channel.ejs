@@ -500,7 +500,13 @@
         <div class="row">
           <div class="col-12 col-xl-4">
             <div class="card h-100">
-              <h3 class="ms-3 mt-3">Channel Notices</h3>
+              <h3 class="ms-3 mt-3">Channel Notices&nbsp;
+                <i class="fa-regular fa-pen-to-square fa-sm" 
+                type="button"
+                class="btn btn-primary"
+                id="notice-write-icon"
+                data-bs-toggle="modal"
+                data-bs-target="#writeNoticeModal"></i></h3>
               <div class="ms-3 mt-3 mb-3" id="channel-notices">
 
               </div>
@@ -576,6 +582,68 @@
               </div>
             </div>
           </div>
+
+          <!-- 공지작성 모달 -->
+          <div
+          class="modal fade"
+          id="writeNoticeModal"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                   공지 작성
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <label>본문</label>
+                <textarea
+                  class="form-control form-control-sm"
+                  id="notice-content-input"
+                  placeholder="내용을 입력해주세요."
+                  aria-label=".form-control-sm example"
+                ></textarea>
+                <label>사진 첨부</label>
+                  <input
+                    class="form-control form-control-sm col-10"
+                    id="notice-img-input"
+                    type="file"
+                    placeholder="사진을 첨부해주세요."
+                    aria-label=".form-control-sm example"
+                  />
+                  <button type="button" class="btn btn-primary" id="notice-image-upload-btn">사진 업로드</button>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  닫기
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="notice-write-btn"
+                  data-bs-dismiss="modal"
+                >
+                  공지 작성
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+          <!-- 공지작성 모달 끝 -->
+
           <div class="col-12 mt-4">
             <div class="card mb-4">
               <div class="card-header pb-0 p-3">
