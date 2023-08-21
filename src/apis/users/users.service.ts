@@ -1,7 +1,10 @@
+import { ChannelsService } from 'src/apis/channels/channels.service';
 import {
   ConflictException,
   Injectable,
   NotFoundException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -20,6 +23,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @Inject(forwardRef(() => ChannelsService))
+    private readonly channelsService: ChannelsService,
   ) {}
 
   async findUser({ userId }): Promise<User> {
@@ -36,10 +41,16 @@ export class UsersService {
     if (user) throw new ConflictException('이미 등록된 이메일입니다.');
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await this.usersRepository.save({
+    const result = await this.usersRepository.save({
       email,
       nickname,
       password: hashedPassword,
+    });
+
+    const createChannelDto = { name: result.nickname, categoryIds: [] };
+    await this.channelsService.createChannel({
+      createChannelDto,
+      userId: result.id,
     });
   }
 
