@@ -57,10 +57,26 @@ export class CreditHistoriesService {
     }
   }
 
-  async findCreditHistoryList({ userId }) {
-    const creditHistoryList = await this.creditHistoriesRepository.find({
-      where: { user: { id: userId } },
-    });
+  async findCreditHistoryList({ userId, page, size }) {
+    const creditHistoryList = await this.creditHistoriesRepository
+      .createQueryBuilder('creditHistory')
+      .select([
+        'creditHistory.id',
+        'creditHistory.amount',
+        'creditHistory.createdAt',
+        'live.id',
+        'channel.id',
+        'channel.name',
+        'channel.profileImgUrl',
+      ])
+      .leftJoin('creditHistory.live', 'live')
+      .leftJoin('creditHistory.user', 'user')
+      .leftJoin('live.channel', 'channel')
+      .where('user.id = :userId', { userId })
+      .orderBy('creditHistory.createdAt', 'DESC')
+      .take(size)
+      .skip((page - 1) * size)
+      .getMany();
     return creditHistoryList;
   }
 

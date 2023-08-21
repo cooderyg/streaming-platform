@@ -3,16 +3,16 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { CreditHistoriesService } from './credit-histories.service';
 import { CreateCreditHistoryDto } from './dto/create-credit-history.dto';
 import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
 import { AccessAuthGuard } from '../auth/guard/auth.guard';
 import { CreditHistory } from './entities/credit-history.entity';
+import { PageReqDto } from 'src/commons/dto/page-req.dto';
 
 @Controller('/api/credit-histories')
 export class CreditHistoriesController {
@@ -36,10 +36,13 @@ export class CreditHistoriesController {
   @UseGuards(AccessAuthGuard)
   @Get()
   async findCreditHistoryList(
+    @Query() { page, size }: PageReqDto,
     @User() user: UserAfterAuth,
   ): Promise<CreditHistory[]> {
     const creditHistoryList =
       await this.creditHistoriesService.findCreditHistoryList({
+        page,
+        size,
         userId: user.id,
       });
     return creditHistoryList;
