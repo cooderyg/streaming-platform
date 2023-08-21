@@ -13,6 +13,7 @@ import { UpdateLiveDto } from './dto/update-live.dto';
 import { CreditHistoriesService } from '../creditHistories/credit-histories.service';
 import { Channel } from '../channels/entities/channel.entity';
 import { PageReqDto } from 'src/commons/dto/page-req.dto';
+import { DateReqDto } from 'src/commons/dto/date-req.dto';
 
 @Injectable()
 export class LivesService {
@@ -47,7 +48,6 @@ export class LivesService {
       .take(size)
       .skip((page - 1) * size)
       .getMany();
-    console.log(lives);
     return lives;
   }
   async getLiveById(liveId: string) {
@@ -85,6 +85,21 @@ export class LivesService {
       .skip((page - 1) * size)
       .getMany();
     return lives;
+  }
+
+  async getLiveIncome({
+    userId,
+    dateReqDto,
+  }: ILivesServiceGetLiveIncome): Promise<{ income: number }> {
+    const channel = await this.channelsService.findByUserId({ userId });
+    const { year, month } = dateReqDto;
+    const result = await this.livesRepository
+      .createQueryBuilder('live')
+      .select('SUM(live.income)', 'income')
+      .leftJoin('live.channel', 'channel')
+      .where(`channel.id = :channelId`, { channelId: channel.id, year, month })
+      .getRawOne();
+    return result;
   }
 
   async createLive({ userId, createLiveDto }: ILivesServiceCreateLive) {
@@ -192,4 +207,9 @@ interface ILivesServiceUpdateLive {
 interface ILivesServiceTurnOff {
   userId: string;
   liveId: string;
+}
+
+interface ILivesServiceGetLiveIncome {
+  userId: string;
+  dateReqDto: DateReqDto;
 }

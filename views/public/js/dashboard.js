@@ -65,3 +65,15 @@ const getLiveData = async () => {
 };
 
 getLiveData();
+
+// 한달 간 수익 데이터 가져오기
+const getMonthlyIncome = async () => {
+  const monthlyIncome = document.getElementById('monthly-income');
+  const response = await fetch('/api/lives/income/monthly-income');
+  const data = await response.json();
+  monthlyIncome.textContent = `￦ ${data.income
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+};
+
+getMonthlyIncome();
