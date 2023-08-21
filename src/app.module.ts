@@ -19,6 +19,7 @@ import { InterestsModule } from './apis/interests/interests.module';
 import { NoticesModule } from './apis/notices/notices.module';
 import { NoticeCommentsModule } from './apis/noticeComments/notice-comment.module';
 import { EventsModule } from './apis/events/events.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { EventsModule } from './apis/events/events.module';
     NoticeCommentsModule,
     TagsModule,
     PaymentsModule,
+    UploadsModule,
     UsersModule,
     ViewHistoriesModule,
     SubscribesModule,
