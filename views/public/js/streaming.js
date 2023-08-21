@@ -13,17 +13,19 @@ const getData = async () => {
 
   const resLive = await fetch(`/api/lives/${liveId}`);
   const dataLive = await resLive.json();
+  console.log(dataLive);
   const liveTitle = document.querySelector('.live-title');
   const channelName = document.querySelector('.channel-name');
   const channelImg = document.querySelector('.channel-img');
   liveTitle.innerText = dataLive.title;
   channelId = dataLive.channel.id;
+  console.log('채널아이디', channelId);
   channelName.innerText = dataLive.channel.name;
-  const imageUrl = dataLive.channel.imageUrl || '/img/profile.jpg';
+  const profileImgUrl = dataLive.channel.profileImgUrl || '/img/profile.jpg';
   channelImg.insertAdjacentHTML(
     'beforeend',
     `<img
-            src="${imageUrl}"
+            src="${profileImgUrl}"
             alt="profile_image"
             class="w-100 border-radius-lg shadow-sm"
           />`,
