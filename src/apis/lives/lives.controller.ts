@@ -14,6 +14,7 @@ import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
 import { CreateLiveDto } from './dto/create-live.dto';
 import { UpdateLiveDto } from './dto/update-live.dto';
 import { PageReqDto } from 'src/commons/dto/page-req.dto';
+import { DateReqDto } from 'src/commons/dto/date-req.dto';
 import { Live } from './entities/live.entity';
 
 @Controller('api/lives')
@@ -54,6 +55,19 @@ export class LivesController {
   }
 
   @UseGuards(AccessAuthGuard)
+  @Get('income/monthly-income')
+  async getLiveIncome(
+    @User() user: UserAfterAuth,
+    @Query() dateReqDto: DateReqDto,
+  ) {
+    const income = await this.livesService.getLiveIncome({
+      userId: user.id,
+      dateReqDto,
+    });
+    return income;
+  }
+
+  @UseGuards(AccessAuthGuard)
   @Post()
   async createLive(
     @Body() createLiveDto: CreateLiveDto,
@@ -76,7 +90,6 @@ export class LivesController {
     @Body() updateLiveDto: UpdateLiveDto,
     @User() user: UserAfterAuth,
   ) {
-    console.log('들어오니?');
     const live = await this.livesService.updateLiveInfo({
       userId: user.id,
       liveId: params.liveId,
