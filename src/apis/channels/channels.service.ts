@@ -5,6 +5,8 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Channel } from './entities/channel.entity';
@@ -20,6 +22,7 @@ export class ChannelsService {
     @InjectRepository(Channel)
     private readonly channelsRepository: Repository<Channel>, //
     private readonly categoriesService: CategoriesService,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
   ) {}
 

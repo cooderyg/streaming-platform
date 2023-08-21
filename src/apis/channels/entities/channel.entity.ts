@@ -36,7 +36,13 @@ export class Channel {
   income: number;
 
   @Column({ nullable: true })
-  imageUrl: string;
+  profileImgUrl: string;
+
+  @Column({ nullable: true })
+  bannerImgUrl: string;
+
+  @Column({ nullable: true })
+  introduction: string;
 
   @CreateDateColumn()
   createdAt: Date;
