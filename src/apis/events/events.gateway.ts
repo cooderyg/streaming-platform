@@ -92,6 +92,16 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
+  @SubscribeMessage('donation')
+  handleDonation(@ConnectedSocket() socket: Socket, @MessageBody() data): void {
+    const user = socket.data.user;
+    const { roomId, amount } = data;
+    this.server.of('/').to(roomId).emit('donation', {
+      nickname: user.nickname,
+      amount,
+    });
+  }
+
   @SubscribeMessage('broadcastStream')
   handleBroadcastStream(client: Socket, data: any) {
     const room = data.room;
