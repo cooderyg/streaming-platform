@@ -76,6 +76,7 @@ export class LivesController {
     @Body() updateLiveDto: UpdateLiveDto,
     @User() user: UserAfterAuth,
   ) {
+    console.log('들어오니?');
     const live = await this.livesService.updateLiveInfo({
       userId: user.id,
       liveId: params.liveId,

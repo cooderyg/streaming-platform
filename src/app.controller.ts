@@ -58,4 +58,10 @@ export class AppController {
   getStreaming() {
     return { title: 'Title' };
   }
+
+  @Get('streaming-control/')
+  @Render('streaming-control')
+  getStreamingControl() {
+    return { title: 'Title' };
+  }
 }

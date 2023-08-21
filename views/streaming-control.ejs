@@ -56,8 +56,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
-    <script defer src="/js/streaming.js"></script>
-    <script defer src="/js/chat.js"></script>
+    <script defer src="/js/streaming-control.js"></script>
   </head>
 
   <body class="g-sidenav-show bg-gray-100">
@@ -486,24 +485,180 @@
                     <p class="mb-0 font-weight-bold text-sm channel-name"></p>
                   </div>
                 </div>
-              </div>
-              <div
-                class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3"
-              >
-                <div  class="nav-wrapper position-relative end-0" style="display:flex; justify-content: flex-end;">
-                  <div id="user-count" class="mx-2">0</div>
-                  <button id="channel-subscribe-btn" type="button" class="btn btn-outline-primary" ></button>
-                  <button 
-                  id="donation-modal-btn"
-                  type="button"
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal" 
-                  class="btn btn-outline-primary"
-                  >후원하기</button>
+                <div
+                  class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3"
+                >
+                  <div
+                    class="nav-wrapper position-relative end-0"
+                    style="display: flex; justify-content: flex-end"
+                  >
+                    <div id="user-count" class="mx-2"></div>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic outlined example"
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="live-modal-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#liveStartModal"
+                      >
+                        방송 시작
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="live-off-btn"
+                        style="display: none"
+                      >
+                        방송 종료
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="'live-modal-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#liveUpdateModal"
+                      >
+                        정보 변경
+                      </button>
+                      <input
+                        type="checkbox"
+                        class="btn-check"
+                        id="btncheck3"
+                        autocomplete="off"
+                      />
+                      <label class="btn btn-outline-primary" for="btncheck3"
+                        >녹화</label
+                      >
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <!-- 방송시작 모달 -->
+          <div
+            class="modal fade"
+            id="liveStartModal"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    라이브 시작하기
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <label>라이브 제목</label>
+                  <input
+                    class="form-control form-control-sm"
+                    id="live-title-input"
+                    type="text"
+                    placeholder="변경할 제목을 입력해주세요."
+                    aria-label=".form-control-sm example"
+                  />
+                  <label>태그 입력 ( 쉼표(,)로 구분해주세요 )</label>
+                  <input
+                    class="form-control form-control-sm"
+                    id="live-tag-input"
+                    type="text"
+                    placeholder="태그를 입력해주세요."
+                    aria-label=".form-control-sm example"
+                  />
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    닫기
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="live-start-btn"
+                    data-bs-dismiss="modal"
+                  >
+                    방송 시작
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 방송시작 모달 끝 -->
+          <!-- 방송정보 변경 모달 -->
+          <div
+            class="modal fade"
+            id="liveUpdateModal"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    라이브 정보 변경
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <label>라이브 제목</label>
+                  <input
+                    class="form-control form-control-sm"
+                    id="update-title-input"
+                    type="text"
+                    placeholder="변경할 제목을 입력해주세요."
+                    aria-label=".form-control-sm example"
+                  />
+                  <label>태그 변경 ( 쉼표(,)로 구분해주세요 )</label>
+                  <input
+                    class="form-control form-control-sm"
+                    id="update-tag-input"
+                    type="text"
+                    placeholder="태그를 입력해주세요."
+                    aria-label=".form-control-sm example"
+                  />
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    닫기
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="update-save-btn"
+                    data-bs-dismiss="modal"
+                  >
+                    수정
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 정보변경 모달 끝 -->
           <div
             class="card col-3 chat-list"
             style="
@@ -553,212 +708,6 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="container-fluid py-4">
-        <div class="row">
-          <div class="col-12 col-xl-12">
-            <div class="card h-100">
-              <div class="card-header pb-0 p-3">
-                <div class="row">
-                  <div class="col-md-8 d-flex align-items-center">
-                    <div
-                      class="btn-group pt-4 ps-6"
-                      role="group"
-                      aria-label="Basic example"
-                    >
-                      <!-- Todo: 채널상세페이지 공지사항 링크 -->
-                      <button type="button" class="btn btn-primary notice-btn">
-                        공지사항
-                      </button>
-                      <!-- Todo: 다시보기페이지 링크 -->
-                      <button type="button" class="btn btn-primary">
-                        다시보기
-                      </button>
-                      <!-- Todo: 채널정보? -->
-                      <button type="button" class="btn btn-primary">
-                        채널정보
-                      </button>
-                    </div>
-                  </div>
-                  <div class="col-md-4 text-end">
-                    <a href="javascript:;">
-                      <i
-                        class="fas fa-user-edit text-secondary text-sm"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="Edit Profile"
-                      ></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="card-body ps-6 col-xl-6 col-me-12">
-                  <p class="text-sm channel-notice">
-                    <!-- 공지 내용 -->
-                  </p>
-                  <div class="card channel-notice-img">
-                    <!-- 공지 이미지 -->
-                  </div>
-                  <hr class="horizontal gray-light my-4" />
-                </div>
-                <div
-                  class="card-body col-xl-6 col-md-12"
-                  style="
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                  "
-                >
-                  <div class="p-6 notice-comments">
-                    <!-- 공지댓글자리 -->
-                  </div>
-                  <div class="input-group mb-3 p-3">
-                    <input
-                      type="text"
-                      style="height: 40px"
-                      class="form-control comment-input"
-                      placeholder="댓글을 입력하세요"
-                      aria-label="Recipient's username"
-                      aria-describedby="button-addon2"
-                    />
-                    <button
-                      class="btn btn-outline-secondary comment-input-btn"
-                      style="height: 40px"
-                      type="button"
-                      id="button-addon2"
-                    >
-                      작성
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 mt-4">
-            <div class="card mb-4">
-              <div class="card-header pb-0 p-3">
-                <h6 class="mb-1">다시보기</h6>
-              </div>
-              <div class="card-body p-3">
-                <div class="row">
-                  <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                    <div class="card card-blog card-plain">
-                      <div class="position-relative">
-                        <a class="d-block shadow-xl border-radius-xl">
-                          <img
-                            src="../img/home-decor-1.jpg"
-                            alt="img-blur-shadow"
-                            class="img-fluid shadow border-radius-xl"
-                          />
-                        </a>
-                      </div>
-                      <div class="card-body px-1 pb-0">
-                        <p class="text-gradient text-dark mb-2 text-sm">
-                          2023-08-19
-                        </p>
-                        <a href="javascript:;">
-                          <h5>붙트스트랩 어려웡</h5>
-                        </a>
-                        <p class="mb-4 text-sm">#부트스트랩 #코딩</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                    <div class="card card-blog card-plain">
-                      <div class="position-relative">
-                        <a class="d-block shadow-xl border-radius-xl">
-                          <img
-                            src="../img/home-decor-1.jpg"
-                            alt="img-blur-shadow"
-                            class="img-fluid shadow border-radius-xl"
-                          />
-                        </a>
-                      </div>
-                      <div class="card-body px-1 pb-0">
-                        <p class="text-gradient text-dark mb-2 text-sm">
-                          2023-08-19
-                        </p>
-                        <a href="javascript:;">
-                          <h5>붙트스트랩 어려웡</h5>
-                        </a>
-                        <p class="mb-4 text-sm">#부트스트랩 #코딩</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                    <div class="card card-blog card-plain">
-                      <div class="position-relative">
-                        <a class="d-block shadow-xl border-radius-xl">
-                          <img
-                            src="../img/home-decor-1.jpg"
-                            alt="img-blur-shadow"
-                            class="img-fluid shadow border-radius-xl"
-                          />
-                        </a>
-                      </div>
-                      <div class="card-body px-1 pb-0">
-                        <p class="text-gradient text-dark mb-2 text-sm">
-                          2023-08-19
-                        </p>
-                        <a href="javascript:;">
-                          <h5>붙트스트랩 어려웡</h5>
-                        </a>
-                        <p class="mb-4 text-sm">#부트스트랩 #코딩</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                    <div class="card card-blog card-plain">
-                      <div class="position-relative">
-                        <a class="d-block shadow-xl border-radius-xl">
-                          <img
-                            src="../img/home-decor-1.jpg"
-                            alt="img-blur-shadow"
-                            class="img-fluid shadow border-radius-xl"
-                          />
-                        </a>
-                      </div>
-                      <div class="card-body px-1 pb-0">
-                        <p class="text-gradient text-dark mb-2 text-sm">
-                          2023-08-19
-                        </p>
-                        <a href="javascript:;">
-                          <h5>붙트스트랩 어려웡</h5>
-                        </a>
-                        <p class="mb-4 text-sm">#부트스트랩 #코딩</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <footer class="footer pt-3">
-          <div class="container-fluid">
-            <div class="row align-items-center justify-content-lg-between">
-              <div class="col-lg-6 mb-lg-0 mb-4">
-                <div
-                  class="copyright text-center text-sm text-muted text-lg-start"
-                >
-                  ©
-                  <script>
-                    document.write(new Date().getFullYear());
-                  </script>
-                  , made with <i class="fa fa-heart"></i> by
-                  <a
-                    href="https://www.creative-tim.com"
-                    class="font-weight-bold"
-                    target="_blank"
-                    >Creative Tim</a
-                  >
-                  for a better web.
-                </div>
-              </div>
-            </div>
-          </div>
-        </footer>
       </div>
     </div>
     <div class="fixed-plugin">
@@ -860,66 +809,6 @@
         </div>
       </div>
     </div>
-     <!-- Modal -->
-     <div
-     class="modal fade"
-     id="exampleModal"
-     tabindex="-1"
-     aria-labelledby="exampleModalLabel"
-     aria-hidden="true"
-   >
-     <div class="modal-dialog">
-       <div class="modal-content">
-         <div class="modal-header">
-           <h5 class="modal-title" id="exampleModalLabel">후원하기</h5>
-           <button
-             type="button"
-             class="btn-close"
-             data-bs-dismiss="modal"
-             aria-label="Close"
-           ></button>
-         </div>
-         <div class="modal-body">
-           <form>
-              <div class="mb-3">
-                <span>후원가능 금액</span>
-                <div id="credit-amount">1000원</div>
-              </div>
-             <div class="mb-3">
-               <label for="exampleInputEmail1" class="form-label"
-                 >후원금액</label
-               >
-               <input
-                 id="donation-amount"
-                 placeholder="Donation Amount"
-                 type="number"
-                 class="form-control"
-                 aria-describedby="emailHelp"
-               />
-               <div class="form-text">
-                  후원금액을 입력해주세요.
-               </div>
-             </div>
-           </form>
-         </div>
-         <div class="modal-footer">
-           <button
-             id="close-btn"
-             type="button"
-             class="btn btn-secondary"
-             data-bs-dismiss="modal"
-           >
-             닫기
-           </button>
-           <button type="submit" id="donation-btn" class="btn btn-primary">
-             후원
-           </button>
-         </div>
-       </div>
-     </div>
-   </div>
-
-
     <!--   Core JS Files   -->
     <script src="../js/core/popper.min.js"></script>
     <script src="../js/core/bootstrap.min.js"></script>

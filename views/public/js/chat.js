@@ -75,6 +75,7 @@ donationModalBtn.addEventListener('click', async () => {
 
 const donationAmountInputEl = document.querySelector('#donation-amount');
 
+
 donationAmountInputEl.addEventListener('keydown', (e) => {
   if (e.keyCode === 13) e.preventDefault();
 });
