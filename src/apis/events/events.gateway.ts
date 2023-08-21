@@ -27,10 +27,11 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  private wsClients = [];
-
   async handleConnection(@ConnectedSocket() socket: Socket): Promise<void> {
-    const roomId = socket.handshake.headers['room-id'];
+    if (typeof socket.handshake.headers['room-id'] !== 'string') return;
+
+    const roomId: string = socket.handshake.headers['room-id'];
+
     socket.join(roomId);
     const accessToken = socket.handshake.headers.cookie
       ?.split('; ')
@@ -51,11 +52,12 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
           socket.data.user = user;
         }
       } catch (error) {}
-
-      console.log(`${socket.id} 소켓 연결`);
-      this.wsClients.push(socket);
     }
     console.log(this.server.of('/').adapter.rooms);
+
+    const userCount = this.server.of('/').adapter.rooms.get(roomId).size;
+
+    this.server.of('/').to(roomId).emit('userCount', { userCount });
     // console.log(this.server.of('/').adapter.rooms);
     // console.log(this.server.of('/').adapter.rooms.get('test')); // socketIO room은 map 객체임!
   }
@@ -64,8 +66,15 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleDisconnect(@ConnectedSocket() socket: Socket): void {
     // 룸에 아무도 없을 때 룸은 자동으로 삭제됨 따로 룸삭제 작업할 필요없음
     // 룸에는 socket id로 된 객체가 있기 때문에 스트리머의 socketId를 활용해서 룸에 입장하는 것도 괜찮을 듯
+    if (typeof socket.handshake.headers['room-id'] !== 'string') return;
+
+    const roomId: string = socket.handshake.headers['room-id'];
+
     console.log(`${socket.id} 소켓 연결 해제 ❌`);
-    this.wsClients.splice(this.wsClients.indexOf(socket), 1);
+
+    const userCount = this.server.of('/').adapter.rooms.get(roomId)?.size;
+
+    this.server.of('/').to(roomId).emit('userCount', { userCount });
   }
 
   @SubscribeMessage('chat')
