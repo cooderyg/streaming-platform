@@ -40,3 +40,12 @@ socket.on('chat', (data) => {
   chatContainerEl.insertAdjacentHTML('beforeend', temp);
   chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
 });
+
+const userConutEl = document.querySelector('#user-count');
+console.log(userConutEl);
+socket.on('userCount', (data) => {
+  console.log(data);
+  const { userCount } = data;
+  console.log(userCount);
+  userConutEl.innerText = `시청자 ${userCount}` || `시청자 0`;
+});
