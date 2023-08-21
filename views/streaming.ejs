@@ -486,23 +486,20 @@
                     <p class="mb-0 font-weight-bold text-sm channel-name"></p>
                   </div>
                 </div>
-                <div
-                  class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3"
-                >
-                  <div
-                    class="nav-wrapper position-relative end-0"
-                    style="display: flex; justify-content: flex-end"
-                  >
-                    <div id="user-count" class="mx-2">0</div>
-                    <button
-                      id="channel-subscribe-btn"
-                      type="button"
-                      class="btn btn-outline-primary"
-                    ></button>
-                    <button type="button" class="btn btn-outline-primary">
-                      후원하기
-                    </button>
-                  </div>
+              </div>
+              <div
+                class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3"
+              >
+                <div  class="nav-wrapper position-relative end-0" style="display:flex; justify-content: flex-end;">
+                  <div id="user-count" class="mx-2">0</div>
+                  <button id="channel-subscribe-btn" type="button" class="btn btn-outline-primary" ></button>
+                  <button 
+                  id="donation-modal-btn"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal" 
+                  class="btn btn-outline-primary"
+                  >후원하기</button>
                 </div>
               </div>
             </div>
@@ -863,6 +860,66 @@
         </div>
       </div>
     </div>
+     <!-- Modal -->
+     <div
+     class="modal fade"
+     id="exampleModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true"
+   >
+     <div class="modal-dialog">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="exampleModalLabel">후원하기</h5>
+           <button
+             type="button"
+             class="btn-close"
+             data-bs-dismiss="modal"
+             aria-label="Close"
+           ></button>
+         </div>
+         <div class="modal-body">
+           <form>
+              <div class="mb-3">
+                <span>후원가능 금액</span>
+                <div id="credit-amount">1000원</div>
+              </div>
+             <div class="mb-3">
+               <label for="exampleInputEmail1" class="form-label"
+                 >후원금액</label
+               >
+               <input
+                 id="donation-amount"
+                 placeholder="Donation Amount"
+                 type="number"
+                 class="form-control"
+                 aria-describedby="emailHelp"
+               />
+               <div class="form-text">
+                  후원금액을 입력해주세요.
+               </div>
+             </div>
+           </form>
+         </div>
+         <div class="modal-footer">
+           <button
+             id="close-btn"
+             type="button"
+             class="btn btn-secondary"
+             data-bs-dismiss="modal"
+           >
+             닫기
+           </button>
+           <button type="submit" id="donation-btn" class="btn btn-primary">
+             후원
+           </button>
+         </div>
+       </div>
+     </div>
+   </div>
+
+
     <!--   Core JS Files   -->
     <script src="../js/core/popper.min.js"></script>
     <script src="../js/core/bootstrap.min.js"></script>
