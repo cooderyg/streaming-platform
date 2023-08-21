@@ -1,6 +1,11 @@
 const incomeEl = document.querySelector('#income');
 const subscribeEl = document.querySelector('#subscribe');
 const livesEl = document.querySelector('#lives');
+const monthlyIncome = document.querySelector('#monthly-income');
+
+const switchMoneyString = (number) => {
+  return `₩ ${number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+};
 
 const getChannelData = async () => {
   const response = await fetch('/api/channels');
@@ -8,7 +13,7 @@ const getChannelData = async () => {
 
   console.log(data);
 
-  incomeEl.innerText = data.income;
+  incomeEl.innerText = switchMoneyString(data.income);
 };
 
 getChannelData();
@@ -47,7 +52,7 @@ const getLiveData = async () => {
     </td>
     <td class="text-center">
       <p class="text-sm font-weight-bold mb-0">${
-        data.income ? data.income : 0
+        data.income ? switchMoneyString(data.income) : switchMoneyString(0)
       }</p>
     </td>
     <td class="text-center">
@@ -68,12 +73,8 @@ getLiveData();
 
 // 한달 간 수익 데이터 가져오기
 const getMonthlyIncome = async () => {
-  const monthlyIncome = document.getElementById('monthly-income');
   const response = await fetch('/api/lives/income/monthly-income');
   const data = await response.json();
-  monthlyIncome.textContent = `￦ ${data.income
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+  monthlyIncome.textContent = switchMoneyString(data.income);
 };
-
 getMonthlyIncome();
