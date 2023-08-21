@@ -42,6 +42,7 @@ export class ChannelsService {
         'channel.role',
         'channel.profileImgUrl',
         'channel.bannerImgUrl',
+        'channel.introduction',
         'channel.createdAt',
         'subscribes.id',
         'user.email',
