@@ -492,18 +492,33 @@
                     class="nav-wrapper position-relative end-0"
                     style="display: flex; justify-content: flex-end"
                   >
+                    <div id="user-count" class="mx-2"></div>
                     <div
                       class="btn-group"
                       role="group"
                       aria-label="Basic outlined example"
                     >
-                      <button type="button" class="btn btn-primary">
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="live-modal-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#liveStartModal"
+                      >
                         방송 시작
                       </button>
                       <button
                         type="button"
                         class="btn btn-primary"
-                        id="live-update-btn"
+                        id="live-off-btn"
+                        style="display: none"
+                      >
+                        방송 종료
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="'live-modal-btn"
                         data-bs-toggle="modal"
                         data-bs-target="#liveUpdateModal"
                       >
@@ -524,6 +539,66 @@
               </div>
             </div>
           </div>
+          <!-- 방송시작 모달 -->
+          <div
+            class="modal fade"
+            id="liveStartModal"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    라이브 시작하기
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <label>라이브 제목</label>
+                  <input
+                    class="form-control form-control-sm"
+                    id="live-title-input"
+                    type="text"
+                    placeholder="변경할 제목을 입력해주세요."
+                    aria-label=".form-control-sm example"
+                  />
+                  <label>태그 입력 ( 쉼표(,)로 구분해주세요 )</label>
+                  <input
+                    class="form-control form-control-sm"
+                    id="live-tag-input"
+                    type="text"
+                    placeholder="태그를 입력해주세요."
+                    aria-label=".form-control-sm example"
+                  />
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    닫기
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="live-start-btn"
+                    data-bs-dismiss="modal"
+                  >
+                    방송 시작
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 방송시작 모달 끝 -->
           <!-- 방송정보 변경 모달 -->
           <div
             class="modal fade"
@@ -549,15 +624,15 @@
                   <label>라이브 제목</label>
                   <input
                     class="form-control form-control-sm"
-                    id="live-title-input"
+                    id="update-title-input"
                     type="text"
                     placeholder="변경할 제목을 입력해주세요."
                     aria-label=".form-control-sm example"
                   />
-                  <label>태그 변경</label>
+                  <label>태그 변경 ( 쉼표(,)로 구분해주세요 )</label>
                   <input
                     class="form-control form-control-sm"
-                    id="live-tag-input"
+                    id="update-tag-input"
                     type="text"
                     placeholder="태그를 입력해주세요."
                     aria-label=".form-control-sm example"
@@ -575,6 +650,7 @@
                     type="button"
                     class="btn btn-primary"
                     id="update-save-btn"
+                    data-bs-dismiss="modal"
                   >
                     수정
                   </button>
@@ -582,7 +658,7 @@
               </div>
             </div>
           </div>
-          <!-- 모달 끝 -->
+          <!-- 정보변경 모달 끝 -->
           <div
             class="card col-3 chat-list"
             style="

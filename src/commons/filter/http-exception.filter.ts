@@ -13,7 +13,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus(); // 예외코드
     const message = exception.message; // 예외메세지
-
     response.status(status).json({ message });
 
     console.log('======================');

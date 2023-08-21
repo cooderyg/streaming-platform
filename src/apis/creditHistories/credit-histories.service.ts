@@ -1,4 +1,9 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreditHistory } from './entities/credit-history.entity';
 import { Repository, DataSource } from 'typeorm';
@@ -22,6 +27,10 @@ export class CreditHistoriesService {
   }: ICreaditHistoriesServiceCreateCreditHistory): Promise<CreditHistory> {
     const { amount, liveId } = createCreditHistoryDto;
     const user = await this.usersService.findById({ userId });
+
+    if (user.credit < amount)
+      throw new ConflictException('후원금액보다 가진 돈이 적습니다.');
+
     const queryRunner = this.datasource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -32,7 +41,6 @@ export class CreditHistoriesService {
         live: { id: liveId },
         user: { id: userId },
       });
-      // TODO : credit < amount 시 에러 발생 필요
       await this.usersService.updateCreditWithManager({
         manager,
         user,
