@@ -492,6 +492,10 @@
                   <button type="button" class="btn btn-outline-primary me-4" id="channel-subscribe-btn" >구독하기</button>
                 </div>
               </div>
+              <div class="nav-wrapper position-relative end-0 " style="display:flex; justify-content: flex-end;">
+                <button type="button" class="btn btn-outline-primary me-4" id="channel-put-btn"data-bs-toggle="modal"
+                data-bs-target="#exampleModal" >정보수정</button>
+              </div>
             </div>
           </div>
         </div>
@@ -643,6 +647,92 @@
           </div>
         </div>
           <!-- 공지작성 모달 끝 -->
+
+          <!-- 수정 Modal -->
+          <div
+          class="modal fade"
+          id="exampleModal"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">채널 정보수정</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div class="mb-3">
+                    <label>채널타이틀</label>
+                <textarea
+                  class="form-control form-control-sm"
+                  id="channel-name-input"
+                  placeholder="변경할 채널명을 입력해주세요."
+                  aria-label=".form-control-sm example"
+                ></textarea>
+                  </div>
+                  <div class="mb-3">
+                   <label>채널소개</label>
+                <textarea
+                  class="form-control form-control-sm"
+                  id="channel-introduction-input"
+                  placeholder="채널소개 입력해주세요."
+                  aria-label=".form-control-sm example"
+                ></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label>카테고리</label>
+                 <textarea
+                   class="form-control form-control-sm"
+                   id="channel-category-input"
+                   placeholder="카테고리를 입력해주세요."
+                   aria-label=".form-control-sm example"
+                 ></textarea>
+                   </div>
+                 <div class="mb-3">
+                   <label for="exampleInputbannerImgUrl" class="form-label"
+                     >배너이미지</label
+                   >
+                   <label>사진 첨부</label>
+                   <input
+                     class="form-control form-control-sm col-10"
+                     id="channel-img-input"
+                     type="file"
+                     placeholder="사진을 첨부해주세요."
+                     aria-label=".form-control-sm example"
+                   />
+                  <button type="button" class="btn btn-primary" id="channel-image-upload-btn">사진 업로드</button>
+                 </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  닫기
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="channel-write-btn"
+                  
+                   >
+                  수정완료
+                </button>
+              </div>
+            </div>
+          </div>
+          </div>
+          <!-- Modal 끝 -->
 
           <div class="col-12 mt-4">
             <div class="card mb-4">

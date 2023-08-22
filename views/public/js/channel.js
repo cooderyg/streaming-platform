@@ -5,6 +5,7 @@ const getChannelData = async () => {
   // 채널 데이터
   const res = await fetch(`/api/channels/${channelId}`);
   const data = await res.json();
+  console.log(data);
   const channelName = data.name;
   // Todo:  배너,프로필 구분 필요
   const channelBannerImg =
@@ -110,4 +111,51 @@ const writeNotice = () => {
 const noticeWriteIcon = document.getElementById('notice-write-icon');
 noticeWriteIcon.addEventListener('click', () => {
   writeNotice();
+});
+
+const writeChannel = () => {
+  let bannerImgUrl;
+  const channelWriteBtn = document.getElementById('channel-write-btn');
+  channelWriteBtn.addEventListener('click', async () => {
+    const name = document.getElementById('channel-name-input').value;
+    const introduction = document.getElementById(
+      'channel-introduction-input',
+    ).value;
+    const CategoryIds = document.getElementById('channel-category-input').value;
+    const categoryIds = CategoryIds.split(',').map((item) => item.trim());
+    const bannerImgUrl = document.getElementById('channel-img-input').value;
+
+    const channelData = await fetch(`/api/channels/update/${channelId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name,
+        introduction: introduction,
+        categoryIds: categoryIds,
+        bannerImgUrl: bannerImgUrl,
+      }),
+    });
+  });
+  const channelImageUploadBtn = document.getElementById(
+    'channel-image-upload-btn',
+  );
+  channelImageUploadBtn.addEventListener('click', async () => {
+    const fileInput = document.getElementById('channel-img-input');
+    let formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+    const uploadRes = await fetch('/api/uploads/channel-notice-image', {
+      method: 'POST',
+      cache: 'no-cache',
+      body: formData, // body 부분에 폼데이터 변수를 할당
+    });
+    const uploadData = await uploadRes.json();
+    bannerImgUrl = uploadData.url;
+  });
+};
+
+const channelWriteIcon = document.getElementById('channel-write-btn');
+channelWriteIcon.addEventListener('click', () => {
+  writeChannel();
 });
