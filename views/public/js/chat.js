@@ -3,6 +3,17 @@ const chatBtn = document.querySelector('#button-addon2');
 const chatInput = document.querySelector('#chat-input');
 const chatContainerEl = document.querySelector('#chat-container');
 
+let user;
+
+const getUserData = async () => {
+  const response = await fetch('/api/users');
+  if (!response.ok) return;
+  const data = await response.json();
+  user = data;
+  console.log(user);
+};
+getUserData();
+
 const socket = io('/', {
   extraHeaders: {
     'room-id': roomId,
@@ -13,12 +24,30 @@ chatInput.addEventListener('keydown', (e) => {
   if (e.keyCode === 13) chatBtn.click();
 });
 
+chatInput.addEventListener('focus', (e) => {
+  alert('로그인 후 이용해주세요.');
+  e.currentTarget.blur();
+});
+
+// 소켓 카운트
+let socketCommCount = 0;
+
 // 채팅보내기
 chatBtn.addEventListener('click', () => {
+  if (!user) return alert('로그인 후 이용해주세요.');
   if (chatInput.value === '') return alert('채팅을 입력해주세요.');
-  socket.emit('chat', {
-    chat: chatInput.value,
-  });
+  if (!socketCommCount) {
+    socket.emit('chat', {
+      chat: chatInput.value,
+      user,
+    });
+    socketCommCount++;
+  } else {
+    socket.emit('chat', {
+      chat: chatInput.value,
+    });
+  }
+
   chatInput.value = '';
 });
 
@@ -75,7 +104,6 @@ donationModalBtn.addEventListener('click', async () => {
 
 const donationAmountInputEl = document.querySelector('#donation-amount');
 
-
 donationAmountInputEl.addEventListener('keydown', (e) => {
   if (e.keyCode === 13) e.preventDefault();
 });
@@ -83,6 +111,7 @@ donationAmountInputEl.addEventListener('keydown', (e) => {
 // 후원하기 버튼
 donationBtn.addEventListener('click', async (e) => {
   e.preventDefault();
+
   const donaitonAmount = Number(donationAmountInputEl.value);
   if (!donaitonAmount) return alert('금액을 입력해주세요!');
   if (donaitonAmount > creditAmount)
@@ -100,7 +129,12 @@ donationBtn.addEventListener('click', async (e) => {
   if (!response.ok) return alert('후원에 실패했습니다 다시 시도해주세요.');
   const data = await response.json();
   const amount = data.amount;
-  socket.emit('donation', { roomId, amount });
+  if (!socketCommCount) {
+    socket.emit('donation', { roomId, amount, user });
+    socketCommCount++;
+  } else {
+    socket.emit('donation', { roomId, amount });
+  }
   closeBtn.click();
   donationAmountInputEl.value = '';
 });
