@@ -9,7 +9,7 @@ export class UpdateChannelDto {
   categoryIds?: string[];
 
   @IsString()
-  profileImgUrl?: string;
+  introduction?: string;
 
   @IsString()
   bannerImgUrl?: string;
