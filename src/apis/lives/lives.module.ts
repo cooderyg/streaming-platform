@@ -7,6 +7,7 @@ import { Live } from './entities/live.entity';
 import { TagsModule } from '../tags/tags.module';
 import { CreditHistoriesModule } from '../creditHistories/credit-histories.module';
 import { Channel } from '../channels/entities/channel.entity';
+import { EventsModule } from '../events/events.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { Channel } from '../channels/entities/channel.entity';
     ChannelsModule,
     TagsModule,
     CreditHistoriesModule,
+    EventsModule,
   ],
   controllers: [LivesController],
   providers: [LivesService],

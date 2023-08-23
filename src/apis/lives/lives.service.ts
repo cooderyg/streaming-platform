@@ -14,6 +14,7 @@ import { CreditHistoriesService } from '../creditHistories/credit-histories.serv
 import { Channel } from '../channels/entities/channel.entity';
 import { PageReqDto } from 'src/commons/dto/page-req.dto';
 import { DateReqDto } from 'src/commons/dto/date-req.dto';
+import { EventsGateway } from '../events/events.gateway';
 
 @Injectable()
 export class LivesService {
@@ -24,6 +25,7 @@ export class LivesService {
     private readonly tagsService: TagsService,
     private readonly creditHistoriesService: CreditHistoriesService,
     private readonly dataSource: DataSource,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   async getLives({ pageReqDto }) {
@@ -112,6 +114,15 @@ export class LivesService {
       tags,
     });
     return live;
+  }
+
+  startLive({ liveId }) {
+    const streamer = this.eventsGateway.onAirStreamers.find(
+      (el) => el.liveId === liveId,
+    );
+    this.eventsGateway.server
+      .to(streamer.socket.id)
+      .emit('startLive', { liveId });
   }
 
   async updateLiveInfo({

@@ -80,6 +80,14 @@ export class LivesController {
     return live;
   }
 
+  @Post('/start/:liveId')
+  async startLive(@Param('liveId') liveId: string) {
+    console.log(liveId);
+    console.log('미디어 서버에서 왔어요');
+    this.livesService.startLive({ liveId });
+    return { message: '전달완료' };
+  }
+
   /**
    * Live의 title, tag 변경을 위한 API 입니다.
    */

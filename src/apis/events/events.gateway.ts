@@ -11,6 +11,11 @@ import {
 import { Server, Socket } from 'socket.io';
 import { User } from '../users/entities/user.entity';
 
+interface IEventGatewayOnAirStreamers {
+  socket: Socket;
+  liveId: string;
+}
+
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -20,6 +25,8 @@ import { User } from '../users/entities/user.entity';
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+
+  onAirStreamers: IEventGatewayOnAirStreamers[] = [];
 
   async handleConnection(@ConnectedSocket() socket: Socket): Promise<void> {
     if (typeof socket.handshake.headers['room-id'] !== 'string') return;
@@ -96,10 +103,17 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  @SubscribeMessage('broadcastStream')
-  handleBroadcastStream(client: Socket, data: any) {
-    const room = data.room;
-    client.to(room).emit('stream', data.stream);
+  @SubscribeMessage('createLive')
+  handleCreateLive(@ConnectedSocket() socket: Socket) {
+    if (typeof socket.handshake.headers['room-id'] !== 'string') return;
+    const liveId: string = socket.handshake.headers['room-id'];
+
+    const temp = {
+      socket,
+      liveId,
+    };
+    this.onAirStreamers.push(temp);
+    console.log(this.onAirStreamers);
   }
 
   @SubscribeMessage('closeStream')
