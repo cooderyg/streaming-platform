@@ -68,6 +68,14 @@ export class LivesController {
   }
 
   @UseGuards(AccessAuthGuard)
+  @Get('admin/control')
+  async getLiveAdmin(@User() user: UserAfterAuth): Promise<Live> {
+    const live = await this.livesService.getLiveForAdmin({ userId: user.id });
+
+    return live;
+  }
+
+  @UseGuards(AccessAuthGuard)
   @Post()
   async createLive(
     @Body() createLiveDto: CreateLiveDto,

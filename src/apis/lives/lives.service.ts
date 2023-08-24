@@ -90,6 +90,20 @@ export class LivesService {
     return lives;
   }
 
+  async getLiveForAdmin({ userId }) {
+    const live = await this.livesRepository
+      .createQueryBuilder('live')
+      .leftJoinAndSelect('live.channel', 'channel')
+      .leftJoinAndSelect('channel.user', 'user')
+      .where('user.id = :userId', { userId })
+      .andWhere('live.endDate IS NULL')
+      .getOne();
+
+    if (!live) throw new NotFoundException();
+
+    return live;
+  }
+
   async getLiveIncome({
     userId,
     dateReqDto,
