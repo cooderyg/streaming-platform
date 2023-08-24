@@ -1,15 +1,18 @@
 const params = window.location.pathname;
 const channelId = params.split('/')[2];
+let channelName;
+let channelInfo;
+let channelBannerImg;
 
 const getChannelData = async () => {
   // 채널 데이터
   const res = await fetch(`/api/channels/${channelId}`);
   const data = await res.json();
   console.log(data);
-  const channelName = data.name;
+  channelName = data.name;
+  channelInfo = data.introduction;
   // Todo:  배너,프로필 구분 필요
-  const channelBannerImg =
-    data.bannerImgUrl || '../img/curved-images/curved0.jpg';
+  channelBannerImg = data.bannerImgUrl || '../img/curved-images/curved0.jpg';
   const streamerImg = data.user.profileImgUrl || '/img/profile.jpg';
   const channelCreatedAt = data.createdAt.split('T')['0'];
   const subscribeCount = data.subscribes.length;
@@ -33,6 +36,9 @@ const getChannelData = async () => {
   document
     .getElementById('channel-contact-email')
     .insertAdjacentText('beforeend', streamerEmail);
+  document.getElementById(
+    'channel-info-container',
+  ).innerText = `${channelInfo}`;
 };
 
 const getChannelNoticeData = async () => {
@@ -79,16 +85,18 @@ const writeNotice = () => {
   const noticeWriteBtn = document.getElementById('notice-write-btn');
   noticeWriteBtn.addEventListener('click', async () => {
     const content = document.getElementById('notice-content-input').value;
-    const noticeData = await fetch(`/api/${channelId}/notices`, {
+    const noticeRes = await fetch(`/api/${channelId}/notices`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         content,
-        imageUrl,
+        imageUrl: imageUrl || '',
       }),
     });
+    const noticeData = await noticeRes.json();
+    console.log(noticeData);
   });
 
   const noticeImageUploadBtn = document.getElementById(
@@ -113,7 +121,7 @@ noticeWriteIcon.addEventListener('click', () => {
   writeNotice();
 });
 
-const writeChannel = () => {
+const writeChannel = async () => {
   let bannerImgUrl;
   const channelWriteBtn = document.getElementById('channel-write-btn');
   channelWriteBtn.addEventListener('click', async () => {
@@ -123,37 +131,40 @@ const writeChannel = () => {
     ).value;
     const CategoryIds = document.getElementById('channel-category-input').value;
     const categoryIds = CategoryIds.split(',').map((item) => item.trim());
-    const bannerImgUrl = document.getElementById('channel-img-input').value;
-
-    const channelData = await fetch(`/api/channels/update/${channelId}`, {
+    const channelRes = await fetch(`/api/channels/update/${channelId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: name,
-        introduction: introduction,
-        categoryIds: categoryIds,
-        bannerImgUrl: bannerImgUrl,
+        name: name || channelName,
+        introduction: introduction || channelInfo,
+        categoryIds: categoryIds || [''],
+        bannerImgUrl: channelBannerImg,
       }),
     });
-  });
-  const channelImageUploadBtn = document.getElementById(
-    'channel-image-upload-btn',
-  );
-  channelImageUploadBtn.addEventListener('click', async () => {
-    const fileInput = document.getElementById('channel-img-input');
-    let formData = new FormData();
-    formData.append('file', fileInput.files[0]);
-    const uploadRes = await fetch('/api/uploads/channel-notice-image', {
-      method: 'POST',
-      cache: 'no-cache',
-      body: formData, // body 부분에 폼데이터 변수를 할당
-    });
-    const uploadData = await uploadRes.json();
-    bannerImgUrl = uploadData.url;
+    const channelData = await channelRes.json();
+    console.log(channelData);
+    // window.location.reload();
   });
 };
+const channelImageUploadBtn = document.getElementById(
+  'channel-image-upload-btn',
+);
+channelImageUploadBtn.addEventListener('click', async () => {
+  const fileInput = document.getElementById('channel-img-input');
+  console.log(fileInput);
+  let formData = new FormData();
+  formData.append('file', fileInput.files[0]);
+  const uploadRes = await fetch('/api/uploads/channel-notice-image', {
+    method: 'POST',
+    cache: 'no-cache',
+    body: formData, // body 부분에 폼데이터 변수를 할당
+  });
+  const uploadData = await uploadRes.json();
+  console.log(uploadData);
+  channelBannerImg = uploadData.url;
+});
 
 const channelWriteIcon = document.getElementById('channel-write-btn');
 channelWriteIcon.addEventListener('click', () => {
