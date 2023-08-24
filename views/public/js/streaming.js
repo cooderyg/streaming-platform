@@ -8,27 +8,32 @@ const subscribeBtn = document.getElementById('channel-subscribe-btn');
 
 const getData = async () => {
   // 라이브방송 데이터 조회
-  let channelId;
+  // let channelId;
   let noticeId;
+  const channelImg = document.querySelector('.channel-img');
+  const liveInfoContainer = document.getElementById('live-info-container');
 
   const resLive = await fetch(`/api/lives/${liveId}`);
   const dataLive = await resLive.json();
   console.log('라이브데이터', dataLive);
-  const liveTitle = document.querySelector('.live-title');
-  const channelName = document.querySelector('.channel-name');
-  const channelImg = document.querySelector('.channel-img');
-  liveTitle.innerText = dataLive.title;
-  channelId = dataLive.channel.id;
-  console.log('채널아이디', channelId);
-  channelName.innerText = dataLive.channel.name;
+  const channelId = dataLive.channel.id;
+  const liveTitle = dataLive.title;
+  const channelName = dataLive.channel.name;
+
+  liveInfoContainer.insertAdjacentHTML(
+    'beforeend',
+    `<h5 class="mb-1">${liveTitle}</h5>
+    <a href='/channel/${channelId}' class="mb-0 font-weight-bold text-sm">${channelName}</a>`,
+  );
+
   const profileImgUrl = dataLive.channel.profileImgUrl || '/img/profile.jpg';
   channelImg.insertAdjacentHTML(
     'beforeend',
-    `<img
+    `<a href='/channel/${channelId}'><img
             src="${profileImgUrl}"
             alt="profile_image"
             class="w-100 border-radius-lg shadow-sm"
-          />`,
+          /></a>`,
   );
 
   // 채널 데이터
