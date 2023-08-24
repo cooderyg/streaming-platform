@@ -501,51 +501,33 @@
                     style="display: flex; justify-content: flex-end"
                   >
                     <div id="user-count" class="mx-2"></div>
-                    <div
-                      class="btn-group"
-                      role="group"
-                      aria-label="Basic outlined example"
+
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      id="live-modal-btn"
+                      data-bs-toggle="modal"
+                      data-bs-target="#liveStartModal"
                     >
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        id="live-modal-btn"
-                        data-bs-toggle="modal"
-                        data-bs-target="#liveStartModal"
-                      >
-                        방송 시작
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        id="live-off-btn"
-                        style="display: none"
-                      >
-                        방송 종료
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        id="'live-modal-btn"
-                        data-bs-toggle="modal"
-                        data-bs-target="#liveUpdateModal"
-                      >
-                        정보 변경
-                      </button>
-                      <input
-                        type="checkbox"
-                        class="btn-check"
-                        id="btncheck3"
-                        autocomplete="off"
-                      />
-                      <label class="btn btn-outline-primary" for="btncheck3"
-                        >녹화</label
-                      >
-                    </div>
+                      키 발급
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      id="live-update-modal-btn"
+                      data-bs-toggle="modal"
+                      style="display: none"
+                      data-bs-target="#liveUpdateModal"
+                    >
+                      정보 변경
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
+            <!-- 스트림 키 표시 -->
+            <div id="live-key" class="mx-12"></div>
           </div>
           <!-- 방송시작 모달 -->
           <div
@@ -681,19 +663,7 @@
               class="flex-fill"
               style="height: 500px; overflow-y: scroll"
             >
-              <p style="margin: 1px; padding: 0px; font-size: 14px">채팅채팅</p>
-              <div class="d-flex justify-content-start mb-4">
-                <div class="img_cont_msg">
-                  <img
-                    src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                    class="rounded-circle user_img_msg"
-                  />
-                </div>
-                <div class="msg_container">
-                  안녕하세용 채팅채팅
-                  <!-- <span class="msg_time">8:40 AM, Today</span> -->
-                </div>
-              </div>
+              <p style="margin: 1px; padding: 0px; font-size: 14px">&nbsp;</p>
             </div>
             <div class="input-group mb-3">
               <input
@@ -817,7 +787,6 @@
         </div>
       </div>
     </div>
-    <div id="live-key" class="mx-12">확인용</div>
     <!--   Core JS Files   -->
     <script src="../js/core/popper.min.js"></script>
     <script src="../js/core/bootstrap.min.js"></script>

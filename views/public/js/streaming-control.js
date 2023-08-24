@@ -151,25 +151,12 @@ const chatroom = (liveId) => {
 };
 
 //방송시작버튼 -> 방송종료버튼 / 종료버튼 이벤트 충가
-const changeLiveBtn = (liveId) => {
+const changeLiveBtn = () => {
   const liveModalBtn = document.getElementById('live-modal-btn');
-  const liveOffBtn = document.getElementById('live-off-btn');
-  console.log('시작버튼', liveModalBtn);
-  console.log('종료버튼', liveOffBtn);
-  console.log(liveId);
+  const liveUpdateModalBtn = document.getElementById('live-update-modal-btn');
+
   liveModalBtn.style.display = 'none';
-  liveOffBtn.style.display = '';
-  liveOffBtn.addEventListener('click', async () => {
-    const res = await fetch(`/api/lives/${liveId}/turn-off`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // body: JSON.stringify({}),
-    });
-    const data = await res.json();
-    console.log(data);
-  });
+  liveUpdateModalBtn.style.display = '';
 };
 
 // 방송 시작
@@ -197,9 +184,23 @@ liveStartBtn.addEventListener('click', async () => {
     .setAttribute('data-live-id', `${liveId}`);
   getData(liveId);
   chatroom(liveId);
-  changeLiveBtn(liveId);
+  changeLiveBtn();
 
-  liveKeyEl.innerText = `라이브키: ${liveId}`;
+  liveKeyEl.insertAdjacentHTML(
+    'beforeend',
+    ` <i class="fas fa-eye fa-xl" id='key-hide-btn'></i><span id='stream-key'>StreamKey: ${liveId}</span>`,
+  );
+
+  //스트림키 숨기기
+  const hideBtn = document.getElementById('key-hide-btn');
+  hideBtn.addEventListener('click', () => {
+    const streamKey = document.getElementById('stream-key');
+    if (streamKey.style.display === 'none') {
+      streamKey.style.display = '';
+    } else {
+      streamKey.style.display = 'none';
+    }
+  });
 
   socket.emit('createLive');
 });
