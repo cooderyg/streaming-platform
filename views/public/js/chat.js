@@ -25,8 +25,10 @@ chatInput.addEventListener('keydown', (e) => {
 });
 
 chatInput.addEventListener('focus', (e) => {
-  alert('로그인 후 이용해주세요.');
-  e.currentTarget.blur();
+  if (!user) {
+    return alert('로그인 후 이용해주세요.');
+    e.currentTarget.blur();
+  }
 });
 
 // 소켓 카운트
