@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
@@ -52,7 +53,7 @@ export class LivesService {
       .getMany();
     return lives;
   }
-  async getLiveById(liveId: string) {
+  async getLiveById({ liveId }) {
     return await this.livesRepository
       .createQueryBuilder('live')
       .select([
@@ -116,7 +117,16 @@ export class LivesService {
     return live;
   }
 
-  startLive({ liveId }) {
+  async startLive({ liveId }) {
+    const live = await this.getLiveById({ liveId });
+
+    if (!live) throw new NotFoundException();
+
+    await this.livesRepository.save({
+      id: liveId,
+      onAir: true,
+    });
+
     const streamer = this.eventsGateway.onAirStreamers.find(
       (el) => el.liveId === liveId,
     );
@@ -141,7 +151,7 @@ export class LivesService {
   }
 
   async turnOff({ userId, liveId }: ILivesServiceTurnOff) {
-    let { channel, live } = await this.verifyOwner({ userId, liveId });
+    const { channel, live } = await this.verifyOwner({ userId, liveId });
 
     // 트랜잭션
     const queryRunner = this.dataSource.createQueryRunner();
@@ -178,7 +188,10 @@ export class LivesService {
     }
   }
 
-  async verifyOwner({ userId, liveId }) {
+  async verifyOwner({
+    userId,
+    liveId,
+  }): Promise<{ channel: Channel; live: Live }> {
     const channel = await this.channelsService.findByUserId({ userId });
     const live = await this.livesRepository.findOne({
       where: { id: liveId },

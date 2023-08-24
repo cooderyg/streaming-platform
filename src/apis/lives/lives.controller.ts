@@ -36,7 +36,7 @@ export class LivesController {
 
   @Get(':liveId')
   async getLiveById(@Param() params: { liveId: string }) {
-    const live = await this.livesService.getLiveById(params.liveId);
+    const live = await this.livesService.getLiveById({ liveId: params.liveId });
     return live;
   }
 
