@@ -33,6 +33,9 @@ export class Live {
   @Column({ nullable: true })
   replayUrl: string;
 
+  @Column({ default: false })
+  onAir: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 
