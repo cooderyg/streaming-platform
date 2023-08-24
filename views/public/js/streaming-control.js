@@ -1,7 +1,71 @@
 let user;
-
+const liveKeyEl = document.querySelector('#live-key');
 const mediaContainerEl = document.querySelector('#media-container');
 
+const setStreamKey = (liveId) => {
+  document
+    .getElementById('update-save-btn')
+    .setAttribute('data-live-id', `${liveId}`);
+  getData(liveId);
+  chatroom(liveId);
+  changeLiveBtn();
+
+  liveKeyEl.insertAdjacentHTML(
+    'beforeend',
+    ` <i class="fas fa-eye fa-xl" id='key-hide-btn'></i><span id='stream-key'>StreamKey: ${liveId}</span>`,
+  );
+
+  //스트림키 숨기기
+  const hideBtn = document.getElementById('key-hide-btn');
+  hideBtn.addEventListener('click', () => {
+    const streamKey = document.getElementById('stream-key');
+    if (streamKey.style.display === 'none') {
+      streamKey.style.display = '';
+    } else {
+      streamKey.style.display = 'none';
+    }
+  });
+};
+
+const setMedia = (liveId) => {
+  mediaContainerEl.innerHTML = `
+  <video
+    id="video"
+    width="100%"
+    height="100%"
+    controls
+    autoplay
+  ></video>
+`;
+
+  const video = document.getElementById('video');
+  const videoSrc = `http://localhost:8000/live/${liveId}/index.m3u8`;
+  const hlsConfig = {
+    debug: true,
+    enableWorker: true,
+    lowLatencyMode: true,
+    backBufferLength: 90,
+  };
+
+  setTimeout(() => {
+    if (Hls.isSupported()) {
+      const hls = new Hls(hlsConfig);
+      // hls.startLoad(startPosition);
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play();
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
+      video.addEventListener('loadedmetadata', () => {
+        video.play();
+      });
+    }
+  }, 5000);
+};
+
+// 유저정보
 const getUserData = async () => {
   const response = await fetch('/api/users');
   if (!response.ok) return;
@@ -10,6 +74,22 @@ const getUserData = async () => {
   console.log(user);
 };
 getUserData();
+
+const getLiveControl = async () => {
+  const response = await fetch('/api/lives/admin/control');
+  const data = await response.json();
+  if (!response.ok) return;
+
+  console.log(data);
+
+  setStreamKey(data.id);
+
+  if (data.onAir) {
+    setMedia(data.id);
+  }
+};
+
+getLiveControl();
 
 // 라이브방송 데이터 조회
 const getData = async (liveId) => {
@@ -46,55 +126,7 @@ const chatroom = (liveId) => {
   });
 
   socket.on('startLive', ({ liveId }) => {
-    mediaContainerEl.innerHTML = `
-        <video
-          id="video"
-          width="100%"
-          height="100%"
-          controls
-          autoplay
-        ></video>
-    `;
-
-    const video = document.getElementById('video');
-    const videoSrc = `http://localhost:8000/live/${liveId}/index.m3u8`;
-    const hlsConfig = {
-      debug: true,
-      enableWorker: true,
-      lowLatencyMode: true,
-      backBufferLength: 90,
-    };
-
-    setTimeout(() => {
-      if (Hls.isSupported()) {
-        const hls = new Hls(hlsConfig);
-        // hls.startLoad(startPosition);
-        hls.loadSource(videoSrc);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play();
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = videoSrc;
-        video.addEventListener('loadedmetadata', () => {
-          video.play();
-        });
-      }
-
-      // hls.on(Hls.Events.ERROR, function (event, data) {
-      //   var errorType = data.type;
-      //   var errorDetails = data.details;
-      //   var errorFatal = data.fatal;
-
-      //   switch (data.details) {
-      //     case Hls.ErrorDetails.FRAG_LOAD_ERROR:
-      //       // ....
-      //       break;
-      //     default:
-      //       break;
-      //   }
-      // });
-    }, 10000);
+    setMedia(liveId);
   });
 
   // 소켓 카운트
@@ -160,7 +192,7 @@ const changeLiveBtn = () => {
 };
 
 // 방송 시작
-const liveKeyEl = document.querySelector('#live-key');
+
 const liveStartBtn = document.getElementById('live-start-btn');
 liveStartBtn.addEventListener('click', async () => {
   const liveTitleInput = document.getElementById('live-title-input').value;
@@ -179,28 +211,8 @@ liveStartBtn.addEventListener('click', async () => {
   if (!res.ok) return alert('방송 시작에 실패했습니다. 다시 시도해주세요.');
   const data = await res.json();
   const liveId = data.id;
-  document
-    .getElementById('update-save-btn')
-    .setAttribute('data-live-id', `${liveId}`);
-  getData(liveId);
-  chatroom(liveId);
-  changeLiveBtn();
 
-  liveKeyEl.insertAdjacentHTML(
-    'beforeend',
-    ` <i class="fas fa-eye fa-xl" id='key-hide-btn'></i><span id='stream-key'>StreamKey: ${liveId}</span>`,
-  );
-
-  //스트림키 숨기기
-  const hideBtn = document.getElementById('key-hide-btn');
-  hideBtn.addEventListener('click', () => {
-    const streamKey = document.getElementById('stream-key');
-    if (streamKey.style.display === 'none') {
-      streamKey.style.display = '';
-    } else {
-      streamKey.style.display = 'none';
-    }
-  });
+  setStreamKey(liveId);
 
   socket.emit('createLive');
 });
