@@ -10,9 +10,6 @@ const switchMoneyString = (number) => {
 const getChannelData = async () => {
   const response = await fetch('/api/channels');
   const data = await response.json();
-
-  console.log(data);
-
   incomeEl.innerText = switchMoneyString(data.income);
 };
 
@@ -30,8 +27,6 @@ getSubscribeData();
 const getLiveData = async () => {
   const response = await fetch('/api/lives/admin/sales');
   const data = await response.json();
-  console.log(data);
-
   const temp = data.map((data) => {
     const date = new Date(data.createdAt).toLocaleDateString();
     return `

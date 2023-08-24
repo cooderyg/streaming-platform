@@ -47,6 +47,12 @@ export class AppController {
     return { title: 'Title' };
   }
 
+  @Get('my-channel')
+  @Render('my-channel')
+  getMyChannel() {
+    return { title: 'Title' };
+  }
+
   @Get('channel/:channelId')
   @Render('channel')
   getChannel() {
