@@ -220,6 +220,13 @@ export class LivesService {
     return { channel, live };
   }
 
+  async closeOBS({ liveId }): Promise<void> {
+    await this.livesRepository.save({
+      id: liveId,
+      onAir: false,
+    });
+  }
+
   /**
    * @todo
    * 방송 종료 시 replayUrl을 업데이트 하는 로직 작성

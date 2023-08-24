@@ -135,6 +135,15 @@ export class LivesController {
     return live;
   }
 
+  @Put(':liveId/close-obs')
+  async closeOBS(
+    @Param('liveId') liveId: string,
+  ): Promise<{ message: string }> {
+    await this.livesService.closeOBS({ liveId });
+    console.log('방송종료');
+    return { message: '종료 완료' };
+  }
+
   /**
    * @todo
    * 방송종료 후 영상 업로드 관련 로직 작성해야함
