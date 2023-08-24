@@ -121,10 +121,12 @@ export class ChannelsService {
         'channel.bannerImgUrl',
         'channel.createdAt',
         'channel.updatedAt',
+        'subscribes.id',
         'user.id',
         'user.email',
       ])
       .leftJoin('channel.user', 'user')
+      .leftJoin('channel.subscribes', 'subscribes')
       .where('user.id = :userId', { userId })
       .getOne();
 
