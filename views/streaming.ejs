@@ -56,6 +56,12 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+
+    <script
+      defer
+      src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script defer src="/js/streaming.js"></script>
     <script defer src="/js/chat.js"></script>
   </head>
@@ -468,11 +474,20 @@
       <div class="container-fluid">
         <div class="row">
           <div class="card col-9">
-            <img
+            <!-- 비디오 자리 -->
+            <video
+              id="video"
+              width="100%"
+              height="100%"
+              controls
+              autoplay
+            ></video>
+
+            <!-- <img
               src="https://blog.kakaocdn.net/dn/cu6FRS/btrdswyTELB/zgpbDlAoEaTFcCXf2LI0Jk/img.png"
               class="card-img-top"
               alt="..."
-            />
+            /> -->
             <div class="card card-body blur shadow-blur overflow-hidden">
               <div class="row gx-4">
                 <div class="col-auto">
@@ -527,8 +542,8 @@
               class="flex-fill"
               style="height: 500px; overflow-y: scroll"
             >
-              <p style="margin: 1px; padding: 0px; font-size: 14px">채팅채팅</p>
-              <div class="d-flex justify-content-start mb-4">
+              <p style="margin: 1px; padding: 0px; font-size: 14px">&nbsp;</p>
+              <!-- <div class="d-flex justify-content-start mb-4">
                 <div class="img_cont_msg">
                   <img
                     src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
@@ -537,9 +552,9 @@
                 </div>
                 <div class="msg_container">
                   안녕하세용 채팅채팅
-                  <!-- <span class="msg_time">8:40 AM, Today</span> -->
+                  <span class="msg_time">8:40 AM, Today</span>
                 </div>
-              </div>
+              </div> -->
             </div>
             <div class="input-group mb-3">
               <input

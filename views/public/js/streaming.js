@@ -136,3 +136,32 @@ channelNoticeBtn.addEventListener('click', () => {
   document.getElementById('channel-info-row').style.display = 'none';
   document.getElementById('channel-notice-row').style.display = '';
 });
+
+//비디오 플레이어 설정
+const mediaContainerEl = document.querySelector('#media-container');
+// mediaContainerEl.innerHTML = `<video id="video" width="100%" height="100%" controls autoplay></video>`;
+const video = document.getElementById('video');
+const videoSrc = `http://localhost:8000/live/${liveId}/index.m3u8`;
+const hlsConfig = {
+  debug: true,
+  enableWorker: true,
+  lowLatencyMode: true,
+  backBufferLength: 90,
+};
+
+setTimeout(() => {
+  if (Hls.isSupported()) {
+    const hls = new Hls(hlsConfig);
+    // hls.startLoad(startPosition);
+    hls.loadSource(videoSrc);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      video.play();
+    });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = videoSrc;
+    video.addEventListener('loadedmetadata', () => {
+      video.play();
+    });
+  }
+}, 1000);
