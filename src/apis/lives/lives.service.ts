@@ -145,7 +145,7 @@ export class LivesService {
       (el) => el.liveId === liveId,
     );
     this.eventsGateway.server
-      .to(streamer.socket.id)
+      .to(streamer?.socket?.id)
       .emit('startLive', { liveId });
   }
 
