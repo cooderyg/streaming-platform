@@ -90,6 +90,7 @@ async function writeMyNotice(channelId) {
     const fileInput = document.getElementById('notice-img-input');
     let formData = new FormData();
     formData.append('file', fileInput.files[0]);
+
     const uploadRes = await fetch('/api/uploads/channel-notice-image', {
       method: 'POST',
       cache: 'no-cache',
@@ -132,6 +133,7 @@ async function writeMyChannel() {
     const fileInput = document.getElementById('channel-img-input');
     let formData = new FormData();
     formData.append('file', fileInput.files[0]);
+    console.log(formData);
     const uploadRes = await fetch('/api/uploads/channel-notice-image', {
       method: 'POST',
       cache: 'no-cache',

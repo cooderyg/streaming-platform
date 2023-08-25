@@ -161,12 +161,24 @@ setTimeout(() => {
     hls.loadSource(videoSrc);
     hls.attachMedia(video);
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      console.log(hls);
       video.play();
+    });
+    video.addEventListener('click', () => {
+      const duration = hls.media.duration;
+      hls.media.currentTime = duration - 8;
     });
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = videoSrc;
     video.addEventListener('loadedmetadata', () => {
-      video.play();
+      const duration = video.duration;
+      const startTime = duration - 8;
+      video.currentTime = startTime;
+      try {
+        video.play();
+      } catch (error) {
+        console.log(error);
+      }
     });
   }
 }, 1000);
