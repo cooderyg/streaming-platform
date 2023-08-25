@@ -105,6 +105,7 @@ const writeNotice = () => {
   noticeImageUploadBtn.addEventListener('click', async () => {
     const fileInput = document.getElementById('notice-img-input');
     let formData = new FormData();
+    console.log(formData);
     formData.append('file', fileInput.files[0]);
     const uploadRes = await fetch('/api/uploads/channel-notice-image', {
       method: 'POST',

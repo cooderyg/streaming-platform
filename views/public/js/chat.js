@@ -147,8 +147,8 @@ socket.on('donation', (data) => {
   const temp = `
   <div class="d-flex justify-content-center my-4">
     <div class="d-flex justify-content-center flex-column">
-      <img src="/img/star-img.png" class="mb-1 donation-img" />
-      <div class="user_chat donaiton-msg">${nickname} 님이 <br /> ${amount}원 후원하셨습니다.</div>
+      <img src="/img/coin.jpg" class="mb-1 donation-img" />
+      <div class="user_chat donaiton-msg">${nickname} 님이 <br /> ${amount}크레딧을 후원하셨습니다.</div>
     </div>
   </div>
   `;
