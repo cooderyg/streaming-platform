@@ -114,8 +114,15 @@ export class LivesService {
       .createQueryBuilder('live')
       .select('SUM(live.income)', 'income')
       .leftJoin('live.channel', 'channel')
-      .where(`channel.id = :channelId`, { channelId: channel.id, year, month })
+      .where(`channel.id = :channelId`, {
+        channelId: channel.id,
+        year,
+        month,
+      })
       .getRawOne();
+    if (result.income === null) {
+      result.income = 0;
+    }
     return result;
   }
 
@@ -218,6 +225,13 @@ export class LivesService {
       throw new ConflictException('이미 방송이 종료되었습니다.');
 
     return { channel, live };
+  }
+
+  async closeOBS({ liveId }): Promise<void> {
+    await this.livesRepository.save({
+      id: liveId,
+      onAir: false,
+    });
   }
 
   /**

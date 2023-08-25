@@ -59,7 +59,7 @@ export class LivesController {
   async getLiveIncome(
     @User() user: UserAfterAuth,
     @Query() dateReqDto: DateReqDto,
-  ) {
+  ): Promise<{ income: number }> {
     const income = await this.livesService.getLiveIncome({
       userId: user.id,
       dateReqDto,
@@ -133,6 +133,15 @@ export class LivesController {
       liveId: params.liveId,
     });
     return live;
+  }
+
+  @Put(':liveId/close-obs')
+  async closeOBS(
+    @Param('liveId') liveId: string,
+  ): Promise<{ message: string }> {
+    await this.livesService.closeOBS({ liveId });
+    console.log('방송종료');
+    return { message: '종료 완료' };
   }
 
   /**
