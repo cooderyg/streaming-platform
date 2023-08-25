@@ -209,6 +209,53 @@ export class LivesService {
     }
   }
 
+  async closeOBS({ liveId }): Promise<void> {
+    const live = await this.getLiveById({ liveId });
+
+    const channel = await this.channelsService.getChannel({
+      channelId: live.channel.id,
+    });
+
+    // 트랜잭션
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    const manager = queryRunner.manager;
+    try {
+      // 종료 시간을 업데이트 합니다.
+
+      // 방송 정산하기
+      const creditHistories = await this.creditHistoriesService.findByLiveId({
+        liveId,
+      });
+      const totalLiveIncome = creditHistories.reduce(
+        (acc, history) => acc + history.amount,
+        0,
+      );
+
+      // 채널 정산하기
+      const totalChannelIncome = channel.income + totalLiveIncome;
+
+      await manager.save(Live, {
+        ...live,
+        endDate: new Date(),
+        income: totalLiveIncome,
+        onAir: false,
+      });
+      await manager.save(Channel, {
+        ...channel,
+        income: totalChannelIncome,
+      });
+      await queryRunner.commitTransaction();
+
+      this.eventsGateway.server.to(liveId).emit('endLive', { liveId });
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   async verifyOwner({
     userId,
     liveId,
@@ -225,13 +272,6 @@ export class LivesService {
       throw new ConflictException('이미 방송이 종료되었습니다.');
 
     return { channel, live };
-  }
-
-  async closeOBS({ liveId }): Promise<void> {
-    await this.livesRepository.save({
-      id: liveId,
-      onAir: false,
-    });
   }
 
   /**

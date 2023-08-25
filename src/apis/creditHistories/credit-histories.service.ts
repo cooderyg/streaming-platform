@@ -91,6 +91,13 @@ export class CreditHistoriesService {
         '채널을 보유한 스트리머만 방송별 수익 조회가 가능합니다.',
       );
     // TODO : liveId로 방송 조회 후 방송 채널의 userId와 넘겨받은 userId 일치하는지 확인
+    const creditHistoryListByLive = await this.findByLiveId({ liveId });
+    return creditHistoryListByLive;
+  }
+
+  async findByLiveId({
+    liveId,
+  }: ICreaditHistoriesServiceFindByLiveId): Promise<CreditHistory[]> {
     const creditHistoryListByLive = await this.creditHistoriesRepository.find({
       where: { live: { id: liveId } },
     });
@@ -106,4 +113,8 @@ interface ICreaditHistoriesServiceCreateCreditHistory {
 interface IFindCreditHistoryListByLive {
   liveId: string;
   userId: string;
+}
+
+interface ICreaditHistoriesServiceFindByLiveId {
+  liveId: string;
 }

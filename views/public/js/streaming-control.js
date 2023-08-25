@@ -129,6 +129,10 @@ const chatroom = (liveId) => {
     setMedia(liveId);
   });
 
+  socket.on('endLive', () => {
+    alert('방송이 종료되었습니다.');
+  });
+
   // 소켓 카운트
   let socketCommCount = 0;
 
