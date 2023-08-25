@@ -40,6 +40,7 @@ export class ChannelsService {
         'channel.id',
         'channel.name',
         'channel.role',
+        'channel.income',
         'channel.profileImgUrl',
         'channel.bannerImgUrl',
         'channel.introduction',

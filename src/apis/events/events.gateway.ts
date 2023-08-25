@@ -45,7 +45,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // 프론트에서 연결 끊길 시
   handleDisconnect(@ConnectedSocket() socket: Socket): void {
     // 룸에 아무도 없을 때 룸은 자동으로 삭제됨 따로 룸삭제 작업할 필요없음
-    // 룸에는 socket id로 된 객체가 있기 때문에 스트리머의 socketId를 활용해서 룸에 입장하는 것도 괜찮을 듯
     if (typeof socket.handshake.headers['room-id'] !== 'string') return;
 
     const roomId: string = socket.handshake.headers['room-id'];
@@ -114,11 +113,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     };
     this.onAirStreamers.push(temp);
     console.log(this.onAirStreamers);
-  }
-
-  @SubscribeMessage('closeStream')
-  handleStreamClose(client: Socket, room: string) {
-    this.server.of('/').adapter.rooms.delete(room);
   }
 
   // @SubscribeMessage('createRoom')
