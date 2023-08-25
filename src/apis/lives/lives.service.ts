@@ -114,8 +114,15 @@ export class LivesService {
       .createQueryBuilder('live')
       .select('SUM(live.income)', 'income')
       .leftJoin('live.channel', 'channel')
-      .where(`channel.id = :channelId`, { channelId: channel.id, year, month })
+      .where(`channel.id = :channelId`, {
+        channelId: channel.id,
+        year,
+        month,
+      })
       .getRawOne();
+    if (result.income === null) {
+      result.income = 0;
+    }
     return result;
   }
 
