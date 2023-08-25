@@ -59,7 +59,7 @@ export class LivesController {
   async getLiveIncome(
     @User() user: UserAfterAuth,
     @Query() dateReqDto: DateReqDto,
-  ) {
+  ): Promise<{ income: number }> {
     const income = await this.livesService.getLiveIncome({
       userId: user.id,
       dateReqDto,
