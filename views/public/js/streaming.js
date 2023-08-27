@@ -143,10 +143,11 @@ channelNoticeBtn.addEventListener('click', () => {
 });
 
 //비디오 플레이어 설정
-const mediaContainerEl = document.querySelector('#media-container');
+// const mediaContainerEl = document.querySelector('#media-container');
 // mediaContainerEl.innerHTML = `<video id="video" width="100%" height="100%" controls autoplay></video>`;
 const video = document.getElementById('video');
 const videoSrc = `http://localhost:8000/live/${liveId}/index.m3u8`;
+// const videoSrc = `http://d2hv45obrzuf2s.cloudfront.net/videos/${liveId}/index.m3u8`;
 const hlsConfig = {
   debug: true,
   enableWorker: true,

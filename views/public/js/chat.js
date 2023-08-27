@@ -26,8 +26,8 @@ chatInput.addEventListener('keydown', (e) => {
 
 chatInput.addEventListener('focus', (e) => {
   if (!user) {
-    return alert('로그인 후 이용해주세요.');
     e.currentTarget.blur();
+    return alert('로그인 후 이용해주세요.');
   }
 });
 
@@ -78,6 +78,19 @@ const userConutEl = document.querySelector('#user-count');
 socket.on('userCount', (data) => {
   const { userCount } = data;
   userConutEl.innerText = `시청자 ${userCount}` || `시청자 0`;
+});
+
+const mediaContainerEl = document.querySelector('#media-container');
+
+socket.on('endLive', () => {
+  mediaContainerEl.innerHTML = `
+    <img
+        src="https://blog.kakaocdn.net/dn/cu6FRS/btrdswyTELB/zgpbDlAoEaTFcCXf2LI0Jk/img.png"
+        class="card-img-top"
+        alt="..."
+      />
+  `;
+  alert('방송이 종료되었습니다.');
 });
 
 // 후원하기
