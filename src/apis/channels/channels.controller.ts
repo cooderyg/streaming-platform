@@ -56,6 +56,18 @@ export class ChannelsController {
   }
 
   @UseGuards(AccessAuthGuard)
+  @Get('subscribe/profiles')
+  async getSubscribedChannels(
+    @User() user: UserAfterAuth, //
+  ): Promise<Channel[]> {
+    const channels = await this.channelsService.getSubscribedChannels({
+      userId: user.id,
+    });
+
+    return channels;
+  }
+
+  @UseGuards(AccessAuthGuard)
   @Get('admin/managers')
   async getManagers(@User() user: UserAfterAuth) {
     console.log(user);

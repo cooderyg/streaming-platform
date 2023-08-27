@@ -79,6 +79,17 @@ export class ChannelsService {
     return results;
   }
 
+  async getSubscribedChannels({ userId }): Promise<Channel[]> {
+    return await this.channelsRepository
+      .createQueryBuilder('channel')
+      .select(['channel.id', 'channel.name', 'channel.profileImgUrl'])
+      .leftJoin('channel.subscribes', 'subscribe')
+      .leftJoin('subscribe.user', 'user')
+      .where('subscribe.user = :userId', { userId })
+      .orderBy('subscribe.createdAt', 'ASC')
+      .getMany();
+  }
+
   async getManagers({ userId }) {
     const channel = await this.findByUserId({ userId });
 
