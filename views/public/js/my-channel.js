@@ -140,8 +140,6 @@ async function writeMyChannel(channelId) {
     'channel-introduction-input',
   ).value;
   // 변경할 카테고리 값 가져오기
-  // const CategoryIds = document.getElementById('channel-category-input').value;
-  // const categoryIds = CategoryIds.split(',').map((item) => item.trim());
   const categoryCheckboxes = document.querySelectorAll(
     '.form-checkCategory-input',
   );
@@ -153,8 +151,9 @@ async function writeMyChannel(channelId) {
     }
   });
 
-  const categoriesString = categoryIds.join(', ');
-  console.log(categoriesString); // 선택한 카테고리들이 쉼표로 구분된 문자열로 출력됩니다.
+  // 선택한 카테고리들이 쉼표로 구분된 문자열로 출력됩니다.
+  // const categoriesString = categoryIds.join(', ');
+  // console.log(categoriesString);
 
   // 변경할 베너 이미지 값 가져오기
   const bannerImgUrl = document.getElementById('channel-img-input').value;
