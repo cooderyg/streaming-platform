@@ -1,3 +1,4 @@
+import { Channel } from 'src/apis/channels/entities/channel.entity';
 import { User } from 'src/apis/users/entities/user.entity';
 import {
   Column,
@@ -33,4 +34,9 @@ export class Alert {
     onDelete: 'CASCADE',
   })
   user: User;
+
+  @ManyToOne(() => Channel, (channel) => channel.alerts, {
+    onDelete: 'CASCADE',
+  })
+  channel: Channel;
 }
