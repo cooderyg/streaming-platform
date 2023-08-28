@@ -1,3 +1,5 @@
+import { User } from 'src/apis/users/entities/user.entity';
+
 export interface IAlertsServiceGetAlerts {
   userId: string;
   page: number;
@@ -5,7 +7,7 @@ export interface IAlertsServiceGetAlerts {
 }
 
 export interface IAlertsServiceCreateAlerts {
-  userIds: string[];
+  users: User[];
   isOnAir: boolean;
   channelName: string;
   noticeContent?: string;

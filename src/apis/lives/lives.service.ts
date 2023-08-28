@@ -16,17 +16,21 @@ import { Channel } from '../channels/entities/channel.entity';
 import { PageReqDto } from 'src/commons/dto/page-req.dto';
 import { DateReqDto } from 'src/commons/dto/date-req.dto';
 import { EventsGateway } from '../events/events.gateway';
+import { UsersService } from '../users/users.service';
+import { AlertsService } from '../alerts/alerts.service';
 
 @Injectable()
 export class LivesService {
   constructor(
     @InjectRepository(Live)
     private readonly livesRepository: Repository<Live>,
+    private readonly alertsService: AlertsService,
     private readonly channelsService: ChannelsService,
-    private readonly tagsService: TagsService,
     private readonly creditHistoriesService: CreditHistoriesService,
     private readonly dataSource: DataSource,
     private readonly eventsGateway: EventsGateway,
+    private readonly tagsService: TagsService,
+    private readonly usersService: UsersService,
   ) {}
 
   async getLives({ pageReqDto }) {
@@ -114,7 +118,7 @@ export class LivesService {
       .createQueryBuilder('live')
       .select('SUM(live.income)', 'income')
       .leftJoin('live.channel', 'channel')
-      .where(`channel.id = :channelId`, {
+      .where('channel.id = :channelId', {
         channelId: channel.id,
         year,
         month,
@@ -147,7 +151,17 @@ export class LivesService {
       id: liveId,
       onAir: true,
     });
-
+    live.channel.id;
+    const subscribedUsers = await this.usersService.findSubscribedUsers({
+      channelId: live.channel.id,
+    });
+    if (subscribedUsers.length > 0) {
+      await this.alertsService.createAlerts({
+        users: subscribedUsers,
+        isOnAir: true,
+        channelName: live.channel.name,
+      });
+    }
     const streamer = this.eventsGateway.onAirStreamers.find(
       (el) => el.liveId === liveId,
     );
