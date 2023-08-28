@@ -8,7 +8,6 @@ const getChannelData = async () => {
   // 채널 데이터
   const res = await fetch(`/api/channels/${channelId}`);
   const data = await res.json();
-  console.log(data);
   channelName = data.name;
   channelInfo = data.introduction;
   // Todo:  배너,프로필 구분 필요

@@ -101,31 +101,64 @@ async function writeMyNotice(channelId) {
   });
 }
 
-async function writeMyChannel() {
-  let bannerImgUrl;
-  const channelWriteBtn = document.getElementById('channel-write-btn');
-  channelWriteBtn.addEventListener('click', async () => {
-    const name = document.getElementById('channel-name-input').value;
-    const introduction = document.getElementById(
-      'channel-introduction-input',
-    ).value;
-    const CategoryIds = document.getElementById('channel-category-input').value;
-    const categoryIds = CategoryIds.split(',').map((item) => item.trim());
-    const bannerImgUrl = document.getElementById('channel-img-input').value;
+// 카테고리2개이상 클릭시 alert
+const maxAllowedCategories = 2;
+const categoryCheckboxes = document.querySelectorAll(
+  '.form-checkCategory-input',
+);
+let selectedCategories = 0;
 
-    await fetch(`/api/channels/update/${channelId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: name,
-        introduction: introduction,
-        categoryIds: categoryIds,
-        bannerImgUrl: bannerImgUrl,
-      }),
-    });
+categoryCheckboxes.forEach((checkbox) => {
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      if (selectedCategories >= maxAllowedCategories) {
+        checkbox.checked = false;
+        alert('최대 2개의 카테고리까지 선택할 수 있습니다.');
+      } else {
+        selectedCategories++;
+      }
+    } else {
+      selectedCategories--;
+    }
   });
+});
+
+async function writeMyChannel(channelId) {
+  // 채널 데이터
+  const res = await fetch(`/api/channels/${channelId}`);
+  const data = await res.json();
+  const channelName = data.name;
+  const channelBannerImg =
+    data.bannerImgUrl || '../img/curved-images/curved0.jpg';
+  const channelIntroduction = data.introduction;
+  const channelCategories = data.categories;
+  console.log(data);
+
+  // 변경할 채널 타이틀, 채널 소개 값 가져오기
+  const name = document.getElementById('channel-name-input').value;
+  const introduction = document.getElementById(
+    'channel-introduction-input',
+  ).value;
+  // 변경할 카테고리 값 가져오기
+  // const CategoryIds = document.getElementById('channel-category-input').value;
+  // const categoryIds = CategoryIds.split(',').map((item) => item.trim());
+  const categoryCheckboxes = document.querySelectorAll(
+    '.form-checkCategory-input',
+  );
+  const categoryIds = [];
+
+  categoryCheckboxes.forEach((checkbox) => {
+    if (checkbox.checked) {
+      categoryIds.push(checkbox.value);
+    }
+  });
+
+  const categoriesString = categoryIds.join(', ');
+  console.log(categoriesString); // 선택한 카테고리들이 쉼표로 구분된 문자열로 출력됩니다.
+
+  // 변경할 베너 이미지 값 가져오기
+  const bannerImgUrl = document.getElementById('channel-img-input').value;
+
   const channelImageUploadBtn = document.getElementById(
     'channel-image-upload-btn',
   );
@@ -142,8 +175,20 @@ async function writeMyChannel() {
     const uploadData = await uploadRes.json();
     bannerImgUrl = uploadData.url;
   });
-}
 
+  await fetch(`/api/channels/update/${channelId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: name || channelName,
+      introduction: introduction || channelIntroduction,
+      categoryIds: categoryIds,
+      bannerImgUrl: bannerImgUrl || channelBannerImg,
+    }),
+  });
+}
 // 시작
 (async () => {
   // Channel 데이터 뿌려주기 + Id 획득
