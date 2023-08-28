@@ -1,3 +1,4 @@
+import { Alert } from 'src/apis/alerts/entities/alert.entity';
 import { Channel } from 'src/apis/channels/entities/channel.entity';
 import { Chat } from 'src/apis/chats/entities/chat.entity';
 import { CreditHistory } from 'src/apis/creditHistories/entities/credit-history.entity';
@@ -76,4 +77,9 @@ export class User {
     cascade: true,
   })
   noticeComment: NoticeComment[];
+
+  @OneToMany(() => Alert, (alert) => alert.user, {
+    cascade: true,
+  })
+  alerts: Alert[];
 }
