@@ -96,6 +96,17 @@ export class LivesController {
     return { message: '전달완료' };
   }
 
+  // 썸네일 업로드 시 URL 추가
+  @Put('/:liveId/thumbnails')
+  async addThumbnail(@Body() body, @Param('liveId') liveId: string) {
+    const { thumbnailUrl } = body;
+    const result = await this.livesService.addThumbnail({
+      thumbnailUrl,
+      liveId,
+    });
+    return result;
+  }
+
   /**
    * Live의 title, tag 변경을 위한 API 입니다.
    */

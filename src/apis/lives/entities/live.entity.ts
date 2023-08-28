@@ -32,9 +32,13 @@ export class Live {
 
   @Column({ nullable: true })
   replayUrl: string;
+  f;
 
   @Column({ default: false })
   onAir: boolean;
+
+  @Column({ nullable: true })
+  thumbnailUrl: string;
 
   @CreateDateColumn()
   createdAt: Date;
