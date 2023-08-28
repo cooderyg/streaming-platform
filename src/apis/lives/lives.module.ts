@@ -8,14 +8,18 @@ import { TagsModule } from '../tags/tags.module';
 import { CreditHistoriesModule } from '../creditHistories/credit-histories.module';
 import { Channel } from '../channels/entities/channel.entity';
 import { EventsModule } from '../events/events.module';
+import { AlertsModule } from '../alerts/alerts.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Live, Channel]),
+    AlertsModule,
     ChannelsModule,
-    TagsModule,
     CreditHistoriesModule,
     EventsModule,
+    TagsModule,
+    TypeOrmModule.forFeature([Live, Channel]),
+    UsersModule,
   ],
   controllers: [LivesController],
   providers: [LivesService],
