@@ -1,3 +1,23 @@
+<style>
+  #alert-count {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+    color: #fff;
+    font-size: 12px;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    border-radius: 100px;
+    top: -4px;
+    left: 8px;
+  }
+  #alert-count.off {
+    display: none;
+  }
+</style>
+
 <nav
   class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl"
   id="navbarBlur"
@@ -51,6 +71,7 @@
           </a>
         </li>
         <li class="nav-item dropdown pe-2 d-flex align-items-center">
+          <div id="alert-count"><span id="alert-count-num"></span></div>
           <a
             href="javascript:;"
             class="nav-link text-body p-0"
@@ -61,6 +82,7 @@
             <i class="fa fa-bell cursor-pointer"></i>
           </a>
           <ul
+            id="alert-list"
             class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4"
             aria-labelledby="dropdownMenuButton"
           >
@@ -191,4 +213,52 @@
       myChannelBtn.style.display = 'none'; // 로그인하지 않은 상태면 My Channel 버튼 감추기
     }
   });
+
+  const alertListEl = document.querySelector('#alert-list');
+  const alertCount = document.querySelector('#alert-count');
+  const alertCountNum = document.querySelector('#alert-count-num');
+  const getAlerts = async () => {
+    const response = await fetch('/api/alerts');
+    const data = await response.json();
+    if (!response.ok) {
+      alertCount.classList.add('off');
+      return;
+    }
+    console.log(data);
+    if (!data.length) alertCount.classList.add('off');
+    alertCountNum.innerText = data.length;
+
+    const temp = data.map((el) => {
+      const imgTemp = el.channel.profileImgUrl || '/img/profile.jpg';
+
+      return `
+            <li class="mb-2">
+              <a class="dropdown-item border-radius-md" href="javascript:;">
+                <div class="d-flex py-1">
+                  <div class="my-auto">
+                    <img
+                      src=${imgTemp}
+                      class="avatar avatar-sm me-3"
+                      style="border-radius: 100px"
+                    />
+                  </div>
+                  <div class="d-flex flex-column justify-content-center">
+                    <h6 class="text-sm font-weight-normal mb-1">
+                      ${el.message}
+                    </h6>
+                    <p class="text-xs text-secondary mb-0">
+                      <i class="fa fa-clock me-1"></i>
+                      ${new Date(el.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </a>
+            </li>
+          `;
+    });
+
+    alertListEl.innerHTML = temp;
+  };
+
+  getAlerts();
 </script>
