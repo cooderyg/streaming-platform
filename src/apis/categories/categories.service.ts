@@ -17,9 +17,9 @@ export class CategoriesService {
     return await this.categoriesRepository.save(crateCategoryDto);
   }
 
-  async findCategories({ categoryIds }): Promise<Category[]> {
+  async findCategories({ name }): Promise<Category[]> {
     return await this.categoriesRepository.find({
-      where: { id: In(categoryIds) },
+      where: { name: In(name) },
     });
   }
 }

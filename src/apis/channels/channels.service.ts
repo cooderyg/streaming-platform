@@ -48,6 +48,7 @@ export class ChannelsService {
         'subscribes.id',
         'user.email',
       ])
+      .leftJoin('channel.categories', 'categoryChannel')
       .leftJoin('channel.subscribes', 'subscribes')
       .leftJoin('channel.user', 'user')
       .where('channel.id = :id', { id: channelId })
@@ -109,7 +110,7 @@ export class ChannelsService {
     const { categoryIds, name } = createChannelDto;
 
     const categories = await this.categoriesService.findCategories({
-      categoryIds,
+      name: categoryIds,
     });
     console.log(categories);
     const channel = await this.channelsRepository.save({
@@ -159,7 +160,7 @@ export class ChannelsService {
       throw new ForbiddenException('채널 소유자가 아닙니다.');
     const { categoryIds, ...rest } = updateChannelDto;
     const categories = await this.categoriesService.findCategories({
-      categoryIds,
+      name: categoryIds,
     });
     const result = await this.channelsRepository.save({
       ...channel,
