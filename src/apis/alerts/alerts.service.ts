@@ -35,15 +35,15 @@ export class AlertsService {
   }
 
   async createAlerts({
-    userIds,
+    users,
     isOnAir,
     channelName,
     noticeContent,
   }: IAlertsServiceCreateAlerts) {
     const temp: Alert[] = [];
-    userIds.forEach((userId) => {
+    users.forEach((user) => {
       const alert = this.alertsRepository.create({
-        user: { id: userId },
+        user: { id: user.id },
         message: isOnAir
           ? `${channelName} 채널이 방송을 시작했습니다.`
           : `${channelName} 채널의 공지: ${noticeContent}`,

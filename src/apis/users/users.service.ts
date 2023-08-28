@@ -35,6 +35,16 @@ export class UsersService {
     return user;
   }
 
+  async findSubscribedUsers({ channelId }) {
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .select(['user.id'])
+      .leftJoin('user.subscribes', 'subscribe')
+      .leftJoin('subscribe.channel', 'channel')
+      .where('channel.id = :channelId', { channelId })
+      .getMany();
+  }
+
   async createUser({ createUserDto }: IUsersServiceCreateUser): Promise<void> {
     const { email, nickname, password } = createUserDto;
     const user = await this.findByEmail({ email });
