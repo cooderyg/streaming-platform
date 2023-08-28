@@ -9,6 +9,7 @@ export interface IAlertsServiceGetAlerts {
 export interface IAlertsServiceCreateAlerts {
   users: User[];
   isOnAir: boolean;
+  channelId: string;
   channelName: string;
   noticeContent?: string;
 }

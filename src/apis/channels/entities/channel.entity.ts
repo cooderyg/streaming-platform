@@ -1,3 +1,4 @@
+import { Alert } from 'src/apis/alerts/entities/alert.entity';
 import { Category } from 'src/apis/categories/entities/category.entity';
 import { Live } from 'src/apis/lives/entities/live.entity';
 import { Notice } from 'src/apis/notices/entities/notice.entity';
@@ -71,6 +72,11 @@ export class Channel {
     cascade: true,
   })
   lives: Live[];
+
+  @OneToMany(() => Alert, (alert) => alert.channel, {
+    cascade: true,
+  })
+  alerts: Alert[];
 
   @JoinTable({ name: 'category_channel' })
   @ManyToMany(() => Category, (category) => category.channels)

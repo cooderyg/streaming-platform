@@ -155,19 +155,31 @@ export class LivesService {
     const subscribedUsers = await this.usersService.findSubscribedUsers({
       channelId: live.channel.id,
     });
-    if (subscribedUsers.length > 0) {
+
+    if (subscribedUsers?.length > 0) {
       await this.alertsService.createAlerts({
         users: subscribedUsers,
+        channelId: live.channel.id,
         isOnAir: true,
         channelName: live.channel.name,
       });
     }
+
     const streamer = this.eventsGateway.onAirStreamers.find(
       (el) => el.liveId === liveId,
     );
     this.eventsGateway.server
       .to(streamer?.socket?.id)
       .emit('startLive', { liveId });
+  }
+
+  // 썸네일 추가
+  async addThumbnail({ thumbnailUrl, liveId }) {
+    const result = await this.livesRepository.save({
+      id: liveId,
+      thumbnailUrl,
+    });
+    return result;
   }
 
   async updateLiveInfo({

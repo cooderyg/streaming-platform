@@ -26,7 +26,12 @@ export class AlertsService {
     size,
   }: IAlertsServiceGetAlerts): Promise<Alert[]> {
     const alerts = await this.alertsRepository.find({
-      where: { user: { id: userId } },
+      relations: ['channel'],
+      select: ['id', 'isRead', 'message', 'createdAt', 'channel'],
+      where: {
+        isRead: false,
+        user: { id: userId },
+      },
       order: { createdAt: 'DESC' },
       take: size,
       skip: (page - 1) * size,
@@ -34,9 +39,11 @@ export class AlertsService {
     return alerts;
   }
 
+  // ex 구독자 10만명이면 많은 시간동안 대기해야 함
   async createAlerts({
     users,
     isOnAir,
+    channelId,
     channelName,
     noticeContent,
   }: IAlertsServiceCreateAlerts) {
@@ -44,6 +51,7 @@ export class AlertsService {
     users.forEach((user) => {
       const alert = this.alertsRepository.create({
         user: { id: user.id },
+        channel: { id: channelId },
         message: isOnAir
           ? `${channelName} 채널이 방송을 시작했습니다.`
           : `${channelName} 채널의 공지: ${noticeContent}`,

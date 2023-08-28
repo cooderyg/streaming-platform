@@ -35,6 +35,7 @@ export class UsersService {
     return user;
   }
 
+  // ex 구독자 10만명이면 많은 시간동안 대기해야 함
   async findSubscribedUsers({ channelId }) {
     return await this.usersRepository
       .createQueryBuilder('user')

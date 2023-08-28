@@ -4,7 +4,7 @@ import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
 import { AlertsService } from './alerts.service';
 import { PageReqDto } from 'src/commons/dto/page-req.dto';
 
-@Controller('alerts')
+@Controller('api/alerts')
 export class AlertsController {
   constructor(private readonly alertsService: AlertsService) {}
 
