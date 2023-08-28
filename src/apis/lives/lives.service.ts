@@ -170,6 +170,15 @@ export class LivesService {
       .emit('startLive', { liveId });
   }
 
+  // 썸네일 추가
+  async addThumbnail({ thumbnailUrl, liveId }) {
+    const result = await this.livesRepository.save({
+      id: liveId,
+      thumbnailUrl,
+    });
+    return result;
+  }
+
   async updateLiveInfo({
     userId,
     liveId,
