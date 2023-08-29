@@ -245,7 +245,6 @@ export class LivesService {
     const playtime = Math.floor(
       (now.getTime() - live.createdAt.getTime()) / 1000 / 60,
     );
-    console.log('플레이타임', playtime);
     const channel = await this.channelsService.getChannel({
       channelId: live.channel.id,
     });

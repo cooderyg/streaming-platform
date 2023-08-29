@@ -1,4 +1,3 @@
-console.log('테스트');
 const nicknameEl = document.querySelector('#nickname');
 const emailEl = document.querySelector('#email');
 const passwordEl = document.querySelector('#password');
@@ -20,7 +19,6 @@ signupBtn.addEventListener('click', async (e) => {
       body: form,
     });
     const data = await response.json();
-    console.log(data);
     if (data.message === '유저 생성이 완료되었습니다.') {
       window.location.href = '/sign-in';
     } else {

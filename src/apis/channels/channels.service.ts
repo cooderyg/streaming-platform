@@ -83,7 +83,6 @@ export class ChannelsService {
 
   async getAllPlayTimes({ userId }) {
     const channel = await this.getMyChannel({ userId });
-    console.log(channel);
     const beforeAMonth = new Date();
     beforeAMonth.setDate(beforeAMonth.getDate() - 30);
     const playtimes = await this.channelsRepository
@@ -127,7 +126,6 @@ export class ChannelsService {
     const categories = await this.categoriesService.findCategories({
       name: categoryIds,
     });
-    console.log(categories);
     const channel = await this.channelsRepository.save({
       name,
       user: { id: userId },

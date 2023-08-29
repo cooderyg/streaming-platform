@@ -21,7 +21,6 @@ export class AuthController {
     res.cookie('refreshToken', refreshToken);
     res.cookie('accessToken', accessToken);
     // , { httpOnly: true, secure: true }
-    console.log(accessToken);
     // res.setHeader('Authorization', `Bearer ${accessToken}`);
 
     return { message: '로그인을 성공적으로 완료하였습니다.' };
@@ -38,7 +37,6 @@ export class AuthController {
     });
 
     res.setHeader('Authorization', `Bearer ${accessToken}`);
-    console.log(accessToken);
     return { message: 'refresh' };
   }
 }

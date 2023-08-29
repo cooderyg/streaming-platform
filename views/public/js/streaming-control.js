@@ -71,7 +71,6 @@ const getUserData = async () => {
   if (!response.ok) return;
   const data = await response.json();
   user = data;
-  console.log(user);
 };
 getUserData();
 
@@ -79,8 +78,6 @@ const getLiveControl = async () => {
   const response = await fetch('/api/lives/admin/control');
   const data = await response.json();
   if (!response.ok) return;
-
-  console.log(data);
 
   setStreamKey(data.id);
 
@@ -96,13 +93,11 @@ const getData = async (liveId) => {
   let channelId;
   const resLive = await fetch(`/api/lives/${liveId}`);
   const dataLive = await resLive.json();
-  console.log(dataLive);
   const liveTitle = document.querySelector('.live-title');
   const channelName = document.querySelector('.channel-name');
   const channelImg = document.querySelector('.channel-img');
   liveTitle.innerText = dataLive.title;
   channelId = dataLive.channel.id;
-  console.log('채널아이디', channelId);
   channelName.innerText = dataLive.channel.name;
   const profileImgUrl = dataLive.channel.profileImgUrl || '/img/profile.jpg';
   channelImg.innerHTML = `<img src="${profileImgUrl}" alt="profile_image" class="w-100 border-radius-lg shadow-sm"/>`;
@@ -159,7 +154,6 @@ const chatroom = (liveId) => {
 
   // 채팅받기
   socket.on('chat', (data) => {
-    console.log(data);
     const chat = data.chat;
     const nickname = data.user.nickname;
     const img = data.user.imageUrl ? data.user.imageUrl : '/img/profile.jpg';

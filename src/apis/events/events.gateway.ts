@@ -41,8 +41,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const userCount = this.server.of('/').adapter.rooms.get(roomId).size;
 
     this.server.of('/').to(roomId).emit('userCount', { userCount });
-    // console.log(this.server.of('/').adapter.rooms);
-    // console.log(this.server.of('/').adapter.rooms.get('test')); // socketIO room은 map 객체임!
   }
 
   // 프론트에서 연결 끊길 시
