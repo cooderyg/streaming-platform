@@ -152,6 +152,7 @@ export class LivesService {
       onAir: true,
     });
     live.channel.id;
+
     const subscribedUsers = await this.usersService.findSubscribedUsers({
       channelId: live.channel.id,
     });
