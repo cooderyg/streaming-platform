@@ -80,6 +80,15 @@ export class ChannelsService {
     return results;
   }
 
+  async getAllLiveTimes({ channelId }) {
+    const playtimes = await this.channelsRepository
+      .createQueryBuilder('channel')
+      .select('SUM(live.playtime)', 'playtimes')
+      .leftJoin('channel.lives', 'live')
+      .where('channel.id = :id', { id: channelId })
+      .getRawOne();
+    return playtimes;
+  }
   async getSubscribedChannels({ userId }): Promise<Channel[]> {
     return await this.channelsRepository
       .createQueryBuilder('channel')
