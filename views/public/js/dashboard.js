@@ -30,8 +30,6 @@ const getAllPlayTimes = async () => {
   const data = await response.json();
 
   playtimeEl.innerText = `${data.playtimes} 분`;
-
-  console.log('방송시간 데이터', data);
 };
 getAllPlayTimes();
 

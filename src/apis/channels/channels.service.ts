@@ -15,6 +15,7 @@ import { CreateChannelDto } from './dto/create-channel.dto';
 import { CategoriesService } from '../categories/categories.service';
 import { SearchReqDto } from 'src/commons/dto/page-req.dto';
 import { UsersService } from '../users/users.service';
+import { before } from 'node:test';
 
 @Injectable()
 export class ChannelsService {
@@ -83,11 +84,14 @@ export class ChannelsService {
   async getAllPlayTimes({ userId }) {
     const channel = await this.getMyChannel({ userId });
     console.log(channel);
+    const beforeAMonth = new Date();
+    beforeAMonth.setDate(beforeAMonth.getDate() - 30);
     const playtimes = await this.channelsRepository
       .createQueryBuilder('channel')
       .select('SUM(live.playtime)', 'playtimes')
       .leftJoin('channel.lives', 'live')
       .where('channel.id = :id', { id: channel.id })
+      .andWhere('live.createdAt >= :date', { date: beforeAMonth })
       .getRawOne();
     return playtimes;
   }
