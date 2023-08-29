@@ -53,6 +53,7 @@ import { AlertsModule } from './apis/alerts/alerts.module';
       synchronize: true, // 개발환경에서만 사용
       logging: true,
       namingStrategy: new SnakeNamingStrategy(),
+      timezone: 'UTC',
     }),
   ],
   controllers: [AppController],

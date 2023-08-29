@@ -40,6 +40,9 @@ export class Live {
   @Column({ nullable: true })
   thumbnailUrl: string;
 
+  @Column({ nullable: true })
+  playtime: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
