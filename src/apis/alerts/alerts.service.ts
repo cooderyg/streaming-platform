@@ -39,7 +39,7 @@ export class AlertsService {
     return alerts;
   }
 
-  // ex 구독자 10만명이면 많은 시간동안 대기해야 함
+  // ex 구독자 10만명이면 많은 시간동안 대기해야 함 잘게 쪼개서 작업하기
   async createAlerts({
     users,
     isOnAir,

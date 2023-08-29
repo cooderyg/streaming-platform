@@ -9,12 +9,15 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { User } from '../users/entities/user.entity';
+import {
+  IEventsGatewayHandleChat,
+  IEventsGatewayHandleDonation,
+} from './interfaces/events-gateway.interface';
 
-interface IEventGatewayOnAirStreamers {
-  socket: Socket;
-  liveId: string;
-}
+// interface IEventGatewayOnAirStreamers {
+//   socket: Socket;
+//   liveId: string;
+// }
 
 @WebSocketGateway({
   cors: {
@@ -26,7 +29,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  onAirStreamers: IEventGatewayOnAirStreamers[] = [];
+  // onAirStreamers: IEventGatewayOnAirStreamers[] = [];
 
   async handleConnection(@ConnectedSocket() socket: Socket): Promise<void> {
     if (typeof socket.handshake.headers['room-id'] !== 'string') return;
@@ -102,18 +105,18 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  @SubscribeMessage('createLive')
-  handleCreateLive(@ConnectedSocket() socket: Socket) {
-    if (typeof socket.handshake.headers['room-id'] !== 'string') return;
-    const liveId: string = socket.handshake.headers['room-id'];
+  // @SubscribeMessage('createLive')
+  // handleCreateLive(@ConnectedSocket() socket: Socket) {
+  //   if (typeof socket.handshake.headers['room-id'] !== 'string') return;
+  //   const liveId: string = socket.handshake.headers['room-id'];
 
-    const temp = {
-      socket,
-      liveId,
-    };
-    this.onAirStreamers.push(temp);
-    console.log(this.onAirStreamers);
-  }
+  //   const temp = {
+  //     socket,
+  //     liveId,
+  //   };
+  //   this.onAirStreamers.push(temp);
+  //   console.log(this.onAirStreamers);
+  // }
 
   // @SubscribeMessage('createRoom')
   // handleCreateRoom(client: Socket, room: string) {
@@ -125,15 +128,4 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //   // 스트리밍 페이지를 나가면 자동으로 disconnect 되기 때문에 필요없을 것 같음 추가적인 작업이 있는 경우 사용
   //   client.leave(room);
   // }
-}
-
-interface IEventsGatewayHandleChat {
-  chat: string;
-  user?: User;
-}
-
-interface IEventsGatewayHandleDonation {
-  roomId: string;
-  amount: number;
-  user?: User;
 }
