@@ -126,4 +126,28 @@ export class UsersService {
 
     return updatedUser;
   }
+
+  // 더미데이터 생성용(추후 제거할 것)
+  async createDummyUser({
+    createUserDto,
+  }: IUsersServiceCreateUser) {
+    const { email, nickname, password } = createUserDto;
+    const user = await this.findByEmail({ email });
+    if (user) throw new ConflictException('이미 등록된 이메일입니다.');
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const result = await this.usersRepository.save({
+      email,
+      nickname,
+      password: hashedPassword,
+    });
+
+    const createChannelDto = { name: result.nickname, categoryIds: [] };
+    await this.channelsService.createChannel({
+      createChannelDto,
+      userId: result.id,
+    });
+
+    return { userId: result.id }
+  }
 }
