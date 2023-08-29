@@ -14,7 +14,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus(); // 예외코드
     const message = exception.message; // 예외메세지
     response.status(status).json({ message });
-
     console.log('======================');
     console.log('예외가 발생했습니다.');
     console.log('예외내용', message);

@@ -90,18 +90,18 @@ export class SubscribesService {
     userId: string;
   }): Promise<boolean> {
     const { channelId, userId } = toggleSubscribeDto;
-    const isExist = await this.findByChannelIdAndUserId({ channelId, userId });
-    if (isExist) {
-      await this.subscribesRepository.delete(isExist.id);
+    // const isExist = await this.findByChannelIdAndUserId({ channelId, userId });
+    // if (isExist) {
+    //   await this.subscribesRepository.delete(isExist.id);
+    //   return false;
+    // } else {
 
-      return false;
-    } else {
-      await this.subscribesRepository.save({
-        channel: { id: channelId },
-        user: { id: userId },
-      });
+    await this.subscribesRepository.save({
+      channel: { id: channelId },
+      user: { id: userId },
+    });
 
-      return true;
-    }
+    return true;
+    // }
   }
 }
