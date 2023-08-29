@@ -63,6 +63,7 @@ export class LivesService {
       .select([
         'live.id',
         'live.title',
+        'live.createdAt',
         'tag.id',
         'tag.name',
         'channel.id',
@@ -239,7 +240,11 @@ export class LivesService {
 
   async closeOBS({ liveId }): Promise<void> {
     const live = await this.getLiveById({ liveId });
-
+    const now = new Date();
+    const playtime = Math.floor(
+      (now.getTime() - live.createdAt.getTime()) / 1000 / 60,
+    );
+    console.log('플레이타임', playtime);
     const channel = await this.channelsService.getChannel({
       channelId: live.channel.id,
     });
@@ -260,7 +265,6 @@ export class LivesService {
         (acc, history) => acc + history.amount,
         0,
       );
-
       // 채널 정산하기
       const totalChannelIncome = channel.income + totalLiveIncome;
 
@@ -269,6 +273,7 @@ export class LivesService {
         endDate: new Date(),
         income: totalLiveIncome,
         onAir: false,
+        playtime,
       });
       await manager.save(Channel, {
         ...channel,

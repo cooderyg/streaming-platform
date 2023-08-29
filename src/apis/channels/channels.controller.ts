@@ -39,6 +39,16 @@ export class ChannelsController {
     return channel;
   }
 
+  // 채널 방송시간 조회
+  @UseGuards(AccessAuthGuard)
+  @Get('/live-times')
+  async getAllPlayTimes(@User() user: UserAfterAuth) {
+    const playtimes = await this.channelsService.getAllPlayTimes({
+      userId: user.id,
+    });
+    return playtimes;
+  }
+
   // 채널 조회
   @Get('/:channelId')
   async getChannel(@Param('channelId') channelId: string) {
