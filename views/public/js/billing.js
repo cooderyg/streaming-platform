@@ -18,7 +18,6 @@ const paymentContainerEl = document.querySelector('#payment-container');
 const getPayments = async () => {
   const response = await fetch('/api/payments');
   const data = await response.json();
-  console.log(data);
   const cancelTemp = `
     <div class="ms-auto text-end">
         <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;" >결제취소</a>
@@ -71,7 +70,6 @@ const creditHistoryContainerEl = document.querySelector(
 const getCreditHistory = async () => {
   const response = await fetch('/api/credit-histories');
   const data = await response.json();
-  console.log(data);
 
   const temp = data
     .map((data) => {
@@ -136,7 +134,6 @@ const requestPay = () => {
       buyer_postcode: '01181',
     },
     function (rsp) {
-      console.log(rsp);
       // callback
       //rsp.imp_uid 값으로 결제 단건조회 API를 호출하여 결제결과를 판단합니다.
       if (rsp.success) {

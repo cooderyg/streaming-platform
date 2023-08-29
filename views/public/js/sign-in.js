@@ -22,7 +22,6 @@ signinBtnEl.addEventListener('click', async (e) => {
     });
 
     const data = await response.json();
-    console.log(data);
     if (data.message === '로그인을 성공적으로 완료하였습니다.') {
       window.location.href = '/';
     } else {

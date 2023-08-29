@@ -21,13 +21,6 @@ import { Live } from './entities/live.entity';
 export class LivesController {
   constructor(private readonly livesService: LivesService) {}
 
-  /**
-   * @todo
-   * 메인페이지 라이브 방송목록 나열용 findAll 필요
-   * 페이지네이션 적용 필요
-   * 정렬 기준이 필요함(현재 접속자 수 기준 등)
-   * 종료된 방송을 띄우면 안됨
-   */
   @Get()
   async getLives(@Query() pageReqDto: PageReqDto) {
     const lives = await this.livesService.getLives({ pageReqDto });
@@ -90,8 +83,6 @@ export class LivesController {
 
   @Post('/start/:liveId')
   async startLive(@Param('liveId') liveId: string) {
-    console.log(liveId);
-    console.log('미디어 서버에서 왔어요');
     this.livesService.startLive({ liveId });
     return { message: '전달완료' };
   }
@@ -151,7 +142,6 @@ export class LivesController {
     @Param('liveId') liveId: string,
   ): Promise<{ message: string }> {
     await this.livesService.closeOBS({ liveId });
-    console.log('방송종료');
     return { message: '종료 완료' };
   }
 

@@ -49,7 +49,6 @@ export class SubscribesService {
     const { channelId } = toggleSubscribeDto;
 
     const isExist = await this.findByChannelIdAndUserId({ channelId, userId });
-    console.log(isExist);
     if (isExist) {
       await this.subscribesRepository.delete(isExist.id);
 

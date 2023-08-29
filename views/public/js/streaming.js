@@ -42,7 +42,6 @@ const getData = async () => {
   const channelInfo = dataChannel.introduction;
   const channelCreatedAt = dataChannel.createdAt.split('T')['0'];
   const streamerEmail = dataChannel.user.email;
-  console.log('채널데이터', dataChannel);
 
   document
     .getElementById('channel-info')
@@ -89,7 +88,6 @@ const getData = async () => {
     .then((res) => res.json())
     .then((data) => {
       const { isSubscribed } = data;
-      console.log(isSubscribed);
       if (isSubscribed) {
         subscribeBtn.innerText = '구독취소';
       } else {
@@ -131,8 +129,6 @@ subscribeBtn.addEventListener('click', async (e) => {
 
 const channelNoticeBtn = document.getElementById('notice-btn');
 const channelInfoBtn = document.getElementById('channel-info-btn');
-console.log(channelNoticeBtn);
-console.log(channelInfoBtn);
 channelInfoBtn.addEventListener('click', () => {
   document.getElementById('channel-notice-row').style.display = 'none';
   document.getElementById('channel-info-row').style.display = '';
@@ -162,7 +158,6 @@ setTimeout(() => {
     hls.loadSource(videoSrc);
     hls.attachMedia(video);
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      console.log(hls);
       video.play();
     });
     video.addEventListener('click', () => {

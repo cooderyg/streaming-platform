@@ -55,7 +55,6 @@ export class ChannelsController {
     const channel = await this.channelsService.getChannel({
       channelId,
     });
-    console.log(channel);
     return channel;
   }
 
@@ -80,7 +79,6 @@ export class ChannelsController {
   @UseGuards(AccessAuthGuard)
   @Get('admin/managers')
   async getManagers(@User() user: UserAfterAuth) {
-    console.log(user);
     const managers = await this.channelsService.getManagers({
       userId: user.id,
     });
@@ -110,7 +108,6 @@ export class ChannelsController {
     @Body() updateChannelDto: UpdateChannelDto,
     @User() user: UserAfterAuth,
   ) {
-    console.log('업데이트 dtr 확인용:', updateChannelDto);
     const result = await this.channelsService.updateChannel({
       userId: user.id,
       channelId,

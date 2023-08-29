@@ -95,7 +95,6 @@ const writeNotice = () => {
       }),
     });
     const noticeData = await noticeRes.json();
-    console.log(noticeData);
   });
 
   const noticeImageUploadBtn = document.getElementById(
@@ -104,7 +103,6 @@ const writeNotice = () => {
   noticeImageUploadBtn.addEventListener('click', async () => {
     const fileInput = document.getElementById('notice-img-input');
     let formData = new FormData();
-    console.log(formData);
     formData.append('file', fileInput.files[0]);
     const uploadRes = await fetch('/api/uploads/channel-notice-image', {
       method: 'POST',
@@ -144,7 +142,6 @@ const writeChannel = async () => {
       }),
     });
     const channelData = await channelRes.json();
-    console.log(channelData);
     // window.location.reload();
   });
 };
@@ -153,7 +150,6 @@ const channelImageUploadBtn = document.getElementById(
 );
 channelImageUploadBtn.addEventListener('click', async () => {
   const fileInput = document.getElementById('channel-img-input');
-  console.log(fileInput);
   let formData = new FormData();
   formData.append('file', fileInput.files[0]);
   const uploadRes = await fetch('/api/uploads/channel-notice-image', {
@@ -162,7 +158,6 @@ channelImageUploadBtn.addEventListener('click', async () => {
     body: formData, // body 부분에 폼데이터 변수를 할당
   });
   const uploadData = await uploadRes.json();
-  console.log(uploadData);
   channelBannerImg = uploadData.url;
 });
 

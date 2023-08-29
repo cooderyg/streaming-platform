@@ -42,7 +42,6 @@ window.addEventListener('DOMContentLoaded', () => {
         cardList.insertAdjacentHTML('beforeEnd', temp_html);
 
         const streamEls = document.querySelectorAll('.stream');
-        console.log(streamEls);
         streamEls.forEach((streamEl) => {
           streamEl.addEventListener('click', (e) => {
             const id = e.currentTarget.getAttribute('data-id');
