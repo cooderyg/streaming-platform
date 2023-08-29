@@ -2,6 +2,7 @@ const incomeEl = document.querySelector('#income');
 const subscribeEl = document.querySelector('#subscribe');
 const livesEl = document.querySelector('#lives');
 const monthlyIncome = document.querySelector('#monthly-income');
+const playtimeEl = document.querySelector('#playtime');
 
 const switchMoneyString = (number) => {
   return `₩ ${number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
@@ -23,6 +24,16 @@ const getSubscribeData = async () => {
 };
 
 getSubscribeData();
+
+const getAllPlayTimes = async () => {
+  const response = await fetch('/api/channels/live-times');
+  const data = await response.json();
+
+  playtimeEl.innerText = `${data.playtimes} 분`;
+
+  console.log('방송시간 데이터', data);
+};
+getAllPlayTimes();
 
 const getLiveData = async () => {
   const response = await fetch('/api/lives/admin/sales');

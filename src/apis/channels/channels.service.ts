@@ -80,12 +80,14 @@ export class ChannelsService {
     return results;
   }
 
-  async getAllLiveTimes({ channelId }) {
+  async getAllPlayTimes({ userId }) {
+    const channel = await this.getMyChannel({ userId });
+    console.log(channel);
     const playtimes = await this.channelsRepository
       .createQueryBuilder('channel')
       .select('SUM(live.playtime)', 'playtimes')
       .leftJoin('channel.lives', 'live')
-      .where('channel.id = :id', { id: channelId })
+      .where('channel.id = :id', { id: channel.id })
       .getRawOne();
     return playtimes;
   }
