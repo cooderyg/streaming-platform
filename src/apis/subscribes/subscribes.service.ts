@@ -83,4 +83,25 @@ export class SubscribesService {
       where: { channel: { id: channelId } },
     });
   }
+
+  // 더미데이터의 구독 등록을 위한 기능
+  async toggleSubscribeForDummy(toggleSubscribeDto: {
+    channelId: string;
+    userId: string;
+  }): Promise<boolean> {
+    const { channelId, userId } = toggleSubscribeDto;
+    const isExist = await this.findByChannelIdAndUserId({ channelId, userId });
+    if (isExist) {
+      await this.subscribesRepository.delete(isExist.id);
+
+      return false;
+    } else {
+      await this.subscribesRepository.save({
+        channel: { id: channelId },
+        user: { id: userId },
+      });
+
+      return true;
+    }
+  }
 }

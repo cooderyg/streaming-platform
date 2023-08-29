@@ -44,4 +44,14 @@ export class UsersController {
 
     return updatedUser;
   }
+
+  // 더미 유저 생성
+  @Post('/dummy')
+  async createDummyUser(
+    @Body() createUserDto: CreateUserDto, //
+  ) {
+    const result = await this.usersSerivce.createDummyUser({ createUserDto });
+
+    return result;
+  }
 }

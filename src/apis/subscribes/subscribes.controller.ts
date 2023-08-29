@@ -52,4 +52,15 @@ export class SubscribesController {
 
     return { isSubscribed };
   }
+
+  @Post('/dummy')
+  async toggleSubscribeForDummy(
+    @Body() toggleSubscribeDto: {channelId: string, userId: string},
+  ) {
+    const isSubscribed = await this.subscribesService.toggleSubscribeForDummy(
+      toggleSubscribeDto,
+    );
+
+    return { isSubscribed };
+  }
 }
