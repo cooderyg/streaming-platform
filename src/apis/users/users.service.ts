@@ -35,7 +35,8 @@ export class UsersService {
     return user;
   }
 
-  // ex 구독자 10만명이면 많은 시간동안 대기해야 함
+  // ex 구독자 10만명이면 많은 시간동안 대기해야 함 페이지네이션
+  // 데이터가 크면 함수가 돌다가 실패할 수 있음
   async findSubscribedUsers({ channelId }) {
     return await this.usersRepository
       .createQueryBuilder('user')

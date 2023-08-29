@@ -165,12 +165,14 @@ export class LivesService {
       });
     }
 
-    const streamer = this.eventsGateway.onAirStreamers.find(
-      (el) => el.liveId === liveId,
-    );
-    this.eventsGateway.server
-      .to(streamer?.socket?.id)
-      .emit('startLive', { liveId });
+    this.eventsGateway.server.of('/').to(liveId).emit('startLive', { liveId });
+
+    // const streamer = this.eventsGateway.onAirStreamers.find(
+    //   (el) => el.liveId === liveId,
+    // );
+    // this.eventsGateway.server
+    //   .to(streamer?.socket?.id)
+    //   .emit('startLive', { liveId });
   }
 
   // 썸네일 추가

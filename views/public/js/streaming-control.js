@@ -62,7 +62,7 @@ const setMedia = (liveId) => {
         video.play();
       });
     }
-  }, 5000);
+  }, 10000);
 };
 
 // 유저정보
@@ -218,7 +218,7 @@ liveStartBtn.addEventListener('click', async () => {
 
   setStreamKey(liveId);
 
-  socket.emit('createLive');
+  // socket.emit('createLive');
 });
 
 // 방송 정보 변경
