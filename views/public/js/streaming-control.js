@@ -1,21 +1,126 @@
+let socket;
 let user;
-const liveKeyEl = document.querySelector('#live-key');
-const mediaContainerEl = document.querySelector('#media-container');
 
-const setStreamKey = (liveId) => {
-  document
-    .getElementById('update-save-btn')
-    .setAttribute('data-live-id', `${liveId}`);
-  getData(liveId);
-  chatroom(liveId);
-  changeLiveBtn();
+liveExistCheck();
+setLiveStartBtn();
 
+async function liveExistCheck() {
+  const liveRoom = await findOpenedLiveRoom();
+  if (!liveRoom) return;
+  getReadyForStream(liveRoom.id);
+  if (liveRoom.onAir) {
+    setMedia(liveRoom.id);
+  }
+}
+
+async function getReadyForStream(liveId) {
+  socket = io('/', { extraHeaders: { 'room-id': liveId } });
+  user = await getUserData();
+  await showLiveRoomData(liveId);
+  setEventListeners(liveId, user);
+  setStreamKey(liveId);
+
+  switchStreamKeyBtnToUpdateChannelInfoBtn();
+  setUpdateChannelInfoBtn(liveId);
+  // addDataToAttribute(liveId);
+}
+
+function setEventListeners(liveId, user) {
+  setLiveEvent();
+  setChatEvent(liveId, user);
+  setViewCountEvent();
+}
+
+function setStreamKey(liveId) {
+  showStreamKey(liveId);
+  setEyeBtn();
+}
+
+async function getUserData() {
+  const response = await fetch('/api/users');
+  if (!response.ok) return;
+  const data = await response.json();
+  return data;
+}
+
+async function showLiveRoomData(liveId) {
+  const response = await fetch(`/api/lives/${liveId}`);
+  const liveRoomData = await response.json();
+  const [title, channelName, channelImgUrl] = [
+    liveRoomData.title,
+    liveRoomData.channel.name,
+    liveRoomData.channel.profileImgUrl || '/img/profile.jpg',
+  ];
+
+  document.querySelector('.live-title').innerText = title;
+  document.querySelector('.channel-name').innerText = channelName;
+  document.querySelector('.channel-img').innerHTML = `
+    <img src="${channelImgUrl}" alt="profile_image" class="w-100 border-radius-lg shadow-sm"/>
+  `;
+}
+
+function setLiveStartBtn() {
+  const liveStartBtn = document.getElementById('live-start-btn');
+  liveStartBtn.addEventListener('click', async () => {
+    const liveTitleInput = document.getElementById('live-title-input').value;
+    const liveTagInput = document.getElementById('live-tag-input').value;
+    const tagNames = liveTagInput.split(',');
+    const res = await fetch(`/api/lives/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: liveTitleInput,
+        tagNames,
+      }),
+    });
+    if (!res.ok) return alert('방송 시작에 실패했습니다. 다시 시도해주세요.');
+    const data = await res.json();
+    getReadyForStream(data.id);
+  });
+}
+
+function switchStreamKeyBtnToUpdateChannelInfoBtn() {
+  const liveModalBtn = document.getElementById('live-modal-btn');
+  const liveUpdateModalBtn = document.getElementById('live-update-modal-btn');
+
+  liveModalBtn.style.display = 'none'; // streamKey Btn
+  liveUpdateModalBtn.style.display = ''; // updateChannelInfo Btn
+}
+
+function setUpdateChannelInfoBtn(liveId) {
+  const updateSaveBtn = document.getElementById('update-save-btn');
+  updateSaveBtn.addEventListener('click', async () => {
+    const updateTitleInput =
+      document.getElementById('update-title-input').value;
+    const updateTagInput = document.getElementById('update-tag-input').value;
+    const tagNames = updateTagInput.split(',');
+    const res = await fetch(`/api/lives/${liveId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: updateTitleInput,
+        tagNames,
+      }),
+    });
+    const data = await res.json();
+    showLiveRoomData(liveId);
+  });
+}
+
+function showStreamKey(liveId) {
+  const liveKeyEl = document.querySelector('#live-key');
+  liveKeyEl.removeAttribute('class');
   liveKeyEl.insertAdjacentHTML(
     'beforeend',
-    ` <i class="fas fa-eye fa-xl" id='key-hide-btn'></i><span id='stream-key'>StreamKey: ${liveId}</span>`,
+    ` <i class="fas fa-eye fa-xl" id='key-hide-btn'></i><span id='stream-key'> StreamKey: ${liveId}</span>`,
   );
+}
 
-  //스트림키 숨기기
+function setEyeBtn() {
   const hideBtn = document.getElementById('key-hide-btn');
   hideBtn.addEventListener('click', () => {
     const streamKey = document.getElementById('stream-key');
@@ -25,10 +130,16 @@ const setStreamKey = (liveId) => {
       streamKey.style.display = 'none';
     }
   });
-};
+}
 
-const setMedia = (liveId) => {
-  mediaContainerEl.innerHTML = `
+// function addDataToAttribute(liveId) {
+//   document
+//     .getElementById('update-save-btn')
+//     .setAttribute('data-live-id', `${liveId}`);
+// }
+
+function setMedia(liveId) {
+  document.querySelector('#media-container').innerHTML = `
   <video
     id="video"
     width="100%"
@@ -37,7 +148,6 @@ const setMedia = (liveId) => {
     autoplay
   ></video>
 `;
-
   const video = document.getElementById('video');
   const videoSrc = `http://localhost:8000/live/${liveId}/index.m3u8`;
   const hlsConfig = {
@@ -63,63 +173,19 @@ const setMedia = (liveId) => {
       });
     }
   }, 10000);
-};
+}
 
-// 유저정보
-const getUserData = async () => {
-  const response = await fetch('/api/users');
-  if (!response.ok) return;
-  const data = await response.json();
-  user = data;
-};
-getUserData();
-
-const getLiveControl = async () => {
-  const response = await fetch('/api/lives/admin/control');
-  const data = await response.json();
-  if (!response.ok) return;
-
-  setStreamKey(data.id);
-
-  if (data.onAir) {
-    setMedia(data.id);
+async function findOpenedLiveRoom() {
+  try {
+    const response = await fetch('/api/lives/admin/control');
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    return false;
   }
-};
+}
 
-getLiveControl();
-
-// 라이브방송 데이터 조회
-const getData = async (liveId) => {
-  let channelId;
-  const resLive = await fetch(`/api/lives/${liveId}`);
-  const dataLive = await resLive.json();
-  const liveTitle = document.querySelector('.live-title');
-  const channelName = document.querySelector('.channel-name');
-  const channelImg = document.querySelector('.channel-img');
-  liveTitle.innerText = dataLive.title;
-  channelId = dataLive.channel.id;
-  channelName.innerText = dataLive.channel.name;
-  const profileImgUrl = dataLive.channel.profileImgUrl || '/img/profile.jpg';
-  channelImg.innerHTML = `<img src="${profileImgUrl}" alt="profile_image" class="w-100 border-radius-lg shadow-sm"/>`;
-};
-
-// getData();
-
-let socket;
-
-//채팅
-const chatroom = (liveId) => {
-  const roomId = liveId;
-  const chatBtn = document.querySelector('#button-addon2');
-  const chatInput = document.querySelector('#chat-input');
-  const chatContainerEl = document.querySelector('#chat-container');
-
-  socket = io('/', {
-    extraHeaders: {
-      'room-id': roomId,
-    },
-  });
-
+function setLiveEvent() {
   socket.on('startLive', ({ liveId }) => {
     setMedia(liveId);
   });
@@ -127,6 +193,13 @@ const chatroom = (liveId) => {
   socket.on('endLive', () => {
     alert('방송이 종료되었습니다.');
   });
+}
+
+function setChatEvent(liveId, user) {
+  const roomId = liveId;
+  const chatBtn = document.querySelector('#button-addon2');
+  const chatInput = document.querySelector('#chat-input');
+  const chatContainerEl = document.querySelector('#chat-container');
 
   // 소켓 카운트
   let socketCommCount = 0;
@@ -137,6 +210,7 @@ const chatroom = (liveId) => {
 
   chatBtn.addEventListener('click', () => {
     if (chatInput.value === '') return alert('채팅을 입력해주세요.');
+
     if (!socketCommCount) {
       socket.emit('chat', {
         chat: chatInput.value,
@@ -148,7 +222,6 @@ const chatroom = (liveId) => {
         chat: chatInput.value,
       });
     }
-
     chatInput.value = '';
   });
 
@@ -171,67 +244,12 @@ const chatroom = (liveId) => {
     chatContainerEl.insertAdjacentHTML('beforeend', temp);
     chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
   });
+}
 
-  // 시청자수 받기
+// 시청자수 받기
+function setViewCountEvent() {
   const userConutEl = document.querySelector('#user-count');
   socket.on('userCount', (data) => {
-    const { userCount } = data;
-    userConutEl.innerText = `시청자 ${userCount}` || `시청자 0`;
+    userConutEl.innerText = `시청자 ${data.userCount}` || `시청자 0`;
   });
-};
-
-//방송시작버튼 -> 방송종료버튼 / 종료버튼 이벤트 충가
-const changeLiveBtn = () => {
-  const liveModalBtn = document.getElementById('live-modal-btn');
-  const liveUpdateModalBtn = document.getElementById('live-update-modal-btn');
-
-  liveModalBtn.style.display = 'none';
-  liveUpdateModalBtn.style.display = '';
-};
-
-// 방송 시작
-
-const liveStartBtn = document.getElementById('live-start-btn');
-liveStartBtn.addEventListener('click', async () => {
-  const liveTitleInput = document.getElementById('live-title-input').value;
-  const liveTagInput = document.getElementById('live-tag-input').value;
-  const tagNames = liveTagInput.split(',');
-  const res = await fetch(`/api/lives/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      title: liveTitleInput,
-      tagNames,
-    }),
-  });
-  if (!res.ok) return alert('방송 시작에 실패했습니다. 다시 시도해주세요.');
-  const data = await res.json();
-  const liveId = data.id;
-
-  setStreamKey(liveId);
-
-  // socket.emit('createLive');
-});
-
-// 방송 정보 변경
-const updateSaveBtn = document.getElementById('update-save-btn');
-updateSaveBtn.addEventListener('click', async () => {
-  const liveId = updateSaveBtn.getAttribute('data-live-id');
-  const updateTitleInput = document.getElementById('update-title-input').value;
-  const updateTagInput = document.getElementById('update-tag-input').value;
-  const tagNames = updateTagInput.split(',');
-  const res = await fetch(`/api/lives/${liveId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      title: updateTitleInput,
-      tagNames,
-    }),
-  });
-  const data = await res.json();
-  getData(liveId);
-});
+}
