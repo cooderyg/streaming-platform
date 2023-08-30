@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Render, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
@@ -10,6 +10,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService, //
   ) {}
+
   @Post('login')
   async login(
     @Body() loginDto: LoginDto, //
@@ -38,5 +39,11 @@ export class AuthController {
 
     res.setHeader('Authorization', `Bearer ${accessToken}`);
     return { message: 'refresh' };
+  }
+
+  @Get('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.cookie('accessToken', '', { expires: new Date(0) });
+    res.cookie('refreshToken', '', { expires: new Date(0) });
   }
 }
