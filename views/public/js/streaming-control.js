@@ -22,7 +22,6 @@ async function getReadyForStream(liveId) {
 
   switchStreamKeyBtnToUpdateChannelInfoBtn();
   setUpdateChannelInfoBtn(liveId);
-  // addDataToAttribute(liveId);
 }
 
 function setEventListeners(liveId, user) {
@@ -34,6 +33,7 @@ function setEventListeners(liveId, user) {
 function setStreamKey(liveId) {
   showStreamKey(liveId);
   setEyeBtn();
+  setCopyBtn();
 }
 
 async function getUserData() {
@@ -114,29 +114,36 @@ function setUpdateChannelInfoBtn(liveId) {
 function showStreamKey(liveId) {
   const liveKeyEl = document.querySelector('#live-key');
   liveKeyEl.removeAttribute('class');
+  liveKeyEl.style.textAlign = 'right';
   liveKeyEl.insertAdjacentHTML(
     'beforeend',
-    ` <i class="fas fa-eye fa-xl" id='key-hide-btn'></i><span id='stream-key'> StreamKey: ${liveId}</span>`,
+    ` <span id='stream-key' style='display: none;'>stream-key: ${liveId}</span>
+      <i class="fas fa-eye fa-xl" id='key-hide-btn' style='cursor: pointer;'></i>
+      <i class="fa fa-copy fa-xl" id='key-copy' style='cursor: pointer;'></i>
+    `,
   );
 }
 
 function setEyeBtn() {
   const hideBtn = document.getElementById('key-hide-btn');
   hideBtn.addEventListener('click', () => {
-    const streamKey = document.getElementById('stream-key');
-    if (streamKey.style.display === 'none') {
-      streamKey.style.display = '';
+    const streamKeyEl = document.getElementById('stream-key');
+    if (streamKeyEl.style.display === 'none') {
+      streamKeyEl.style.display = '';
     } else {
-      streamKey.style.display = 'none';
+      streamKeyEl.style.display = 'none';
     }
   });
 }
 
-// function addDataToAttribute(liveId) {
-//   document
-//     .getElementById('update-save-btn')
-//     .setAttribute('data-live-id', `${liveId}`);
-// }
+function setCopyBtn() {
+  const copyBtn = document.getElementById('key-copy');
+  copyBtn.addEventListener('click', () => {
+    const streamKeyEl = document.getElementById('stream-key');
+    const streamKey = streamKeyEl.textContent.split(' ')[1];
+    navigator.clipboard.writeText(streamKey).then(() => {});
+  });
+}
 
 function setMedia(liveId) {
   document.querySelector('#media-container').innerHTML = `
