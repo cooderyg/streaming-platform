@@ -3,7 +3,6 @@ const params = window.location.pathname;
 const splits = params.split('/');
 const liveId = splits[2];
 
-console.log('라이브Id', liveId);
 const subscribeBtn = document.getElementById('channel-subscribe-btn');
 
 const getData = async () => {
@@ -15,7 +14,6 @@ const getData = async () => {
 
   const resLive = await fetch(`/api/lives/${liveId}`);
   const dataLive = await resLive.json();
-  console.log('라이브데이터', dataLive);
   const channelId = dataLive.channel.id;
   const liveTitle = dataLive.title;
   const channelName = dataLive.channel.name;
