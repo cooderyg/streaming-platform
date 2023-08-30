@@ -145,14 +145,11 @@ export class LivesService {
 
   async startLive({ liveId }) {
     const live = await this.getLiveById({ liveId });
-
     if (!live) throw new NotFoundException();
-
     await this.livesRepository.save({
       id: liveId,
       onAir: true,
     });
-    live.channel.id;
 
     const subscribedUsers = await this.usersService.findSubscribedUsers({
       channelId: live.channel.id,
@@ -168,13 +165,6 @@ export class LivesService {
     }
 
     this.eventsGateway.server.of('/').to(liveId).emit('startLive', { liveId });
-
-    // const streamer = this.eventsGateway.onAirStreamers.find(
-    //   (el) => el.liveId === liveId,
-    // );
-    // this.eventsGateway.server
-    //   .to(streamer?.socket?.id)
-    //   .emit('startLive', { liveId });
   }
 
   // 썸네일 추가
@@ -201,43 +191,43 @@ export class LivesService {
     return await this.livesRepository.save(live);
   }
 
-  async turnOff({ userId, liveId }: ILivesServiceTurnOff) {
-    const { channel, live } = await this.verifyOwner({ userId, liveId });
+  // async turnOff({ userId, liveId }: ILivesServiceTurnOff) {
+  //   const { channel, live } = await this.verifyOwner({ userId, liveId });
 
-    // 트랜잭션
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    const manager = queryRunner.manager;
-    try {
-      // 종료 시간을 업데이트 합니다.
-      live.endDate = new Date();
+  //   // 트랜잭션
+  //   const queryRunner = this.dataSource.createQueryRunner();
+  //   await queryRunner.connect();
+  //   await queryRunner.startTransaction();
+  //   const manager = queryRunner.manager;
+  //   try {
+  //     // 종료 시간을 업데이트 합니다.
+  //     live.endDate = new Date();
 
-      // 방송 정산하기
-      const creditHistories =
-        await this.creditHistoriesService.findCreditHistoryListByLive({
-          liveId,
-          userId,
-        });
-      const totalLiveIncome = creditHistories.reduce(
-        (acc, history) => acc + history.amount,
-        0,
-      );
-      live.income = totalLiveIncome;
+  //     // 방송 정산하기
+  //     const creditHistories =
+  //       await this.creditHistoriesService.findCreditHistoryListByLive({
+  //         liveId,
+  //         userId,
+  //       });
+  //     const totalLiveIncome = creditHistories.reduce(
+  //       (acc, history) => acc + history.amount,
+  //       0,
+  //     );
+  //     live.income = totalLiveIncome;
 
-      // 채널 정산하기
-      channel.income += totalLiveIncome;
+  //     // 채널 정산하기
+  //     channel.income += totalLiveIncome;
 
-      await manager.save(Live, live);
-      await manager.save(Channel, channel);
-      await queryRunner.commitTransaction();
-      return { message: '방송이 종료되었습니다.' };
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
-  }
+  //     await manager.save(Live, live);
+  //     await manager.save(Channel, channel);
+  //     await queryRunner.commitTransaction();
+  //     return { message: '방송이 종료되었습니다.' };
+  //   } catch (err) {
+  //     await queryRunner.rollbackTransaction();
+  //   } finally {
+  //     await queryRunner.release();
+  //   }
+  // }
 
   async closeOBS({ liveId }): Promise<void> {
     const live = await this.getLiveById({ liveId });
@@ -255,8 +245,6 @@ export class LivesService {
     await queryRunner.startTransaction();
     const manager = queryRunner.manager;
     try {
-      // 종료 시간을 업데이트 합니다.
-
       // 방송 정산하기
       const creditHistories = await this.creditHistoriesService.findByLiveId({
         liveId,
@@ -267,6 +255,9 @@ export class LivesService {
       );
       // 채널 정산하기
       const totalChannelIncome = channel.income + totalLiveIncome;
+
+      // 다시보기 url 등록(서버에서 수정 필요)
+      live.replayUrl = `http://localhost:8000/live/${liveId}/index.m3u8`;
 
       await manager.save(Live, {
         ...live,
@@ -306,11 +297,6 @@ export class LivesService {
 
     return { channel, live };
   }
-
-  /**
-   * @todo
-   * 방송 종료 시 replayUrl을 업데이트 하는 로직 작성
-   */
 }
 
 interface ILivesServiceGetLivesForAdmin {
