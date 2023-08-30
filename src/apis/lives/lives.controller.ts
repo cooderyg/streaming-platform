@@ -7,6 +7,7 @@ import {
   Put,
   Query,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
 import { LivesService } from './lives.service';
 import { AccessAuthGuard } from 'src/apis/auth/guard/auth.guard';
@@ -16,15 +17,28 @@ import { UpdateLiveDto } from './dto/update-live.dto';
 import { PageReqDto } from 'src/commons/dto/page-req.dto';
 import { DateReqDto } from 'src/commons/dto/date-req.dto';
 import { Live } from './entities/live.entity';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Controller('api/lives')
 export class LivesController {
-  constructor(private readonly livesService: LivesService) {}
+  constructor(
+    private readonly livesService: LivesService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   @Get()
   async getLives(@Query() pageReqDto: PageReqDto) {
-    const lives = await this.livesService.getLives({ pageReqDto });
-    return lives;
+    const cachedList = await this.cacheManager.get('liveList'); // 캐싱된 리스트가 있는지 조회
+    if (cachedList) {
+      console.log('Cache Hit');
+      return cachedList;
+    } else {
+      console.log('Cache Miss');
+      const lives = await this.livesService.getLives({ pageReqDto });
+      await this.cacheManager.set('liveList', lives, 5); // 캐싱된 데이터가 없을경우 set
+      return lives;
+    }
   }
 
   @Get(':liveId')
