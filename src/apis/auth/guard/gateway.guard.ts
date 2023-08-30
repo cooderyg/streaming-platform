@@ -6,8 +6,6 @@ export class GatewayGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const socket = context.switchToWs().getClient();
-    console.log(socket);
-    console.log(context);
     return true;
   }
 }
