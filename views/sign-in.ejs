@@ -58,7 +58,7 @@
       <div class="row">
         <div class="col-12">
           <!-- Navbar -->
-          <nav
+          <!-- <nav
             class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4"
           >
             <div class="container-fluid pe-0">
@@ -66,7 +66,7 @@
                 Freely B 라이브 스트리밍 플랫폼
               </a>
             </div>
-          </nav>
+          </nav> -->
           <!-- End Navbar -->
         </div>
       </div>
@@ -77,18 +77,21 @@
           <div class="container">
             <div class="row">
               <div
-                class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto"
+                class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto" style="width: auto"
               >
-                <div class="card card-plain mt-8">
+                <div class="card card-plain mt-8" style="box-shadow: black; border:1px solid #CCC; padding:40px">
                   <div class="card-header pb-0 text-left bg-transparent">
                     <h3 class="font-weight-bolder text-info text-gradient">
-                      Welcome back
+                      <img
+                        src="/img/logo.png"
+                        style="width: 350px; padding: 0px"
+                      />
                     </h3>
-                    <p class="mb-0">Enter your email and password to sign in</p>
+                    <p class="mb-0" style="text-align: center;">Sign In</p>
                   </div>
                   <div class="card-body">
                     <form role="form">
-                      <label>Email</label>
+                      <!-- <label>Email</label> -->
                       <div class="mb-3">
                         <input
                           id="email"
@@ -99,7 +102,7 @@
                           aria-describedby="email-addon"
                         />
                       </div>
-                      <label>Password</label>
+                      <!-- <label>Password</label> -->
                       <div class="mb-3">
                         <input
                           id="password"
@@ -114,7 +117,15 @@
                         <button
                           id="signin-btn"
                           type="button"
-                          class="btn bg-gradient-info w-100 mt-4 mb-0"
+                          class="btn w-100 mt-4 mb-0"
+                          style="
+                            background-image: linear-gradient(
+                              310deg,
+                              #fe005d 0%,
+                              #ff9df9 100%
+                            );
+                            color: white;
+                          "
                         >
                           Sign in
                         </button>
@@ -123,26 +134,15 @@
                   </div>
                   <div class="card-footer text-center pt-0 px-lg-2 px-1">
                     <p class="mb-4 text-sm mx-auto">
-                      Don't have an account?
+                      아직 계정이 없으시다구요?
                       <a
                         href="/sign-up"
-                        class="text-info text-gradient font-weight-bold"
-                        >Sign up</a
+                        class= font-weight-bold"
+                        style="color: black"
+                        >회원가입</a
                       >
                     </p>
                   </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div
-                  class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8"
-                >
-                  <div
-                    class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6"
-                    style="
-                      background-image: url('../img/curved-images/curved6.jpg');
-                    "
-                  ></div>
                 </div>
               </div>
             </div>
@@ -155,13 +155,6 @@
       <div class="container">
         <div class="row">
           <div class="col-8 mx-auto text-center mt-1">
-            <p class="mb-0 text-secondary">
-              Copyright ©
-              <script>
-                document.write(new Date().getFullYear());
-              </script>
-              Soft by Creative Tim.
-            </p>
           </div>
         </div>
       </div>
