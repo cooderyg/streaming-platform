@@ -145,6 +145,7 @@ export class ChannelsService {
         'channel.income',
         'channel.profileImgUrl',
         'channel.bannerImgUrl',
+        'channel.introduction',
         'channel.createdAt',
         'channel.updatedAt',
         'subscribes.id',

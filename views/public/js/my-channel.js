@@ -10,6 +10,9 @@ async function getMyChannelData() {
   const channelCreatedAt = data.createdAt.split('T')['0'];
   const subscribeCount = data.subscribes.length;
   const streamerEmail = data.user.email;
+  const channelInfo = data.introduction || '';
+
+  console.log(data);
 
   document.getElementById(
     'channel-banner-img',
@@ -29,6 +32,9 @@ async function getMyChannelData() {
   document
     .getElementById('channel-contact-email')
     .insertAdjacentText('beforeend', streamerEmail);
+  document.getElementById(
+    'channel-info-container',
+  ).innerText = `${channelInfo}`;
 
   return data.id;
 }

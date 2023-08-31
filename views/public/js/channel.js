@@ -9,7 +9,7 @@ const getChannelData = async () => {
   const res = await fetch(`/api/channels/${channelId}`);
   const data = await res.json();
   channelName = data.name;
-  channelInfo = data.introduction;
+  channelInfo = data.introduction || '';
   // Todo:  배너,프로필 구분 필요
   channelBannerImg = data.bannerImgUrl || '../img/curved-images/curved0.jpg';
   const streamerImg = data.user.profileImgUrl || '/img/profile.jpg';
