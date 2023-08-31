@@ -141,7 +141,7 @@ function setCopyBtn() {
   copyBtn.addEventListener('click', () => {
     const streamKeyEl = document.getElementById('stream-key');
     const streamKey = streamKeyEl.textContent.split(' ')[1];
-    navigator.clipboard.writeText(streamKey).then(() => {});
+    navigator.clipboard.writeText(streamKey);
   });
 }
 
@@ -156,6 +156,7 @@ function setMedia(liveId) {
   ></video>
 `;
   const video = document.getElementById('video');
+  // `http://d2hv45obrzuf2s.cloudfront.net/videos/${liveId}/index.m3u8`
   const videoSrc = `http://localhost:8000/live/${liveId}/index.m3u8`;
   const hlsConfig = {
     debug: true,
@@ -248,6 +249,22 @@ function setChatEvent(liveId, user) {
       </div>
     </div>
   `;
+    chatContainerEl.insertAdjacentHTML('beforeend', temp);
+    chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
+  });
+
+  socket.on('donation', (data) => {
+    const { amount, nickname } = data;
+
+    const temp = `
+    <div class="d-flex justify-content-center my-4">
+      <div class="d-flex justify-content-center flex-column">
+        <img src="/img/coin.jpg" class="mb-1 donation-img" />
+        <div class="user_chat donaiton-msg">${nickname} 님이 <br /> ${amount}크레딧을 후원하셨습니다.</div>
+      </div>
+    </div>
+    `;
+
     chatContainerEl.insertAdjacentHTML('beforeend', temp);
     chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
   });
