@@ -59,7 +59,7 @@ export class AlertsService {
       temp.push(alert);
     });
 
-    await this.alertsRepository.insert(temp);
+    // await this.alertsRepository.insert(temp);
   }
 
   async readAlert({ alertId, userId }: IAlertsServiceReadAlert): Promise<void> {

@@ -21,6 +21,7 @@ import { NoticeCommentsModule } from './apis/noticeComments/notice-comment.modul
 import { EventsModule } from './apis/events/events.module';
 import { UploadsModule } from './apis/uploads/uploads.module';
 import { AlertsModule } from './apis/alerts/alerts.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -42,6 +43,12 @@ import { AlertsModule } from './apis/alerts/alerts.module';
     ViewHistoriesModule,
     SubscribesModule,
     ConfigModule.forRoot(),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',
       host: process.env.DATABASE_HOST,
@@ -51,7 +58,7 @@ import { AlertsModule } from './apis/alerts/alerts.module';
       database: process.env.DATABASE_DATABASE,
       entities: [__dirname + '/apis/**/*.entity.*'],
       synchronize: true, // 개발환경에서만 사용
-      logging: true,
+      // logging: true,
       namingStrategy: new SnakeNamingStrategy(),
       timezone: 'UTC',
     }),

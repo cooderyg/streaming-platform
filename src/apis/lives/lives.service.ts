@@ -18,12 +18,17 @@ import { DateReqDto } from 'src/commons/dto/date-req.dto';
 import { EventsGateway } from '../events/events.gateway';
 import { UsersService } from '../users/users.service';
 import { AlertsService } from '../alerts/alerts.service';
+import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class LivesService {
   constructor(
     @InjectRepository(Live)
     private readonly livesRepository: Repository<Live>,
+    @InjectQueue('alertsQueue')
+    private readonly alertQueue: Queue,
     private readonly alertsService: AlertsService,
     private readonly channelsService: ChannelsService,
     private readonly creditHistoriesService: CreditHistoriesService,
@@ -152,20 +157,26 @@ export class LivesService {
       id: liveId,
       onAir: true,
     });
-    live.channel.id;
 
-    const subscribedUsers = await this.usersService.findSubscribedUsers({
-      channelId: live.channel.id,
-    });
+    // const subscribedUsers = await this.usersService.findSubscribedUsers({
+    //   channelId: live.channel.id,
+    // });
 
-    if (subscribedUsers?.length > 0) {
-      await this.alertsService.createAlerts({
-        users: subscribedUsers,
-        channelId: live.channel.id,
-        isOnAir: true,
-        channelName: live.channel.name,
-      });
-    }
+    // if (subscribedUsers?.length > 0) {
+    //   await this.alertsService.createAlerts({
+    //     users: subscribedUsers,
+    //     channelId: live.channel.id,
+    //     isOnAir: true,
+    //     channelName: live.channel.name,
+    //   });
+    // }
+
+    const uuid = v4();
+    await this.alertQueue.add(
+      'addAlertQueue',
+      { channelId: live.channel.id, channelName: live.channel.name },
+      { removeOnComplete: true, removeOnFail: true, jobId: uuid },
+    );
 
     this.eventsGateway.server.of('/').to(liveId).emit('startLive', { liveId });
 
