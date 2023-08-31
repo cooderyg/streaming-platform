@@ -1,3 +1,4 @@
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -21,7 +22,8 @@ import { NoticeCommentsModule } from './apis/noticeComments/notice-comment.modul
 import { EventsModule } from './apis/events/events.module';
 import { UploadsModule } from './apis/uploads/uploads.module';
 import { AlertsModule } from './apis/alerts/alerts.module';
-
+import * as redisStore from 'cache-manager-ioredis';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
   imports: [
     AlertsModule,
@@ -41,6 +43,13 @@ import { AlertsModule } from './apis/alerts/alerts.module';
     UsersModule,
     ViewHistoriesModule,
     SubscribesModule,
+    CacheModule.register({
+      isGlobal: true,
+      store: redisStore,
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      ttl: 10,
+    }),
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',
@@ -57,6 +66,12 @@ import { AlertsModule } from './apis/alerts/alerts.module';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // {
+    //   provide: APP_INTERCEPTOR, //CacheInterceptor 활성화하면 key가 자동으로 /cache로 들어감..
+    //   useClass: CacheInterceptor,
+    // },
+  ],
 })
 export class AppModule {}

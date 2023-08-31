@@ -237,20 +237,21 @@
   const alertCount = document.querySelector('#alert-count');
   const alertCountNum = document.querySelector('#alert-count-num');
   const getAlerts = async () => {
-    const response = await fetch('/api/alerts');
-    const data = await response.json();
-    if (!response.ok) {
-      alertCount.classList.add('off');
-      return;
-    }
-    console.log(data);
-    if (!data.length) alertCount.classList.add('off');
-    alertCountNum.innerText = data.length;
+    if (document.cookie) {
+      const response = await fetch('/api/alerts');
+      const data = await response.json();
+      if (!response.ok) {
+        alertCount.classList.add('off');
+        return;
+      }
+      console.log(data);
+      if (!data.length) alertCount.classList.add('off');
+      alertCountNum.innerText = data.length;
 
-    const temp = data.map((el) => {
-      const imgTemp = el.channel.profileImgUrl || '/img/profile.jpg';
+      const temp = data.map((el) => {
+        const imgTemp = el.channel.profileImgUrl || '/img/profile.jpg';
 
-      return `
+        return `
             <li class="mb-2">
               <a class="dropdown-item border-radius-md" href="javascript:;">
                 <div class="d-flex py-1">
@@ -274,9 +275,12 @@
               </a>
             </li>
           `;
-    });
+      });
 
-    alertListEl.innerHTML = temp;
+      alertListEl.innerHTML = temp;
+    } else {
+      alertCount.classList.add('off');
+    }
   };
 
   getAlerts();
