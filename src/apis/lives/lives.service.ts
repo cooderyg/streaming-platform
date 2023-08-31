@@ -40,6 +40,7 @@ export class LivesService {
       .select([
         'live.id',
         'live.title',
+        'live.createdAt',
         'channel.id',
         'channel.name',
         'tag.id',
@@ -49,10 +50,11 @@ export class LivesService {
         'user.imageUrl',
         'live.thumbnailUrl',
       ])
-      .where('live.endDate IS NULL')
       .leftJoin('live.channel', 'channel')
       .leftJoin('live.tags', 'tag')
       .leftJoin('channel.user', 'user')
+      .where('live.endDate IS NULL')
+      .orderBy('live.createdAt', 'DESC')
       .take(size)
       .skip((page - 1) * size)
       .getMany();
@@ -152,18 +154,18 @@ export class LivesService {
       onAir: true,
     });
 
-    const subscribedUsers = await this.usersService.findSubscribedUsers({
-      channelId: live.channel.id,
-    });
+    // const subscribedUsers = await this.usersService.findSubscribedUsers({
+    //   channelId: live.channel.id,
+    // });
 
-    if (subscribedUsers?.length > 0) {
-      await this.alertsService.createAlerts({
-        users: subscribedUsers,
-        channelId: live.channel.id,
-        isOnAir: true,
-        channelName: live.channel.name,
-      });
-    }
+    // if (subscribedUsers?.length > 0) {
+    //   await this.alertsService.createAlerts({
+    //     users: subscribedUsers,
+    //     channelId: live.channel.id,
+    //     isOnAir: true,
+    //     channelName: live.channel.name,
+    //   });
+    // }
 
     this.eventsGateway.server.of('/').to(liveId).emit('startLive', { liveId });
   }
