@@ -29,7 +29,7 @@ const getAllPlayTimes = async () => {
   const response = await fetch('/api/channels/live-times');
   const data = await response.json();
 
-  playtimeEl.innerText = `${data.playtimes} 분`;
+  playtimeEl.innerText = `${data.playtimes || 0} 분`;
 };
 getAllPlayTimes();
 
