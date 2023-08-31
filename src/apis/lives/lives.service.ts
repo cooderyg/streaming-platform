@@ -47,6 +47,7 @@ export class LivesService {
         'user.id',
         'user.nickname',
         'user.imageUrl',
+        'live.thumbnailUrl',
       ])
       .where('live.endDate IS NULL')
       .leftJoin('live.channel', 'channel')
