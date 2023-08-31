@@ -8,10 +8,12 @@ window.addEventListener('DOMContentLoaded', () => {
         const streamerImg = live.channel.profileImgUrl || '/img/profile.jpg';
         const title = live.title;
         const tagsArray = live.tags;
+        const thumbnailUrl = live.thumbnailUrl || '../img/home-decor-1.jpg';
         let tags = '';
         tagsArray.forEach((arr) => {
           tags += `#${arr.name} `;
         });
+        console.log(live);
         // Todo: 스트리머 사진, 방송 썸네일 추가 필요
         // 스트리머 사진 -> 스트리머 페이지 / 썸네일 -> 라이브 화면  링크걸기
         let temp_html = `
@@ -19,7 +21,7 @@ window.addEventListener('DOMContentLoaded', () => {
                             <div class="card">
                               <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
                               <a  class="d-block">
-                                <img src="../img/home-decor-1.jpg" class="img-fluid border-radius-lg"/>
+                                <img src="${thumbnailUrl}" class="img-fluid border-radius-lg"/>
                               </a>
                             </div>
                             <div class="card-body pt-2">
