@@ -70,29 +70,25 @@
     <!-- End Navbar -->
     <main class="main-content mt-0">
       <section class="min-vh-100">
-        <div
-          class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg"
-          style="background-image: url('../img/curved-images/curved14.jpg')"
-        >
-          <span class="mask bg-gradient-dark opacity-6"></span>
-          <div class="container">
-            <div class="row justify-content-center">
-              <div class="col-lg-5 text-center mx-auto">
-                <h1 class="text-white mb-2 mt-5">Welcome!</h1>
-                <p class="text-lead text-white">
-                  Use these awesome forms to login or create new account in your
-                  project for free.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
         <div class="container">
-          <div class="row mt-lg-n10 mt-md-n11 mt-n10">
-            <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
-              <div class="card z-index-0">
+          <div class="row mt-6">
+            <div
+              class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto"
+              style="width: auto"
+            >
+              <div
+                class="card card-plain mt-8"
+                style="
+                  box-shadow: none;
+                  box-shadow: black;
+                  border: 1px solid #ccc;
+                  padding: 40px;
+                  border-radius: 15px;
+                "
+              >
                 <div class="card-header text-center pt-4">
-                  <h5>Register with</h5>
+                  <img src="/img/logo.png" style="width: 350px; padding: 0px" />
+                  <p class="mb-0" style="text-align: center">Register with</p>
                 </div>
                 <div class="card-body">
                   <form role="form text-left">
@@ -131,14 +127,22 @@
                         id="signup-btn"
                         type="button"
                         class="btn bg-gradient-dark w-100 my-4 mb-2"
+                        style="
+                          background-image: linear-gradient(
+                            310deg,
+                            #fe005d 0%,
+                            #ff9df9 100%
+                          );
+                          color: white;
+                        "
                       >
                         Sign up
                       </button>
                     </div>
-                    <p class="text-sm mt-3 mb-0">
-                      Already have an account?
+                    <p class="text-sm mt-3 mb-0" style="text-align: center">
+                      이미 계정이 있으시다구요?
                       <a href="/sign-in" class="text-dark font-weight-bolder"
-                        >Sign in</a
+                        >로그인</a
                       >
                     </p>
                   </form>
@@ -152,15 +156,7 @@
       <footer class="footer py-5">
         <div class="container">
           <div class="row">
-            <div class="col-8 mx-auto text-center mt-1">
-              <p class="mb-0 text-secondary">
-                Copyright ©
-                <script>
-                  document.write(new Date().getFullYear());
-                </script>
-                Soft by Creative Tim.
-              </p>
-            </div>
+            <div class="col-8 mx-auto text-center mt-1"></div>
           </div>
         </div>
       </footer>

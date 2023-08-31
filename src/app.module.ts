@@ -48,7 +48,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       store: redisStore,
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
-      password: process.env.REDIS_PW,
+      // password: process.env.REDIS_PW,
       ttl: 10,
     }),
     ConfigModule.forRoot(),
