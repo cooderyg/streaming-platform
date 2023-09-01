@@ -170,6 +170,7 @@ subscribeBtn.addEventListener('click', async (e) => {
   isLoading = false;
 });
 
+// 공지버튼 <-> 채널정보 버튼
 const channelNoticeBtn = document.getElementById('notice-btn');
 const channelInfoBtn = document.getElementById('channel-info-btn');
 channelInfoBtn.addEventListener('click', () => {
@@ -181,19 +182,20 @@ channelNoticeBtn.addEventListener('click', () => {
   document.getElementById('channel-notice-row').style.display = '';
 });
 
+//비디오플레이어 설정
 //비디오 플레이어 설정
 // const mediaContainerEl = document.querySelector('#media-container');
 // mediaContainerEl.innerHTML = `<video id="video" width="100%" height="100%" controls autoplay></video>`;
 const video = document.getElementById('video');
-const videoSrc = `http://localhost:8000/live/${liveId}/index.m3u8`;
-// const videoSrc = `http://d2hv45obrzuf2s.cloudfront.net/videos/${liveId}/index.m3u8`;
+// const videoSrc = `http://localhost:8000/live/${liveId}/index.m3u8`;
+const videoSrc = `http://d2hv45obrzuf2s.cloudfront.net/videos/${liveId}/index.m3u8`;
 const hlsConfig = {
   debug: true,
   enableWorker: true,
   lowLatencyMode: true,
   backBufferLength: 90,
-  liveDurationInfinity: true,
-  liveSyncDurationCount: 1,
+  // liveDurationInfinity: true,
+  // liveSyncDurationCount: 1,
 };
 
 setTimeout(() => {
@@ -205,11 +207,11 @@ setTimeout(() => {
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       video.play();
     });
-    video.addEventListener('play', () => {
-      console.log(hls);
-      console.log(hls.liveSyncPosition);
-      hls.media.currentTime = hls.liveSyncPosition;
-    });
+    // video.addEventListener('play', () => {
+    //   console.log(hls);
+    //   console.log(hls.liveSyncPosition);
+    //   hls.media.currentTime = hls.liveSyncPosition;
+    // });
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = videoSrc;
     video.addEventListener('loadedmetadata', () => {
@@ -227,8 +229,3 @@ setTimeout(() => {
     });
   }
 }, 1000);
-
-// 다시보기 불러오기
-const getReplays = async () => {};
-
-getReplays();
