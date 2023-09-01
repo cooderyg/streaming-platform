@@ -5,7 +5,7 @@ async function getMyChannelData() {
   const channelName = data.name;
   // Todo:  배너,프로필 구분 필요
   const channelBannerImg =
-    data.bannerImgUrl || '../img/curved-images/curved0.jpg';
+    data.bannerImgUrl || '/img/curved-images/curved0.jpg';
   const streamerImg = data.user.profileImgUrl || '/img/profile.jpg';
   const channelCreatedAt = data.createdAt.split('T')['0'];
   const subscribeCount = data.subscribes.length;
@@ -92,7 +92,9 @@ async function writeMyNotice(channelId) {
   const noticeImageUploadBtn = document.getElementById(
     'notice-image-upload-btn',
   );
+  console.log(noticeImageUploadBtn);
   noticeImageUploadBtn.addEventListener('click', async () => {
+    console.log('클릭!');
     const fileInput = document.getElementById('notice-img-input');
     let formData = new FormData();
     formData.append('file', fileInput.files[0]);
@@ -129,6 +131,28 @@ categoryCheckboxes.forEach((checkbox) => {
   });
 });
 
+// 변경할 베너 이미지 값 가져오기
+let bannerImgUrl = document.getElementById('channel-img-input').value;
+console.log(bannerImgUrl);
+
+const channelImageUploadBtn = document.getElementById(
+  'channel-image-upload-btn',
+);
+channelImageUploadBtn.addEventListener('click', async () => {
+  const fileInput = document.getElementById('channel-img-input');
+  let formData = new FormData();
+  formData.append('file', fileInput.files[0]);
+  console.log(fileInput.files[0]);
+  const uploadRes = await fetch('/api/uploads/channel-notice-image', {
+    method: 'POST',
+    cache: 'no-cache',
+    body: formData, // body 부분에 폼데이터 변수를 할당
+  });
+  const uploadData = await uploadRes.json();
+  bannerImgUrl = uploadData.url;
+  console.log(bannerImgUrl);
+});
+
 async function writeMyChannel(channelId) {
   // 채널 데이터
   const res = await fetch(`/api/channels/${channelId}`);
@@ -154,25 +178,6 @@ async function writeMyChannel(channelId) {
     if (checkbox.checked) {
       categoryIds.push(checkbox.value);
     }
-  });
-
-  // 변경할 베너 이미지 값 가져오기
-  const bannerImgUrl = document.getElementById('channel-img-input').value;
-
-  const channelImageUploadBtn = document.getElementById(
-    'channel-image-upload-btn',
-  );
-  channelImageUploadBtn.addEventListener('click', async () => {
-    const fileInput = document.getElementById('channel-img-input');
-    let formData = new FormData();
-    formData.append('file', fileInput.files[0]);
-    const uploadRes = await fetch('/api/uploads/channel-notice-image', {
-      method: 'POST',
-      cache: 'no-cache',
-      body: formData, // body 부분에 폼데이터 변수를 할당
-    });
-    const uploadData = await uploadRes.json();
-    bannerImgUrl = uploadData.url;
   });
 
   await fetch(`/api/channels/update/${channelId}`, {
