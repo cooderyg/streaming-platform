@@ -70,4 +70,10 @@ export class AppController {
   getStreamingControl() {
     return { title: 'Title' };
   }
+
+  @Get('search')
+  @Render('search')
+  getSearch() {
+    return { title: 'Title' };
+  }
 }
