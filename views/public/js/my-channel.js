@@ -72,6 +72,31 @@ function mySubscribe(channelId) {
   window.location.reload();
 }
 
+//후원랭킹top5
+async function getChannelDonationTop5(channelId) {
+  const historyRes = await fetch(`/api/credit-histories/channels/${channelId}`);
+  const historyData = await historyRes.json();
+  const top5 = document.getElementById('donation-top5');
+  historyData.forEach((el) => {
+    const nickname = el.user_nickname;
+    const totalAmount = el.total_amount;
+    const userImg = el.user_image_url || '/img/profile.jpg';
+    const temp = `
+    <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
+    <div class="avatar me-3">
+      <img src="${userImg}" alt="kal" class="border-radius-lg shadow" />
+    </div>
+    <div class="d-flex align-items-start flex-column justify-content-center">
+      <h6 class="mb-0 text-sm">${nickname}</h6>
+      <p class="mb-0 text-xs">${totalAmount} 크레딧</p>
+    </div>
+  </li>
+    `;
+
+    top5.insertAdjacentHTML('beforeend', temp);
+  });
+}
+
 async function writeMyNotice(channelId) {
   let imageUrl;
   const noticeWriteBtn = document.getElementById('notice-write-btn');
@@ -200,6 +225,9 @@ async function writeMyChannel(channelId) {
 
   // Notice 데이터 뿌려주기
   await getMyChannelNoticeData(channelId);
+
+  //후원 top5명 뿌려주기
+  await getChannelDonationTop5(channelId);
   // Notice 편집 이벤트 등록
   const noticeWriteIcon = document.getElementById('notice-write-icon');
   noticeWriteIcon.addEventListener('click', () => {
