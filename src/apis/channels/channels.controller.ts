@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
 import { ChannelsService } from './channels.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
@@ -20,11 +21,14 @@ import {
   UpdateChannelManagerDto,
 } from './dto/update-channel-manager.dto';
 import { Channel } from './entities/channel.entity';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Controller('/api/channels')
 export class ChannelsController {
   constructor(
     private readonly channelsService: ChannelsService, //
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   // 나의 채널 조회
@@ -55,7 +59,6 @@ export class ChannelsController {
     const channel = await this.channelsService.getChannel({
       channelId,
     });
-    console.log(channel);
     return channel;
   }
 
@@ -80,7 +83,6 @@ export class ChannelsController {
   @UseGuards(AccessAuthGuard)
   @Get('admin/managers')
   async getManagers(@User() user: UserAfterAuth) {
-    console.log(user);
     const managers = await this.channelsService.getManagers({
       userId: user.id,
     });
@@ -110,7 +112,6 @@ export class ChannelsController {
     @Body() updateChannelDto: UpdateChannelDto,
     @User() user: UserAfterAuth,
   ) {
-    console.log('업데이트 dtr 확인용:', updateChannelDto);
     const result = await this.channelsService.updateChannel({
       userId: user.id,
       channelId,

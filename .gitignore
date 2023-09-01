@@ -5,6 +5,7 @@ yarn.lock
 Dockerfile
 docker-compose.yaml
 .dockerignore
+/.clinic
 
 # compiled output
 /dist

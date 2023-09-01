@@ -10,7 +10,6 @@ const getUserData = async () => {
   if (!response.ok) return;
   const data = await response.json();
   user = data;
-  console.log(user);
 };
 getUserData();
 

@@ -4,7 +4,6 @@ const getData = async () => {
   const response = await fetch('/api/channels/admin/managers');
   const data = await response.json();
 
-  console.log(data);
   const temp = data.map((data) => {
     const createDate = new Date(data.createdAt).toLocaleDateString();
     const image = data.imageUrl ? data.imageUrl : '/img/profile.jpg';
@@ -79,7 +78,6 @@ managersEl.addEventListener('click', async (e) => {
     body: form,
   });
   const data = await response.json();
-  console.log(data);
   if (data.ok) {
     window.location.reload();
   } else {

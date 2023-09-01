@@ -26,7 +26,6 @@ export class CreditHistoriesController {
     @Body() createCreditHistoryDto: CreateCreditHistoryDto,
     @User() user: UserAfterAuth,
   ): Promise<CreditHistory> {
-    console.log(user);
     const creditHistory = await this.creditHistoriesService.createCreditHistory(
       { createCreditHistoryDto, userId: user.id },
     );

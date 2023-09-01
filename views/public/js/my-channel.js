@@ -10,6 +10,9 @@ async function getMyChannelData() {
   const channelCreatedAt = data.createdAt.split('T')['0'];
   const subscribeCount = data.subscribes.length;
   const streamerEmail = data.user.email;
+  const channelInfo = data.introduction || '';
+
+  console.log(data);
 
   document.getElementById(
     'channel-banner-img',
@@ -29,6 +32,9 @@ async function getMyChannelData() {
   document
     .getElementById('channel-contact-email')
     .insertAdjacentText('beforeend', streamerEmail);
+  document.getElementById(
+    'channel-info-container',
+  ).innerText = `${channelInfo}`;
 
   return data.id;
 }
@@ -132,7 +138,6 @@ async function writeMyChannel(channelId) {
     data.bannerImgUrl || '../img/curved-images/curved0.jpg';
   const channelIntroduction = data.introduction;
   const channelCategories = data.categories;
-  console.log(data);
 
   // 변경할 채널 타이틀, 채널 소개 값 가져오기
   const name = document.getElementById('channel-name-input').value;
@@ -151,10 +156,6 @@ async function writeMyChannel(channelId) {
     }
   });
 
-  // 선택한 카테고리들이 쉼표로 구분된 문자열로 출력됩니다.
-  // const categoriesString = categoryIds.join(', ');
-  // console.log(categoriesString);
-
   // 변경할 베너 이미지 값 가져오기
   const bannerImgUrl = document.getElementById('channel-img-input').value;
 
@@ -165,7 +166,6 @@ async function writeMyChannel(channelId) {
     const fileInput = document.getElementById('channel-img-input');
     let formData = new FormData();
     formData.append('file', fileInput.files[0]);
-    console.log(formData);
     const uploadRes = await fetch('/api/uploads/channel-notice-image', {
       method: 'POST',
       cache: 'no-cache',

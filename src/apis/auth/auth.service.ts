@@ -40,10 +40,11 @@ export class AuthService {
   }
 
   private getAccessToken({ userId }: IAuthServiceGetAccessToken): string {
-    return this.jwtService.sign(
-      { sub: userId },
-      { secret: process.env.ACCESS_SECRET_KEY, expiresIn: '1d' },
-    );
+    const payload = { sub: userId };
+    return this.jwtService.sign(payload, {
+      secret: process.env.ACCESS_SECRET_KEY,
+      expiresIn: '1d',
+    });
   }
   private getRefreshToken({ userId }: IAuthServiceGetRefreshToken): string {
     const payload = { sub: userId, tokenType: 'refresh' };

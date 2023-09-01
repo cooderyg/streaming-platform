@@ -20,7 +20,6 @@ export class TagsService {
   async createTags({ createTagDto }: ITagsServiceCreateTag): Promise<Tag[]> {
     const tags = [];
     const { tagNames } = createTagDto;
-    console.log(tagNames);
     for (let i = 0; i < tagNames.length; i++) {
       const name = tagNames[i];
       let tag = await this.tagsRepository.findOneBy({ name }); // 태그가 있는지 확인

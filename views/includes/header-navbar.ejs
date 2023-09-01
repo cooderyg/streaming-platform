@@ -16,6 +16,10 @@
   #alert-count.off {
     display: none;
   }
+  .navbar-nav > li {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 </style>
 
 <nav
@@ -39,8 +43,8 @@
       <ul class="navbar-nav justify-content-end">
         <li id="signin-btn">
           <a href="/sign-in" class="nav-item d-flex align-items-center d-block">
-            <i class="fa fa-user me-sm-1"></i>
-            <span class="d-sm-inline d-none">SignIn</span>
+            <i class="fa fa-key me-sm-1"></i>
+            <span class="d-sm-inline d-none">Sign In</span>
           </a>
         </li>
         <li id="my-channel-btn">
@@ -50,6 +54,12 @@
           >
             <i class="fa fa-user me-sm-1"></i>
             <span class="d-sm-inline d-none">My Channel</span>
+          </a>
+        </li>
+        <li id="signout-btn">
+          <a href="#" class="nav-item d-flex align-items-center d-block">
+            <i class="fa fa-key me-sm-1"></i>
+            <span class="d-sm-inline d-none">Sign Out</span>
           </a>
         </li>
         <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
@@ -194,6 +204,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const signinBtn = document.getElementById('signin-btn');
+    const signoutBtn = document.getElementById('signout-btn');
     const myChannelBtn = document.getElementById('my-channel-btn');
 
     function getCookie(token) {
@@ -206,32 +217,41 @@
     const accessToken = getCookie('accessToken');
 
     if (accessToken) {
-      signinBtn.style.display = 'none'; // 로그인 상태면 SignIn 버튼 감추기
-      myChannelBtn.style.display = 'block'; // 로그인 상태면 My Channel 버튼 표시
+      signinBtn.style.display = 'none';
+      signoutBtn.style.display = 'block';
+      myChannelBtn.style.display = 'block';
     } else {
-      signinBtn.style.display = 'block'; // 로그인하지 않은 상태면 SignIn 버튼 표시
-      myChannelBtn.style.display = 'none'; // 로그인하지 않은 상태면 My Channel 버튼 감추기
+      signinBtn.style.display = 'block';
+      signoutBtn.style.display = 'none';
+      myChannelBtn.style.display = 'none';
     }
+
+    signoutBtn.addEventListener('click', async (event) => {
+      event.preventDefault();
+      await fetch('/api/auth/logout');
+      location.href = '/';
+    });
   });
 
   const alertListEl = document.querySelector('#alert-list');
   const alertCount = document.querySelector('#alert-count');
   const alertCountNum = document.querySelector('#alert-count-num');
   const getAlerts = async () => {
-    const response = await fetch('/api/alerts');
-    const data = await response.json();
-    if (!response.ok) {
-      alertCount.classList.add('off');
-      return;
-    }
-    console.log(data);
-    if (!data.length) alertCount.classList.add('off');
-    alertCountNum.innerText = data.length;
+    if (document.cookie) {
+      const response = await fetch('/api/alerts');
+      const data = await response.json();
+      if (!response.ok) {
+        alertCount.classList.add('off');
+        return;
+      }
+      console.log(data);
+      if (!data.length) alertCount.classList.add('off');
+      alertCountNum.innerText = data.length;
 
-    const temp = data.map((el) => {
-      const imgTemp = el.channel.profileImgUrl || '/img/profile.jpg';
+      const temp = data.map((el) => {
+        const imgTemp = el.channel.profileImgUrl || '/img/profile.jpg';
 
-      return `
+        return `
             <li class="mb-2">
               <a class="dropdown-item border-radius-md" href="javascript:;">
                 <div class="d-flex py-1">
@@ -255,9 +275,12 @@
               </a>
             </li>
           `;
-    });
+      });
 
-    alertListEl.innerHTML = temp;
+      alertListEl.innerHTML = temp;
+    } else {
+      alertCount.classList.add('off');
+    }
   };
 
   getAlerts();

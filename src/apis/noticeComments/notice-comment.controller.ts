@@ -34,7 +34,6 @@ export class NoticeCommentsController {
       size,
       noticeId,
     });
-    console.log('공지댓글', noticeComment);
     return noticeComment;
   }
 
