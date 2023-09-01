@@ -13,7 +13,7 @@ import { TagsService } from '../tags/tags.service';
 import { UpdateLiveDto } from './dto/update-live.dto';
 import { CreditHistoriesService } from '../creditHistories/credit-histories.service';
 import { Channel } from '../channels/entities/channel.entity';
-import { PageReqDto } from 'src/commons/dto/page-req.dto';
+import { PageReqDto, SearchReqDto } from 'src/commons/dto/page-req.dto';
 import { DateReqDto } from 'src/commons/dto/date-req.dto';
 import { EventsGateway } from '../events/events.gateway';
 import { UsersService } from '../users/users.service';
@@ -60,6 +60,7 @@ export class LivesService {
       .getMany();
     return lives;
   }
+
   async getLiveById({ liveId }) {
     return await this.livesRepository
       .createQueryBuilder('live')
@@ -150,6 +151,37 @@ export class LivesService {
       result.income = 0;
     }
     return result;
+  }
+
+  async searchLives({ searchReqDto }: ILivesServiceSearch): Promise<Live[]> {
+    const { page, size, keyword } = searchReqDto;
+    const lives = await this.livesRepository
+      .createQueryBuilder('live')
+      .select([
+        'live.id',
+        'live.title',
+        'live.onAir',
+        'live.thumbnailUrl',
+        'live.createdAt',
+        'tag.id',
+        'tag.name',
+        'channel.id',
+        'channel.name',
+        'category.id',
+        'category.name',
+      ])
+      .leftJoin('live.channel', 'channel')
+      .leftJoin('live.tags', 'tag')
+      .leftJoin('channel.categories', 'category')
+      .where('live.title like :keyword', { keyword })
+      .orWhere('tag.name like :keyword', { keyword })
+      .orWhere('channel.name like :keyword', { keyword })
+      .orWhere('category.name like :keyword', { keyword })
+      .take(size)
+      .skip((page - 1) * size)
+      .getMany();
+
+    return lives;
   }
 
   async createLive({ userId, createLiveDto }: ILivesServiceCreateLive) {
@@ -344,4 +376,8 @@ interface ILivesServiceTurnOff {
 interface ILivesServiceGetLiveIncome {
   userId: string;
   dateReqDto: DateReqDto;
+}
+
+interface ILivesServiceSearch {
+  searchReqDto: SearchReqDto;
 }

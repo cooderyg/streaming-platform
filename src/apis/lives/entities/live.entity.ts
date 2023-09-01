@@ -32,7 +32,6 @@ export class Live {
 
   @Column({ nullable: true })
   replayUrl: string;
-  f;
 
   @Column({ default: false })
   onAir: boolean;
