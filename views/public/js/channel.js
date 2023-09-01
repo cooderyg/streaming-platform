@@ -13,6 +13,7 @@ const getChannelData = async () => {
   // Todo:  배너,프로필 구분 필요
   channelBannerImg = data.bannerImgUrl || '../img/curved-images/curved0.jpg';
   const streamerImg = data.user.profileImgUrl || '/img/profile.jpg';
+  console.log(channelBannerImg);
   const channelCreatedAt = data.createdAt.split('T')['0'];
   const subscribeCount = data.subscribes.length;
   const streamerEmail = data.user.email;
@@ -142,7 +143,7 @@ const writeChannel = async () => {
       }),
     });
     const channelData = await channelRes.json();
-    // window.location.reload();
+    window.location.reload();
   });
 };
 const channelImageUploadBtn = document.getElementById(
