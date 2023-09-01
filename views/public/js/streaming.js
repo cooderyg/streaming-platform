@@ -147,6 +147,8 @@ const hlsConfig = {
   enableWorker: true,
   lowLatencyMode: true,
   backBufferLength: 90,
+  liveDurationInfinity: true,
+  liveSyncDurationCount: 1,
 };
 
 setTimeout(() => {
@@ -158,18 +160,22 @@ setTimeout(() => {
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       video.play();
     });
-    video.addEventListener('click', () => {
-      const duration = hls.media.duration;
-      hls.media.currentTime = duration - 8;
+    video.addEventListener('play', () => {
+      console.log(hls);
+      console.log(hls.liveSyncPosition);
+      hls.media.currentTime = hls.liveSyncPosition;
     });
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = videoSrc;
     video.addEventListener('loadedmetadata', () => {
-      const duration = video.duration;
-      const startTime = duration - 8;
-      video.currentTime = startTime;
       try {
         video.play();
+        // video.addEventListener('click', () => {
+        //   const duration = hls.media.duration;
+        //   console.log(duration);
+        //   hls.media.currentTime = duration;
+        //   console.log(hls.media.currentTime);
+        // });
       } catch (error) {
         console.log(error);
       }
