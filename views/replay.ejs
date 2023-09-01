@@ -44,7 +44,6 @@
       rel="stylesheet"
     />
     <link href="/css/streaming.css" rel="stylesheet" />
-    <link href="/css/video.css" rel="stylesheet" />
     <!-- Nepcha Analytics (nepcha.com) -->
     <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
     <script
@@ -63,8 +62,7 @@
       src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script defer src="/js/streaming.js"></script>
-    <script defer src="/js/chat.js"></script>
+    <script defer src="/js/replay.js"></script>
   </head>
 
   <body class="g-sidenav-show bg-gray-100">
@@ -79,7 +77,7 @@
       <!-- header Navbar end -->
       <div class="container-fluid">
         <div class="row">
-          <div class="card col-9" id="media-container">
+          <div class="card" id="media-container">
             <!-- 비디오 자리 -->
             <video
               id="video"
@@ -115,71 +113,13 @@
                   class="nav-wrapper position-relative end-0"
                   style="display: flex; justify-content: flex-end"
                 >
-                  <div id="user-count" class="mx-2">0</div>
                   <button
                     id="channel-subscribe-btn"
                     type="button"
                     class="btn btn-outline-primary"
                   ></button>
-                  <button
-                    id="donation-modal-btn"
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                    class="btn btn-outline-primary"
-                  >
-                    후원하기
-                  </button>
                 </div>
               </div>
-            </div>
-          </div>
-          <div
-            class="card col-3 chat-list"
-            style="
-              display: flex;
-              flex-direction: column;
-              justify-content: space-between;
-              height: var(--bs-card-height);
-            "
-          >
-            <div
-              id="chat-container"
-              class="flex-fill"
-              style="height: 500px; overflow-y: scroll"
-            >
-              <p style="margin: 1px; padding: 0px; font-size: 14px">&nbsp;</p>
-              <!-- <div class="d-flex justify-content-start mb-4">
-                <div class="img_cont_msg">
-                  <img
-                    src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                    class="rounded-circle user_img_msg"
-                  />
-                </div>
-                <div class="msg_container">
-                  안녕하세용 채팅채팅
-                  <span class="msg_time">8:40 AM, Today</span>
-                </div>
-              </div> -->
-            </div>
-            <div class="input-group mb-3">
-              <input
-                type="text"
-                id="chat-input"
-                style="height: 40px"
-                class="form-control"
-                placeholder="채팅을 입력하세요"
-                aria-label="Recipient's username"
-                aria-describedby="button-addon2"
-              />
-              <button
-                class="btn btn-outline-secondary"
-                style="height: 40px"
-                type="button"
-                id="button-addon2"
-              >
-                전송
-              </button>
             </div>
           </div>
         </div>
@@ -312,7 +252,7 @@
               </div>
               <div class="card-body p-3">
                 <div class="row" id="replay-container">
-                  <!-- 다시보기 자리 -->
+                  <!-- 리플레이 카드 자리 -->
                 </div>
               </div>
             </div>
@@ -440,62 +380,6 @@
             />
           </div>
           <hr class="horizontal dark my-sm-4" />
-        </div>
-      </div>
-    </div>
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">후원하기</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <span>후원가능 금액</span>
-                <div id="credit-amount">1000원</div>
-              </div>
-              <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label"
-                  >후원금액</label
-                >
-                <input
-                  id="donation-amount"
-                  placeholder="Donation Amount"
-                  type="number"
-                  class="form-control"
-                  aria-describedby="emailHelp"
-                />
-                <div class="form-text">후원금액을 입력해주세요.</div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              id="close-btn"
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              닫기
-            </button>
-            <button type="submit" id="donation-btn" class="btn btn-primary">
-              후원
-            </button>
-          </div>
         </div>
       </div>
     </div>

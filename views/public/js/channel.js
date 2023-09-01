@@ -165,3 +165,53 @@ const channelWriteIcon = document.getElementById('channel-write-btn');
 channelWriteIcon.addEventListener('click', () => {
   writeChannel();
 });
+
+// 다시보기 불러오기
+const getReplays = async () => {
+  // 다시보기 불러오기
+  const replayContainer = document.getElementById('replay-container');
+  const resReplay = await fetch(`/api/lives/replay/${channelId}`);
+  const dataReplay = await resReplay.json();
+  console.log(dataReplay);
+  dataReplay.forEach((e) => {
+    const liveId = e.id;
+    const liveTitle = e.title;
+    const createdAt = e.createdAt.split('T')[0];
+    const thumbnailUrl = e.thumbnailUrl;
+
+    const temp_html = `
+    <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
+    <div class="card card-blog card-plain">
+      <div class="position-relative">
+        <a class="d-block shadow-xl border-radius-xl">
+          <img
+            src="${thumbnailUrl}"
+            alt="img-blur-shadow"
+            class="img-fluid shadow border-radius-xl"
+          />
+        </a>
+      </div>
+      <div class="card-body px-1 pb-0">
+        <p class="text-gradient text-dark mb-2 text-sm">
+          ${createdAt}
+        </p>
+        <a href="javascript:;">
+          <h5>${liveTitle}</h5>
+        </a>
+        <p class="mb-4 text-sm">#부트스트랩 #코딩</p>
+      </div>
+    </div>
+  </div>`;
+    replayContainer.insertAdjacentHTML('beforeend', temp_html);
+  });
+
+  const replayEls = document.querySelectorAll('.replay');
+  replayEls.forEach((replayEl) => {
+    replayEl.addEventListener('click', (e) => {
+      const liveId = e.currentTarget.getAttribute('data-live-id');
+      window.location.href = `/replay/${liveId}`;
+    });
+  });
+};
+
+getReplays();
