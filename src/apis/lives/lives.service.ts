@@ -81,6 +81,24 @@ export class LivesService {
       .getOne();
   }
 
+  async getReplaysByChannelId({ channelId }) {
+    return await this.livesRepository
+      .createQueryBuilder('live')
+      .select([
+        'live.id',
+        'live.title',
+        'live.createdAt',
+        'live.thumbnailUrl',
+        'tag.name',
+        'channel.id',
+      ])
+      .leftJoin('live.channel', 'channel')
+      .leftJoin('live.tags', 'tag')
+      .where('channel.id = :id', { id: channelId })
+      .andWhere('live.endDate IS NOT NULL')
+      .getMany();
+  }
+
   async getLivesForAdmin({
     userId,
     pageReqDto,
