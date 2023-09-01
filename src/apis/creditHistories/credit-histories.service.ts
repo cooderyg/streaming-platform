@@ -103,6 +103,29 @@ export class CreditHistoriesService {
     });
     return creditHistoryListByLive;
   }
+
+  async findCreditHistoryByChannel({ channelId }) {
+    const creditHistoryLiist = await this.creditHistoriesRepository
+      .createQueryBuilder('history')
+      .select([
+        'history.id',
+        'live.id',
+        'user.id',
+        'user.nickname',
+        'user.imageUrl',
+        'channel.id',
+      ])
+      .addSelect('SUM(history.amount)', 'total_amount')
+      .leftJoin('history.live', 'live')
+      .leftJoin('history.user', 'user')
+      .leftJoin('live.channel', 'channel')
+      .where('channel.id = :id', { id: channelId })
+      .groupBy('user.nickname')
+      .orderBy('total_amount', 'DESC')
+      .limit(5)
+      .getRawMany();
+    return creditHistoryLiist;
+  }
 }
 
 interface ICreaditHistoriesServiceCreateCreditHistory {

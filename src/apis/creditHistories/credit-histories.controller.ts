@@ -47,6 +47,15 @@ export class CreditHistoriesController {
     return creditHistoryList;
   }
 
+  @Get('/channels/:channelId')
+  async findCreditHistoryByChannel(@Param('channelId') channelId: string) {
+    const creditHistoryLiist =
+      await this.creditHistoriesService.findCreditHistoryByChannel({
+        channelId,
+      });
+    return creditHistoryLiist;
+  }
+
   @UseGuards(AccessAuthGuard)
   @Get('/:liveId')
   async findCreditHistoryListByLive(
