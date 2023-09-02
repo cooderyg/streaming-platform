@@ -13,6 +13,7 @@ const getChannelData = async () => {
   // Todo:  배너,프로필 구분 필요
   channelBannerImg = data.bannerImgUrl || '../img/curved-images/curved0.jpg';
   const streamerImg = data.user.profileImgUrl || '/img/profile.jpg';
+  console.log(channelBannerImg);
   const channelCreatedAt = data.createdAt.split('T')['0'];
   const subscribeCount = data.subscribes.length;
   const streamerEmail = data.user.email;
@@ -79,45 +80,45 @@ subscribeBtn.addEventListener('click', function (event) {
   window.location.reload();
 });
 
-const writeNotice = () => {
-  let imageUrl;
-  const noticeWriteBtn = document.getElementById('notice-write-btn');
-  noticeWriteBtn.addEventListener('click', async () => {
-    const content = document.getElementById('notice-content-input').value;
-    const noticeRes = await fetch(`/api/${channelId}/notices`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        content,
-        imageUrl: imageUrl || '',
-      }),
-    });
-    const noticeData = await noticeRes.json();
-  });
+// const writeNotice = () => {
+//   let imageUrl;
+//   const noticeWriteBtn = document.getElementById('notice-write-btn');
+//   noticeWriteBtn.addEventListener('click', async () => {
+//     const content = document.getElementById('notice-content-input').value;
+//     const noticeRes = await fetch(`/api/${channelId}/notices`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         content,
+//         imageUrl: imageUrl || '',
+//       }),
+//     });
+//     const noticeData = await noticeRes.json();
+//   });
 
-  const noticeImageUploadBtn = document.getElementById(
-    'notice-image-upload-btn',
-  );
-  noticeImageUploadBtn.addEventListener('click', async () => {
-    const fileInput = document.getElementById('notice-img-input');
-    let formData = new FormData();
-    formData.append('file', fileInput.files[0]);
-    const uploadRes = await fetch('/api/uploads/channel-notice-image', {
-      method: 'POST',
-      cache: 'no-cache',
-      body: formData, // body 부분에 폼데이터 변수를 할당
-    });
-    const uploadData = await uploadRes.json();
-    imageUrl = uploadData.url;
-  });
-};
+//   const noticeImageUploadBtn = document.getElementById(
+//     'notice-image-upload-btn',
+//   );
+//   noticeImageUploadBtn.addEventListener('click', async () => {
+//     const fileInput = document.getElementById('notice-img-input');
+//     let formData = new FormData();
+//     formData.append('file', fileInput.files[0]);
+//     const uploadRes = await fetch('/api/uploads/channel-notice-image', {
+//       method: 'POST',
+//       cache: 'no-cache',
+//       body: formData, // body 부분에 폼데이터 변수를 할당
+//     });
+//     const uploadData = await uploadRes.json();
+//     imageUrl = uploadData.url;
+//   });
+// };
 
-const noticeWriteIcon = document.getElementById('notice-write-icon');
-noticeWriteIcon.addEventListener('click', () => {
-  writeNotice();
-});
+// const noticeWriteIcon = document.getElementById('notice-write-icon');
+// noticeWriteIcon.addEventListener('click', () => {
+//   writeNotice();
+// });
 
 const writeChannel = async () => {
   let bannerImgUrl;
@@ -142,26 +143,102 @@ const writeChannel = async () => {
       }),
     });
     const channelData = await channelRes.json();
-    // window.location.reload();
+    window.location.reload();
   });
 };
-const channelImageUploadBtn = document.getElementById(
-  'channel-image-upload-btn',
-);
-channelImageUploadBtn.addEventListener('click', async () => {
-  const fileInput = document.getElementById('channel-img-input');
-  let formData = new FormData();
-  formData.append('file', fileInput.files[0]);
-  const uploadRes = await fetch('/api/uploads/channel-notice-image', {
-    method: 'POST',
-    cache: 'no-cache',
-    body: formData, // body 부분에 폼데이터 변수를 할당
-  });
-  const uploadData = await uploadRes.json();
-  channelBannerImg = uploadData.url;
-});
+// const channelImageUploadBtn = document.getElementById(
+//   'channel-image-upload-btn',
+// );
+// channelImageUploadBtn.addEventListener('click', async () => {
+//   const fileInput = document.getElementById('channel-img-input');
+//   let formData = new FormData();
+//   formData.append('file', fileInput.files[0]);
+//   const uploadRes = await fetch('/api/uploads/channel-notice-image', {
+//     method: 'POST',
+//     cache: 'no-cache',
+//     body: formData, // body 부분에 폼데이터 변수를 할당
+//   });
+//   const uploadData = await uploadRes.json();
+//   channelBannerImg = uploadData.url;
+// });
 
-const channelWriteIcon = document.getElementById('channel-write-btn');
-channelWriteIcon.addEventListener('click', () => {
-  writeChannel();
-});
+// const channelWriteIcon = document.getElementById('channel-write-btn');
+// channelWriteIcon.addEventListener('click', () => {
+//   writeChannel();
+// });
+
+// 다시보기 불러오기
+const getReplays = async () => {
+  // 다시보기 불러오기
+  const replayContainer = document.getElementById('replay-container');
+  const resReplay = await fetch(`/api/lives/replay/${channelId}`);
+  const dataReplay = await resReplay.json();
+  console.log(dataReplay);
+  dataReplay.forEach((e) => {
+    const liveId = e.id;
+    const liveTitle = e.title;
+    const createdAt = e.createdAt.split('T')[0];
+    const thumbnailUrl = e.thumbnailUrl;
+
+    const temp_html = `
+    <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
+    <div class="card card-blog card-plain">
+      <div class="position-relative">
+        <a class="d-block shadow-xl border-radius-xl">
+          <img
+            src="${thumbnailUrl}"
+            alt="img-blur-shadow"
+            class="img-fluid shadow border-radius-xl"
+          />
+        </a>
+      </div>
+      <div class="card-body px-1 pb-0">
+        <p class="text-gradient text-dark mb-2 text-sm">
+          ${createdAt}
+        </p>
+        <a href="javascript:;">
+          <h5>${liveTitle}</h5>
+        </a>
+        <p class="mb-4 text-sm">#부트스트랩 #코딩</p>
+      </div>
+    </div>
+  </div>`;
+    replayContainer.insertAdjacentHTML('beforeend', temp_html);
+  });
+
+  const replayEls = document.querySelectorAll('.replay');
+  replayEls.forEach((replayEl) => {
+    replayEl.addEventListener('click', (e) => {
+      const liveId = e.currentTarget.getAttribute('data-live-id');
+      window.location.href = `/replay/${liveId}`;
+    });
+  });
+};
+
+getReplays();
+
+//후원랭킹top5
+async function getChannelDonationTop5(channelId) {
+  const historyRes = await fetch(`/api/credit-histories/channels/${channelId}`);
+  const historyData = await historyRes.json();
+  const top5 = document.getElementById('donation-top5');
+  historyData.forEach((el) => {
+    const nickname = el.user_nickname;
+    const totalAmount = el.total_amount;
+    const userImg = el.user_image_url || '/img/profile.jpg';
+    const temp = `
+    <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
+    <div class="avatar me-3">
+      <img src="${userImg}" alt="kal" class="border-radius-lg shadow" />
+    </div>
+    <div class="d-flex align-items-start flex-column justify-content-center">
+      <h6 class="mb-0 text-sm">${nickname}</h6>
+      <p class="mb-0 text-xs">${totalAmount} 크레딧</p>
+    </div>
+  </li>
+    `;
+
+    top5.insertAdjacentHTML('beforeend', temp);
+  });
+}
+getChannelDonationTop5(channelId);

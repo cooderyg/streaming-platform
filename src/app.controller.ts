@@ -65,9 +65,21 @@ export class AppController {
     return { title: 'Title' };
   }
 
+  @Get('replay/:liveId')
+  @Render('replay')
+  getReplay() {
+    return { title: 'Title' };
+  }
+
   @Get('streaming-control/')
   @Render('streaming-control')
   getStreamingControl() {
+    return { title: 'Title' };
+  }
+
+  @Get('search')
+  @Render('search')
+  getSearch() {
     return { title: 'Title' };
   }
 }

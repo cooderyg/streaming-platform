@@ -14,7 +14,7 @@ import { AccessAuthGuard } from 'src/apis/auth/guard/auth.guard';
 import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
 import { CreateLiveDto } from './dto/create-live.dto';
 import { UpdateLiveDto } from './dto/update-live.dto';
-import { PageReqDto } from 'src/commons/dto/page-req.dto';
+import { PageReqDto, SearchReqDto } from 'src/commons/dto/page-req.dto';
 import { DateReqDto } from 'src/commons/dto/date-req.dto';
 import { Live } from './entities/live.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -39,6 +39,14 @@ export class LivesController {
       await this.cacheManager.set('liveList', lives, 5); // 캐싱된 데이터가 없을경우 set
       return lives;
     }
+  }
+
+  @Get('replay/:channelId')
+  async getReplays(@Param() params: { channelId: string }) {
+    const replays = await this.livesService.getReplaysByChannelId({
+      channelId: params.channelId,
+    });
+    return replays;
   }
 
   @Get(':liveId')
@@ -80,6 +88,12 @@ export class LivesController {
     const live = await this.livesService.getLiveForAdmin({ userId: user.id });
 
     return live;
+  }
+
+  @Get('search/keywords')
+  async getSearchLives(@Query() searchReqDto: SearchReqDto) {
+    const lives = await this.livesService.searchLives({ searchReqDto });
+    return lives;
   }
 
   @UseGuards(AccessAuthGuard)

@@ -37,7 +37,12 @@
           <span class="input-group-text text-body"
             ><i class="fas fa-search" aria-hidden="true"></i
           ></span>
-          <input type="text" class="form-control" placeholder="Type here..." />
+          <input
+            type="text"
+            id="search-input"
+            class="form-control"
+            placeholder="Type here..."
+          />
         </div>
       </div>
       <ul class="navbar-nav justify-content-end">
@@ -284,4 +289,12 @@
   };
 
   getAlerts();
+
+  const searchInputEl = document.querySelector('#search-input');
+  searchInputEl.addEventListener('keydown', (e) => {
+    if (e.keyCode === 13) {
+      if (searchInputEl.value === '') return alert('검색어를 입력해주세요.');
+      window.location.href = `/search?keyword=${searchInputEl.value}`;
+    }
+  });
 </script>

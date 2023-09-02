@@ -1,6 +1,9 @@
 /* video::-webkit-media-controls-play-button {
   display: none !important;
 } */
+video {
+  cursor: pointer;
+}
 video::-webkit-media-controls-timeline {
   display: none !important;
 }

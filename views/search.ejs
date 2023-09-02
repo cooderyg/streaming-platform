@@ -1,0 +1,237 @@
+<!--
+=========================================================
+* Soft UI Dashboard - v1.0.7
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
+* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="apple-touch-icon" sizes="76x76" href="../img/apple-icon.png" />
+    <link rel="icon" type="image/png" href="../img/favicon.png" />
+    <title>Freely B 라이브 스트리밍 플랫폼</title>
+    <!--     Fonts and icons     -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"
+      rel="stylesheet"
+    />
+    <!-- Nucleo Icons -->
+    <link href="../css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script
+      src="https://kit.fontawesome.com/42d5adcbca.js"
+      crossorigin="anonymous"
+    ></script>
+    <link href="../css/nucleo-svg.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link
+      id="pagestyle"
+      href="../css/soft-ui-dashboard.css?v=1.0.7"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/search.css" />
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+    <script
+      defer
+      data-site="YOUR_DOMAIN_HERE"
+      src="https://api.nepcha.com/js/nepcha-analytics.js"
+    ></script>
+    <script defer src="/js/search.js"></script>
+  </head>
+
+  <body class="g-sidenav-show bg-gray-100">
+    <!-- side navbar start -->
+    <%-include('includes/subscribe-side.ejs') %>
+    <!-- side navbar end -->
+    <main
+      class="main-content position-relative max-height-vh-100 h-100 border-radius-lg"
+    >
+      <!-- header Navbar start -->
+      <%-include('includes/header-navbar.ejs') %>
+      <!-- header Navbar end -->
+      <div class="container-fluid py-4">
+        <h2><strong id="search-title">롤</strong> 검색결과</h2>
+        <ul id="search-container">
+          <!-- 라이브 카드 자리 -->
+          <li>
+            <a href="#">
+              <div class="img-container">
+                <img
+                  src="https://attach.lolchess.gg/2021%2F02%2F25%2F1614228271359-1614228271359.png"
+                  alt="이미지에요"
+                />
+              </div>
+              <div class="desc-container">
+                <h4 class="mb-0 text-lg">스트리머 닉네임</h4>
+                <p class="mb-0">카테고리</p>
+                <p class="mb-0">시청자 수</p>
+                <p class="mb-0">방송제목</p>
+                <ul class="tag-container px-0">
+                  <li>롤</li>
+                  <li>롤체</li>
+                  <li>그마</li>
+                </ul>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <footer class="footer pt-3">
+          <div class="container-fluid">
+            <div class="row align-items-center justify-content-lg-between">
+              <div class="col-lg-6 mb-lg-0 mb-4">
+                <div
+                  class="copyright text-center text-sm text-muted text-lg-start"
+                >
+                  ©
+                  <script>
+                    document.write(new Date().getFullYear());
+                  </script>
+                  , made with <i class="fa fa-heart"></i> by
+                  <a
+                    href="https://www.creative-tim.com"
+                    class="font-weight-bold"
+                    target="_blank"
+                    >Creative Tim</a
+                  >
+                  for a better web.
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </main>
+    <div class="fixed-plugin">
+      <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
+        <i class="fa fa-cog py-2"> </i>
+      </a>
+      <div class="card shadow-lg">
+        <div class="card-header pb-0 pt-3">
+          <div class="float-start">
+            <h5 class="mt-3 mb-0">Soft UI Configurator</h5>
+            <p>See our dashboard options.</p>
+          </div>
+          <div class="float-end mt-4">
+            <button
+              class="btn btn-link text-dark p-0 fixed-plugin-close-button"
+            >
+              <i class="fa fa-close"></i>
+            </button>
+          </div>
+          <!-- End Toggle Button -->
+        </div>
+        <hr class="horizontal dark my-1" />
+        <div class="card-body pt-sm-3 pt-0">
+          <!-- Sidebar Backgrounds -->
+          <div>
+            <h6 class="mb-0">Sidebar Colors</h6>
+          </div>
+          <a href="javascript:void(0)" class="switch-trigger background-color">
+            <div class="badge-colors my-2 text-start">
+              <span
+                class="badge filter bg-gradient-primary active"
+                data-color="primary"
+                onclick="sidebarColor(this)"
+              ></span>
+              <span
+                class="badge filter bg-gradient-dark"
+                data-color="dark"
+                onclick="sidebarColor(this)"
+              ></span>
+              <span
+                class="badge filter bg-gradient-info"
+                data-color="info"
+                onclick="sidebarColor(this)"
+              ></span>
+              <span
+                class="badge filter bg-gradient-success"
+                data-color="success"
+                onclick="sidebarColor(this)"
+              ></span>
+              <span
+                class="badge filter bg-gradient-warning"
+                data-color="warning"
+                onclick="sidebarColor(this)"
+              ></span>
+              <span
+                class="badge filter bg-gradient-danger"
+                data-color="danger"
+                onclick="sidebarColor(this)"
+              ></span>
+            </div>
+          </a>
+          <!-- Sidenav Type -->
+          <div class="mt-3">
+            <h6 class="mb-0">Sidenav Type</h6>
+            <p class="text-sm">Choose between 2 different sidenav types.</p>
+          </div>
+          <div class="d-flex">
+            <button
+              class="btn bg-gradient-primary w-100 px-3 mb-2 active"
+              data-class="bg-transparent"
+              onclick="sidebarType(this)"
+            >
+              Transparent
+            </button>
+            <button
+              class="btn bg-gradient-primary w-100 px-3 mb-2 ms-2"
+              data-class="bg-white"
+              onclick="sidebarType(this)"
+            >
+              White
+            </button>
+          </div>
+          <p class="text-sm d-xl-none d-block mt-2">
+            You can change the sidenav type just on desktop view.
+          </p>
+          <!-- Navbar Fixed -->
+          <div class="mt-3">
+            <h6 class="mb-0">Navbar Fixed</h6>
+          </div>
+          <div class="form-check form-switch ps-0">
+            <input
+              class="form-check-input mt-1 ms-auto"
+              type="checkbox"
+              id="navbarFixed"
+              onclick="navbarFixed(this)"
+            />
+          </div>
+          <hr class="horizontal dark my-sm-4" />
+        </div>
+      </div>
+    </div>
+    <!--   Core JS Files   -->
+    <script src="../js/core/popper.min.js"></script>
+    <script src="../js/core/bootstrap.min.js"></script>
+    <script src="../js/plugins/perfect-scrollbar.min.js"></script>
+    <script src="../js/plugins/smooth-scrollbar.min.js"></script>
+    <script>
+      var win = navigator.platform.indexOf('Win') > -1;
+      if (win && document.querySelector('#sidenav-scrollbar')) {
+        var options = {
+          damping: '0.5',
+        };
+        Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+      }
+    </script>
+    <!-- Github buttons -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="../js/soft-ui-dashboard.min.js?v=1.0.7"></script>
+  </body>
+</html>

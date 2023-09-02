@@ -74,8 +74,8 @@
                 </div>
               </div>
               <div class="nav-wrapper position-relative end-0 " style="display:flex; justify-content: flex-end;">
-                <button type="button" class="btn btn-outline-primary me-4" id="channel-put-btn" data-bs-toggle="modal"
-                  data-bs-target="#exampleModal">정보수정</button>
+                <!-- <button type="button" class="btn btn-outline-primary me-4" id="channel-put-btn" data-bs-toggle="modal"
+                  data-bs-target="#exampleModal">정보수정</button> -->
               </div>
             </div>
           </div>
@@ -86,8 +86,8 @@
           <div class="col-12 col-xl-4">
             <div class="card h-100">
               <h3 class="ms-3 mt-3">Channel Notices&nbsp;
-                <i class="fa-regular fa-pen-to-square fa-sm" type="button" class="btn btn-primary"
-                  id="notice-write-icon" data-bs-toggle="modal" data-bs-target="#writeNoticeModal"></i>
+                <!-- <i class="fa-regular fa-pen-to-square fa-sm" type="button" class="btn btn-primary"
+                  id="notice-write-icon" data-bs-toggle="modal" data-bs-target="#writeNoticeModal"></i> -->
               </h3>
               <div class="ms-3 mt-3 mb-3" id="channel-notices">
 
@@ -103,8 +103,8 @@
                   </div>
                   <div class="col-md-4 text-end">
                     <a href="javascript:;">
-                      <i class="fas fa-user-edit text-secondary text-sm" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="Edit Profile"></i>
+                      <!-- <i class="fas fa-user-edit text-secondary text-sm" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="Edit Profile"></i> -->
                     </a>
                   </div>
                 </div>
@@ -127,20 +127,11 @@
           <div class="col-12 col-xl-4">
             <div class="card h-100">
               <div class="card-header pb-0 p-3">
-                <h6 class="mb-0">Donation Top10</h6>
+                <h6 class="mb-0">Donation Top5</h6>
               </div>
               <div class="card-body p-3">
-                <ul class="list-group">
-                  <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-                    <div class="avatar me-3">
-                      <img src="../img/kal-visuals-square.jpg" alt="kal" class="border-radius-lg shadow" />
-                    </div>
-                    <div class="d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="mb-0 text-sm">Sophie B.</h6>
-                      <p class="mb-0 text-xs">Hi! I need more information..</p>
-                    </div>
-                    <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto" href="javascript:;">Reply</a>
-                  </li>
+                <ul class="list-group" id="donation-top5">
+                  <!-- 후원랭킹 자리 -->
 
                 </ul>
               </div>
@@ -181,7 +172,7 @@
           <!-- 공지작성 모달 끝 -->
 
           <!-- 수정 Modal -->
-          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+          <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
@@ -225,7 +216,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
           <!-- Modal 끝 -->
 
           <div class="col-12 mt-4">
@@ -234,91 +225,8 @@
                 <h6 class="mb-1">다시보기</h6>
               </div>
               <div class="card-body p-3">
-                <div class="row">
-                  <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                    <div class="card card-blog card-plain">
-                      <div class="position-relative">
-                        <a class="d-block shadow-xl border-radius-xl">
-                          <img src="../img/home-decor-1.jpg" alt="img-blur-shadow"
-                            class="img-fluid shadow border-radius-xl" />
-                        </a>
-                      </div>
-                      <div class="card-body px-1 pb-0">
-                        <p class="text-gradient text-dark mb-2 text-sm">
-                          2023-08-19
-                        </p>
-                        <a href="javascript:;">
-                          <h5>붙트스트랩 어려웡</h5>
-                        </a>
-                        <p class="mb-4 text-sm">
-                          #부트스트랩 #코딩
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                    <div class="card card-blog card-plain">
-                      <div class="position-relative">
-                        <a class="d-block shadow-xl border-radius-xl">
-                          <img src="../img/home-decor-1.jpg" alt="img-blur-shadow"
-                            class="img-fluid shadow border-radius-xl" />
-                        </a>
-                      </div>
-                      <div class="card-body px-1 pb-0">
-                        <p class="text-gradient text-dark mb-2 text-sm">
-                          2023-08-19
-                        </p>
-                        <a href="javascript:;">
-                          <h5>붙트스트랩 어려웡</h5>
-                        </a>
-                        <p class="mb-4 text-sm">
-                          #부트스트랩 #코딩
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                    <div class="card card-blog card-plain">
-                      <div class="position-relative">
-                        <a class="d-block shadow-xl border-radius-xl">
-                          <img src="../img/home-decor-1.jpg" alt="img-blur-shadow"
-                            class="img-fluid shadow border-radius-xl" />
-                        </a>
-                      </div>
-                      <div class="card-body px-1 pb-0">
-                        <p class="text-gradient text-dark mb-2 text-sm">
-                          2023-08-19
-                        </p>
-                        <a href="javascript:;">
-                          <h5>붙트스트랩 어려웡</h5>
-                        </a>
-                        <p class="mb-4 text-sm">
-                          #부트스트랩 #코딩
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                    <div class="card card-blog card-plain">
-                      <div class="position-relative">
-                        <a class="d-block shadow-xl border-radius-xl">
-                          <img src="../img/home-decor-1.jpg" alt="img-blur-shadow"
-                            class="img-fluid shadow border-radius-xl" />
-                        </a>
-                      </div>
-                      <div class="card-body px-1 pb-0">
-                        <p class="text-gradient text-dark mb-2 text-sm">
-                          2023-08-19
-                        </p>
-                        <a href="javascript:;">
-                          <h5>붙트스트랩 어려웡</h5>
-                        </a>
-                        <p class="mb-4 text-sm">
-                          #부트스트랩 #코딩
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                <div class="row" id="replay-container">
+              <!-- 리플레이 카드 자리 -->
 
                 </div>
               </div>
