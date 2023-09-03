@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Inject,
   forwardRef,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -17,6 +18,7 @@ import {
   IUsersServiceUpdateCreditWithManager,
   IUsersServiceUpdateUser,
 } from './interfaces/users-service.interface';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class UsersService {
@@ -25,6 +27,7 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
     @Inject(forwardRef(() => ChannelsService))
     private readonly channelsService: ChannelsService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async findUser({ userId }): Promise<User> {
@@ -68,6 +71,23 @@ export class UsersService {
 
   async findByEmail({ email }: IUsersServiceFindByEmail): Promise<User> {
     return await this.usersRepository.findOne({ where: { email } });
+  }
+
+  async verifyEmail({ email }) {
+    const exUser = await this.findByEmail({ email });
+    if (exUser) {
+      throw new ForbiddenException('해당 이메일로는 가입하실 수 없습니다');
+    } else if (!exUser) {
+      const randomNumber = Math.floor(100000 + Math.random() * 900000);
+      await this.mailerService.sendMail({
+        to: email,
+        from: process.env.MAIL_USER,
+        subject: 'Freely B 이메일 인증번호입니다.',
+        text: '인증번호를 입력해주세요.',
+        html: `<b>인증번호: ${randomNumber}</b>`,
+      });
+      return randomNumber;
+    }
   }
 
   async findById({ userId }: IUsersServiceFindById): Promise<User> {
