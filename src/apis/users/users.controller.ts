@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AccessAuthGuard } from '../auth/guard/auth.guard';
@@ -9,6 +17,7 @@ import {
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserResDto } from './dto/res.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
 
 @Controller('api/users')
 export class UsersController {
@@ -20,6 +29,12 @@ export class UsersController {
     const _user = await this.usersSerivce.findUser({ userId: user.id });
 
     return _user;
+  }
+
+  @Post('/verify-email')
+  async findUserByEmail(@Body() body: VerifyEmailDto) {
+    const result = await this.usersSerivce.verifyEmail({ email: body.email });
+    return { message: result };
   }
 
   @Post()
