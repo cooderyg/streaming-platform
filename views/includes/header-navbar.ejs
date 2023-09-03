@@ -17,8 +17,21 @@
     display: none;
   }
   .navbar-nav > li {
+    position: relative;
     margin-left: 10px;
     margin-right: 10px;
+  }
+  #alert-list > li > button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    color: #344767;
+  }
+  .alert-delete-btn {
+    padding: 4px;
   }
 </style>
 
@@ -101,7 +114,7 @@
             class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4"
             aria-labelledby="dropdownMenuButton"
           >
-            <li class="mb-2">
+            <!-- <li class="mb-2">
               <a class="dropdown-item border-radius-md" href="javascript:;">
                 <div class="d-flex py-1">
                   <div class="my-auto">
@@ -199,7 +212,7 @@
                   </div>
                 </div>
               </a>
-            </li>
+            </li> -->
           </ul>
         </li>
       </ul>
@@ -241,6 +254,7 @@
   const alertListEl = document.querySelector('#alert-list');
   const alertCount = document.querySelector('#alert-count');
   const alertCountNum = document.querySelector('#alert-count-num');
+
   const getAlerts = async () => {
     if (document.cookie) {
       const response = await fetch('/api/alerts');
@@ -278,11 +292,34 @@
                   </div>
                 </div>
               </a>
+              <button>
+                <i class="fa fa-times alert-delete-btn" data-id=${
+                  el.id
+                } aria-hidden="true"></i>
+              </button>
             </li>
           `;
       });
-
       alertListEl.innerHTML = temp;
+
+      alertListEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
+      const alertDelteBtnEls = document.querySelectorAll('.alert-delete-btn');
+      alertDelteBtnEls.forEach((alertDelteBtnEl) => {
+        alertDelteBtnEl.addEventListener('click', async (e) => {
+          const alertLiEl = e.target.parentNode.parentNode;
+          const alertId = e.target.getAttribute('data-id');
+          const response = await fetch(`/api/alerts/read/${alertId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+          });
+          if (!response.ok) return;
+          const data = await response.json();
+          if (data.message === '수정완료') alertLiEl.remove();
+        });
+      });
     } else {
       alertCount.classList.add('off');
     }
