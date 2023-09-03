@@ -153,6 +153,7 @@ export class LivesService {
     return result;
   }
 
+  // 키워드 검색
   async searchLives({ searchReqDto }: ILivesServiceSearch): Promise<Live[]> {
     const { page, size, keyword } = searchReqDto;
     const lives = await this.livesRepository
