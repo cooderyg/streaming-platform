@@ -16,9 +16,7 @@ import { LivesProcessor } from './lives.processor';
 @Module({
   imports: [
     AlertsModule,
-    BullModule.registerQueue({
-      name: 'alertsQueue',
-    }),
+    BullModule.registerQueue({ name: 'alertsQueue' }),
     ChannelsModule,
     CreditHistoriesModule,
     EventsModule,

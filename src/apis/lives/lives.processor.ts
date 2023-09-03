@@ -1,10 +1,9 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
-import * as path from 'path';
-import { Worker } from 'worker_threads';
 import { UsersService } from '../users/users.service';
 import { AlertsService } from '../alerts/alerts.service';
+import { User } from '../users/entities/user.entity';
 
 @Processor('alertsQueue')
 export class LivesProcessor {
@@ -14,36 +13,17 @@ export class LivesProcessor {
   ) {}
   private readonly logger = new Logger(LivesProcessor.name);
 
-  @Process('addAlertQueue')
+  @Process({ name: 'addAlertQueue', concurrency: 4 })
   async addOrderQueue(job: IAddAlertQueueJob): Promise<void> {
     this.logger.debug('대기열 큐가 실행되었습니다.');
     try {
-      const { channelId, channelName } = job.data;
-      const subscribedUsers = await this.usersService.findSubscribedUsers({
+      const { channelId, channelName, users } = job.data;
+      await this.alertsService.createAlerts({
+        users,
         channelId,
+        isOnAir: true,
+        channelName,
       });
-      // 워커스레드 관리하는 것 있음!
-      const userCount = subscribedUsers.length;
-      for (let i = 0; i < userCount / 1000; i++) {
-        const users = subscribedUsers.slice(i * 1000, (i + 1) * 1000);
-        const workerData = { channelId, channelName, users, index: i };
-        const worker = new Worker(
-          path.join(__dirname + '../../../', 'workers', 'workers.app.js'),
-          { workerData },
-        );
-
-        worker.on('message', (result) => {
-          console.log('worker result', result);
-        });
-
-        worker.on('error', (error) => {
-          console.log('worker error', error);
-        });
-
-        worker.on('exit', (code) => {
-          console.log('worker exit', code);
-        });
-      }
     } catch (error) {
       console.log(error);
       return;
@@ -51,9 +31,10 @@ export class LivesProcessor {
   }
 }
 
-interface IAddAlertQueueJob extends Job {
+export interface IAddAlertQueueJob extends Job {
   data: {
     channelId: string;
     channelName: string;
+    users: User[];
   };
 }

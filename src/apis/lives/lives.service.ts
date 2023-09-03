@@ -17,10 +17,8 @@ import { PageReqDto, SearchReqDto } from 'src/commons/dto/page-req.dto';
 import { DateReqDto } from 'src/commons/dto/date-req.dto';
 import { EventsGateway } from '../events/events.gateway';
 import { UsersService } from '../users/users.service';
-import { AlertsService } from '../alerts/alerts.service';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
-import { v4 } from 'uuid';
 
 @Injectable()
 export class LivesService {
@@ -28,8 +26,7 @@ export class LivesService {
     @InjectRepository(Live)
     private readonly livesRepository: Repository<Live>,
     @InjectQueue('alertsQueue')
-    private readonly alertQueue: Queue,
-    private readonly alertsService: AlertsService,
+    private readonly alertsQueue: Queue,
     private readonly channelsService: ChannelsService,
     private readonly creditHistoriesService: CreditHistoriesService,
     private readonly dataSource: DataSource,
@@ -221,13 +218,38 @@ export class LivesService {
     //     channelName: live.channel.name,
     //   });
     // }
+    //const uuid = v4();
+    // await this.alertQueue.add(
+    //   'addAlertQueue',
+    //   { channelId: live.channel.id, channelName: live.channel.name },
+    //   { removeOnComplete: true, removeOnFail: true, jobId: uuid },
+    // );
 
-    const uuid = v4();
-    await this.alertQueue.add(
-      'addAlertQueue',
-      { channelId: live.channel.id, channelName: live.channel.name },
-      { removeOnComplete: true, removeOnFail: true, jobId: uuid },
-    );
+    const subscribedUsers = await this.usersService.findSubscribedUsers({
+      channelId: live.channel.id,
+    });
+
+    const userCount = subscribedUsers.length;
+    if (userCount > 100) {
+      for (let i = 0; i < userCount / 100; i++) {
+        const users = subscribedUsers.slice(i * 100, (i + 1) * 100);
+        await this.alertsQueue.add(
+          'addAlertQueue',
+          { channelId: live.channel.id, channelName: live.channel.name, users },
+          { removeOnComplete: true, removeOnFail: true },
+        );
+      }
+    } else {
+      await this.alertsQueue.add(
+        'addAlertQueue',
+        {
+          channelId: live.channel.id,
+          channelName: live.channel.name,
+          users: subscribedUsers,
+        },
+        { removeOnComplete: true, removeOnFail: true },
+      );
+    }
 
     this.eventsGateway.server.of('/').to(liveId).emit('startLive', { liveId });
   }
@@ -380,10 +402,10 @@ interface ILivesServiceUpdateLive {
   liveId: string;
 }
 
-interface ILivesServiceTurnOff {
-  userId: string;
-  liveId: string;
-}
+// interface ILivesServiceTurnOff {
+//   userId: string;
+//   liveId: string;
+// }
 
 interface ILivesServiceGetLiveIncome {
   userId: string;
