@@ -239,7 +239,7 @@ export class LivesService {
           { removeOnComplete: true, removeOnFail: true },
         );
       }
-    } else {
+    } else if (!userCount) {
       await this.alertsQueue.add(
         'addAlertQueue',
         {
