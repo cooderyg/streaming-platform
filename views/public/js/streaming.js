@@ -37,7 +37,7 @@ const getData = async () => {
   // 채널 데이터
   const resChannel = await fetch(`/api/channels/${channelId}`);
   const dataChannel = await resChannel.json();
-  const channelInfo = dataChannel.introduction;
+  const channelInfo = dataChannel.introduction || '등록된 채널정보가 없습니다.';
   const channelCreatedAt = dataChannel.createdAt.split('T')['0'];
   const streamerEmail = dataChannel.user.email;
 
@@ -64,22 +64,27 @@ const getData = async () => {
         'beforeEnd',
         `<img src="${dataNotice[0].imageUrl}" style="max-width: 800px">`,
       );
+  } else {
+    const commentContaierEl = document.querySelector('#comment-container');
+    commentContaierEl.remove();
   }
 
   // 공지 댓글 조회
   const resComment = await fetch(`/api/${noticeId}/notice-comments`);
   const dataComment = await resComment.json();
   const commentList = document.querySelector('.notice-comments');
-  commentList.insertAdjacentHTML(
-    'beforeEnd',
-    `<p> 댓글(${dataComment.length})</p>`,
-  );
-  dataComment.forEach((comment) => {
+  if (dataComment.length) {
     commentList.insertAdjacentHTML(
       'beforeEnd',
-      `<p style="padding: 0px; margin-bottom: 1px;">${comment.user.nickname} | ${comment.content}</p>`,
+      `<p> 댓글(${dataComment.length})</p>`,
     );
-  });
+    dataComment.forEach((comment) => {
+      commentList.insertAdjacentHTML(
+        'beforeEnd',
+        `<p style="padding: 0px; margin-bottom: 1px;">${comment.user.nickname} | ${comment.content}</p>`,
+      );
+    });
+  }
 
   // 구독여부 확인
   fetch(`/api/subscribes/check/${channelId}`)
@@ -98,46 +103,50 @@ const getData = async () => {
   const replayContainer = document.getElementById('replay-container');
   const resReplay = await fetch(`/api/lives/replay/${channelId}`);
   const dataReplay = await resReplay.json();
-  console.log(dataReplay);
-  dataReplay.forEach((e) => {
-    const liveId = e.id;
-    const liveTitle = e.title;
-    const createdAt = e.createdAt.split('T')[0];
-    const thumbnailUrl = e.thumbnailUrl;
+  console.log('aaaaaaaaaa', dataReplay);
+  if (dataReplay.length) {
+    dataReplay.forEach((e) => {
+      const liveId = e.id;
+      const liveTitle = e.title;
+      const createdAt = e.createdAt.split('T')[0];
+      const thumbnailUrl = e.thumbnailUrl;
 
-    const temp_html = `
-    <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
-    <div class="card card-blog card-plain">
-      <div class="position-relative">
-        <a class="d-block shadow-xl border-radius-xl">
-          <img
-            src="${thumbnailUrl}"
-            alt="img-blur-shadow"
-            class="img-fluid shadow border-radius-xl"
-          />
-        </a>
-      </div>
-      <div class="card-body px-1 pb-0">
-        <p class="text-gradient text-dark mb-2 text-sm">
-          ${createdAt}
-        </p>
-        <a href="javascript:;">
-          <h5>${liveTitle}</h5>
-        </a>
-        <p class="mb-4 text-sm">#부트스트랩 #코딩</p>
-      </div>
-    </div>
-  </div>`;
-    replayContainer.insertAdjacentHTML('beforeend', temp_html);
-  });
-
-  const replayEls = document.querySelectorAll('.replay');
-  replayEls.forEach((replayEl) => {
-    replayEl.addEventListener('click', (e) => {
-      const liveId = e.currentTarget.getAttribute('data-live-id');
-      window.location.href = `/replay/${liveId}`;
+      const temp_html = `
+        <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
+          <div class="card card-blog card-plain">
+            <div class="position-relative">
+              <a class="d-block shadow-xl border-radius-xl">
+                <img
+                  src="${thumbnailUrl}"
+                  alt="img-blur-shadow"
+                  class="img-fluid shadow border-radius-xl"
+                />
+              </a>
+            </div>
+            <div class="card-body px-1 pb-0">
+              <p class="text-gradient text-dark mb-2 text-sm">
+                ${createdAt}
+              </p>
+              <a href="javascript:;">
+                <h5>${liveTitle}</h5>
+              </a>
+              <p class="mb-4 text-sm">#부트스트랩 #코딩</p>
+            </div>
+          </div>
+        </div>`;
+      replayContainer.insertAdjacentHTML('beforeend', temp_html);
     });
-  });
+
+    const replayEls = document.querySelectorAll('.replay');
+    replayEls.forEach((replayEl) => {
+      replayEl.addEventListener('click', (e) => {
+        const liveId = e.currentTarget.getAttribute('data-live-id');
+        window.location.href = `/replay/${liveId}`;
+      });
+    });
+  } else {
+    replayContainer.parentNode.innerText = '이 채널의 다시보기가 없습니다.';
+  }
 };
 getData();
 
@@ -215,20 +224,13 @@ setTimeout(() => {
     video.addEventListener('loadedmetadata', () => {
       try {
         video.play();
-        // video.addEventListener('click', () => {
-        //   const duration = hls.media.duration;
-        //   console.log(duration);
-        //   hls.media.currentTime = duration;
-        //   console.log(hls.media.currentTime);
-        // });
+        video.addEventListener('play', () => {
+          const duration = video.duration;
+          video.currentTime = duration;
+        });
       } catch (error) {
         console.log(error);
       }
     });
   }
 }, 1000);
-
-// 다시보기 불러오기
-const getReplays = async () => {};
-
-getReplays();

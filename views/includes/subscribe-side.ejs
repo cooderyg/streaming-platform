@@ -44,13 +44,14 @@
   );
   const getSubscribeData = async () => {
     if (document.cookie) {
-      const response = await fetch('/api/channels/subscribe/profiles');
-      const data = await response.json();
-      console.log(data);
+      try {
+        const response = await fetch('/api/channels/subscribe/profiles');
+        const data = await response.json();
+        console.log(data);
 
-      const temp = data.map((data) => {
-        const imgTemp = data.profileImgUrl || '/img/profile.jpg';
-        return `
+        const temp = data.map((data) => {
+          const imgTemp = data.profileImgUrl || '/img/profile.jpg';
+          return `
         <li class="nav-item">
             <a class="nav-link" href="/channel/${data.id}">
             <div
@@ -66,9 +67,12 @@
             </a>
         </li>
         `;
-      });
+        });
 
-      subscribeChannelNavEl.innerHTML = temp;
+        subscribeChannelNavEl.innerHTML = temp;
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
   getSubscribeData();
