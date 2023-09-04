@@ -334,4 +334,7 @@
       window.location.href = `/search?keyword=${searchInputEl.value}`;
     }
   });
+
+  const redirect = window.location.href;
+  window.localStorage.setItem('redirect', redirect);
 </script>

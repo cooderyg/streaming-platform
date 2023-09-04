@@ -23,7 +23,8 @@ signinBtnEl.addEventListener('click', async (e) => {
 
     const data = await response.json();
     if (data.message === '로그인을 성공적으로 완료하였습니다.') {
-      window.location.href = '/';
+      const redirect = window.localStorage.getItem('redirect');
+      window.location.href = redirect;
     } else {
       alert(data.message);
     }

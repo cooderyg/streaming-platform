@@ -6,10 +6,14 @@ const chatContainerEl = document.querySelector('#chat-container');
 let user;
 
 const getUserData = async () => {
-  const response = await fetch('/api/users');
-  if (!response.ok) return;
-  const data = await response.json();
-  user = data;
+  try {
+    const response = await fetch('/api/users');
+    // if (!response.ok) return;
+    const data = await response.json();
+    user = data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 getUserData();
 
