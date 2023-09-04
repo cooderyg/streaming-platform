@@ -31,6 +31,7 @@ import {
 import { UsersService } from '../users/users.service';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
+import { AlertsService } from '../alerts/alerts.service';
 
 @Injectable()
 export class LivesService {
@@ -39,11 +40,13 @@ export class LivesService {
     private readonly livesRepository: Repository<Live>,
     @InjectQueue('alertsQueue')
     private readonly alertsQueue: Queue,
+    private readonly alertsService: AlertsService,
     private readonly channelsService: ChannelsService,
     private readonly creditHistoriesService: CreditHistoriesService,
     private readonly dataSource: DataSource,
     private readonly eventsGateway: EventsGateway,
     private readonly tagsService: TagsService,
+    private readonly usersService: UsersService,
   ) {}
 
   async getLives({ pageReqDto }: ILivesServiceGetLives): Promise<Live[]> {
@@ -247,6 +250,15 @@ export class LivesService {
     const subscribedUsers = await this.usersService.findSubscribedUsers({
       channelId: live.channel.id,
     });
+
+    // if (subscribedUsers?.length > 0) {
+    //   await this.alertsService.createAlerts({
+    //     users: subscribedUsers,
+    //     channelId: live.channel.id,
+    //     isOnAir: true,
+    //     channelName: live.channel.name,
+    //   });
+    // }
 
     const userCount = subscribedUsers.length;
     if (userCount > 100) {
