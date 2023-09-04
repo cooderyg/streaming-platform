@@ -1,3 +1,4 @@
+import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -25,6 +26,7 @@ import { AlertsModule } from './apis/alerts/alerts.module';
 import { BullModule } from '@nestjs/bull';
 import * as redisStore from 'cache-manager-ioredis';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { MailerModule } from '@nestjs-modules/mailer';
 @Module({
   imports: [
     AlertsModule,
@@ -71,6 +73,24 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       // logging: true,
       namingStrategy: new SnakeNamingStrategy(),
       timezone: 'UTC',
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 587,
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PK,
+        },
+      },
+      preview: false,
+      template: {
+        dir: __dirname + 'views',
+        adapter: new EjsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
     }),
   ],
   controllers: [AppController],

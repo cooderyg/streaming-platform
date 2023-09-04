@@ -102,7 +102,7 @@
                         aria-describedby="email-addon"
                       />
                     </div>
-                    <div class="mb-3">
+                    <div class="input-group mb-3">
                       <input
                         id="email"
                         type="email"
@@ -111,6 +111,32 @@
                         aria-label="Email"
                         aria-describedby="email-addon"
                       />
+                      <button
+                        class="btn btn-outline-secondary mb-0"
+                        id="auth-email-btn"
+                        type="button"
+                      >
+                        이메일 인증
+                      </button>
+                    </div>
+                    <div
+                      class="input-group mb-3"
+                      style="display: none"
+                      id="certification-number-form"
+                    >
+                      <input
+                        id="certification-number-input"
+                        type="text"
+                        class="form-control"
+                        placeholder="Certification Number"
+                      />
+                      <button
+                        class="btn btn-outline-secondary mb-0"
+                        id="certification-number-btn"
+                        type="button"
+                      >
+                        확인
+                      </button>
                     </div>
                     <div class="mb-3">
                       <input
@@ -135,6 +161,7 @@
                           );
                           color: white;
                         "
+                        disabled
                       >
                         Sign up
                       </button>

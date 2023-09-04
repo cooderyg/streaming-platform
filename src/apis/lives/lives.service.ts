@@ -155,6 +155,7 @@ export class LivesService {
     return result;
   }
 
+  // 키워드 검색
   async searchLives({ searchReqDto }: ILivesServiceSearch): Promise<Live[]> {
     const { page, size, keyword } = searchReqDto;
     const lives = await this.livesRepository
@@ -175,10 +176,10 @@ export class LivesService {
       .leftJoin('live.channel', 'channel')
       .leftJoin('live.tags', 'tag')
       .leftJoin('channel.categories', 'category')
-      .where('live.title like :keyword', { keyword })
-      .orWhere('tag.name like :keyword', { keyword })
-      .orWhere('channel.name like :keyword', { keyword })
-      .orWhere('category.name like :keyword', { keyword })
+      .where('live.title like :keyword', { keyword: `%${keyword}%` })
+      .orWhere('tag.name like :keyword', { keyword: `%${keyword}%` })
+      .orWhere('channel.name like :keyword', { keyword: `%${keyword}%` })
+      .orWhere('category.name like :keyword', { keyword: `%${keyword}%` })
       .take(size)
       .skip((page - 1) * size)
       .getMany();

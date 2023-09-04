@@ -46,7 +46,7 @@ export class AlertsService {
     channelId,
     channelName,
     noticeContent,
-  }: IAlertsServiceCreateAlerts) {
+  }: IAlertsServiceCreateAlerts): Promise<void> {
     const temp: Alert[] = [];
     users.forEach((user) => {
       const alert = this.alertsRepository.create({
