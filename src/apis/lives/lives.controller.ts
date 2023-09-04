@@ -19,6 +19,9 @@ import { DateReqDto } from 'src/commons/dto/date-req.dto';
 import { Live } from './entities/live.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { GetLiveIncomeResDto } from './dto/res.dto';
+import { MessageResDto } from 'src/commons/dto/message-res.dto';
+import { AddThumbNailDto } from './dto/addThumbnail.dto';
 
 @Controller('api/lives')
 export class LivesController {
@@ -28,8 +31,8 @@ export class LivesController {
   ) {}
 
   @Get()
-  async getLives(@Query() pageReqDto: PageReqDto) {
-    const cachedList = await this.cacheManager.get('liveList'); // 캐싱된 리스트가 있는지 조회
+  async getLives(@Query() pageReqDto: PageReqDto): Promise<Live[]> {
+    const cachedList: Live[] = await this.cacheManager.get('liveList'); // 캐싱된 리스트가 있는지 조회
     if (cachedList) {
       console.log('Cache Hit');
       return cachedList;
@@ -42,7 +45,7 @@ export class LivesController {
   }
 
   @Get('replay/:channelId')
-  async getReplays(@Param() params: { channelId: string }) {
+  async getReplays(@Param() params: { channelId: string }): Promise<Live[]> {
     const replays = await this.livesService.getReplaysByChannelId({
       channelId: params.channelId,
     });
@@ -50,7 +53,7 @@ export class LivesController {
   }
 
   @Get(':liveId')
-  async getLiveById(@Param() params: { liveId: string }) {
+  async getLiveById(@Param() params: { liveId: string }): Promise<Live> {
     const live = await this.livesService.getLiveById({ liveId: params.liveId });
     return live;
   }
@@ -74,7 +77,7 @@ export class LivesController {
   async getLiveIncome(
     @User() user: UserAfterAuth,
     @Query() dateReqDto: DateReqDto,
-  ): Promise<{ income: number }> {
+  ): Promise<GetLiveIncomeResDto> {
     const income = await this.livesService.getLiveIncome({
       userId: user.id,
       dateReqDto,
@@ -91,7 +94,7 @@ export class LivesController {
   }
 
   @Get('search/keywords')
-  async getSearchLives(@Query() searchReqDto: SearchReqDto) {
+  async getSearchLives(@Query() searchReqDto: SearchReqDto): Promise<Live[]> {
     const lives = await this.livesService.searchLives({ searchReqDto });
     return lives;
   }
@@ -101,7 +104,7 @@ export class LivesController {
   async createLive(
     @Body() createLiveDto: CreateLiveDto,
     @User() user: UserAfterAuth,
-  ) {
+  ): Promise<Live> {
     const live = await this.livesService.createLive({
       userId: user.id,
       createLiveDto,
@@ -110,15 +113,18 @@ export class LivesController {
   }
 
   @Post('/start/:liveId')
-  async startLive(@Param('liveId') liveId: string) {
+  async startLive(@Param('liveId') liveId: string): Promise<MessageResDto> {
     this.livesService.startLive({ liveId });
     return { message: '전달완료' };
   }
 
   // 썸네일 업로드 시 URL 추가
   @Put('/:liveId/thumbnails')
-  async addThumbnail(@Body() body, @Param('liveId') liveId: string) {
-    const { thumbnailUrl } = body;
+  async addThumbnail(
+    @Body() addThumbnailDto: AddThumbNailDto,
+    @Param('liveId') liveId: string,
+  ): Promise<Live> {
+    const { thumbnailUrl } = addThumbnailDto;
     const result = await this.livesService.addThumbnail({
       thumbnailUrl,
       liveId,
@@ -135,7 +141,7 @@ export class LivesController {
     @Param() params: { liveId: string },
     @Body() updateLiveDto: UpdateLiveDto,
     @User() user: UserAfterAuth,
-  ) {
+  ): Promise<Live> {
     const live = await this.livesService.updateLiveInfo({
       userId: user.id,
       liveId: params.liveId,
@@ -158,9 +164,7 @@ export class LivesController {
   // }
 
   @Put(':liveId/close-obs')
-  async closeOBS(
-    @Param('liveId') liveId: string,
-  ): Promise<{ message: string }> {
+  async closeOBS(@Param('liveId') liveId: string): Promise<MessageResDto> {
     await this.livesService.closeOBS({ liveId });
     return { message: '방송 종료 완료' };
   }
