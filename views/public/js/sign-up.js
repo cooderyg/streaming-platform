@@ -62,8 +62,8 @@ authEmailBtn.addEventListener('click', async (e) => {
         alert('이메일이 인증되었습니다');
         signupBtn.disabled = false;
         certificationBtn.innerText = '인증완료';
-        certificationBtn.disabled = true;
         certificationInput.disabled = true;
+        certificationBtn.classList.add('active');
         emailEl.disabled = true;
       } else {
         alert('인증번호를 확인해주세요.');
