@@ -35,7 +35,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async refresh({ userId }: IAuthServiceRefresh) {
+  refresh({ userId }: IAuthServiceRefresh): string {
     return this.getAccessToken({ userId });
   }
 
