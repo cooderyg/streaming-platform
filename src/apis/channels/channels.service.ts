@@ -1,5 +1,3 @@
-import { UpdateChannelManagerDto } from './dto/update-channel-manager.dto';
-import { UpdateChannelDto } from './dto/update-channel.dto';
 import {
   ConflictException,
   ForbiddenException,
@@ -11,10 +9,23 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Channel } from './entities/channel.entity';
 import { Repository } from 'typeorm';
-import { CreateChannelDto } from './dto/create-channel.dto';
 import { CategoriesService } from '../categories/categories.service';
-import { SearchReqDto } from 'src/commons/dto/page-req.dto';
 import { UsersService } from '../users/users.service';
+import { User } from '../users/entities/user.entity';
+import {
+  IChannelServiceSubtractManager,
+  IChannelServiceUpdateChannel,
+  IChannelServiceUpdateChannelManager,
+  IChannelsServiceCreateChannel,
+  IChannelsServiceDeleteChannel,
+  IChannelsServiceFindByUserId,
+  IChannelsServiceGetAllPlayTimes,
+  IChannelsServiceGetChannel,
+  IChannelsServiceGetManagers,
+  IChannelsServiceGetMyChannel,
+  IChannelsServiceGetSubscribedChannels,
+  IChannelsServiceSearchChannels,
+} from './interfaces/channels-service.interface';
 
 @Injectable()
 export class ChannelsService {
@@ -26,14 +37,18 @@ export class ChannelsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async getMyChannel({ userId }): Promise<Channel> {
+  async getMyChannel({
+    userId,
+  }: IChannelsServiceGetMyChannel): Promise<Channel> {
     const channel = await this.findByUserId({ userId });
     if (!channel) throw new NotFoundException();
 
     return channel;
   }
 
-  async getChannel({ channelId }) {
+  async getChannel({
+    channelId,
+  }: IChannelsServiceGetChannel): Promise<Channel> {
     const channel = await this.channelsRepository
       .createQueryBuilder('channel')
       .select([
@@ -58,7 +73,9 @@ export class ChannelsService {
     return channel;
   }
 
-  async searchChannels(searchReqDto: SearchReqDto) {
+  async searchChannels({
+    searchReqDto,
+  }: IChannelsServiceSearchChannels): Promise<Channel[]> {
     const { keyword, page, size } = searchReqDto;
     const results = await this.channelsRepository
       .createQueryBuilder('channel')
@@ -80,7 +97,9 @@ export class ChannelsService {
     return results;
   }
 
-  async getAllPlayTimes({ userId }) {
+  async getAllPlayTimes({
+    userId,
+  }: IChannelsServiceGetAllPlayTimes): Promise<Channel> {
     const channel = await this.getMyChannel({ userId });
     const beforeAMonth = new Date();
     beforeAMonth.setDate(beforeAMonth.getDate() - 30);
@@ -93,7 +112,9 @@ export class ChannelsService {
       .getRawOne();
     return playtimes;
   }
-  async getSubscribedChannels({ userId }): Promise<Channel[]> {
+  async getSubscribedChannels({
+    userId,
+  }: IChannelsServiceGetSubscribedChannels): Promise<Channel[]> {
     return await this.channelsRepository
       .createQueryBuilder('channel')
       .select(['channel.id', 'channel.name', 'channel.profileImgUrl'])
@@ -104,7 +125,7 @@ export class ChannelsService {
       .getMany();
   }
 
-  async getManagers({ userId }) {
+  async getManagers({ userId }: IChannelsServiceGetManagers): Promise<User[]> {
     const channel = await this.findByUserId({ userId });
 
     if (!channel) throw new NotFoundException();
@@ -134,7 +155,9 @@ export class ChannelsService {
     return channel;
   }
 
-  async findByUserId({ userId }: IChannelsServiceFindByUserId) {
+  async findByUserId({
+    userId,
+  }: IChannelsServiceFindByUserId): Promise<Channel> {
     const channel = await this.channelsRepository
       .createQueryBuilder('channel')
       .select([
@@ -163,7 +186,7 @@ export class ChannelsService {
     userId,
     channelId,
     updateChannelDto,
-  }: IChannelServiceUpdateChannel) {
+  }: IChannelServiceUpdateChannel): Promise<Channel> {
     const channel = await this.channelsRepository.findOne({
       where: { id: channelId },
       relations: ['user', 'categories'],
@@ -186,7 +209,7 @@ export class ChannelsService {
   async addManager({
     userId,
     updateChannelManagerDto,
-  }: IChannelServiceUpdateChannelManager) {
+  }: IChannelServiceUpdateChannelManager): Promise<Channel> {
     const { email } = updateChannelManagerDto;
     const channel = await this.findByUserId({ userId });
 
@@ -211,7 +234,10 @@ export class ChannelsService {
     return result;
   }
 
-  async subtractManager({ userId, deleteChannelManagerDto }) {
+  async subtractManager({
+    userId,
+    deleteChannelManagerDto,
+  }: IChannelServiceSubtractManager): Promise<Channel> {
     const { managerId } = deleteChannelManagerDto;
 
     const channel = await this.findByUserId({ userId });
@@ -231,7 +257,10 @@ export class ChannelsService {
     return result;
   }
 
-  async deleteChannel({ userId, channelId }) {
+  async deleteChannel({
+    userId,
+    channelId,
+  }: IChannelsServiceDeleteChannel): Promise<string> {
     const channel = await this.channelsRepository.findOne({
       where: { id: channelId },
       relations: ['user'],
@@ -241,24 +270,4 @@ export class ChannelsService {
     await this.channelsRepository.softDelete({ id: channelId });
     return '채널이 삭제되었습니다.';
   }
-}
-
-interface IChannelsServiceCreateChannel {
-  createChannelDto: CreateChannelDto;
-  userId: string;
-}
-
-interface IChannelsServiceFindByUserId {
-  userId: string;
-}
-
-interface IChannelServiceUpdateChannel {
-  userId: string;
-  channelId: string;
-  updateChannelDto: UpdateChannelDto;
-}
-
-interface IChannelServiceUpdateChannelManager {
-  userId: string;
-  updateChannelManagerDto: UpdateChannelManagerDto;
 }

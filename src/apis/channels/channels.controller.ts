@@ -23,6 +23,9 @@ import {
 import { Channel } from './entities/channel.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { User as EUser } from '../users/entities/user.entity';
+import { OkResDto } from 'src/commons/dto/ok-res.dto';
+import { MessageResDto } from 'src/commons/dto/message-res.dto';
 
 @Controller('/api/channels')
 export class ChannelsController {
@@ -46,7 +49,7 @@ export class ChannelsController {
   // 채널 방송시간 조회
   @UseGuards(AccessAuthGuard)
   @Get('/live-times')
-  async getAllPlayTimes(@User() user: UserAfterAuth) {
+  async getAllPlayTimes(@User() user: UserAfterAuth): Promise<Channel> {
     const playtimes = await this.channelsService.getAllPlayTimes({
       userId: user.id,
     });
@@ -55,7 +58,7 @@ export class ChannelsController {
 
   // 채널 조회
   @Get('/:channelId')
-  async getChannel(@Param('channelId') channelId: string) {
+  async getChannel(@Param('channelId') channelId: string): Promise<Channel> {
     const channel = await this.channelsService.getChannel({
       channelId,
     });
@@ -64,8 +67,10 @@ export class ChannelsController {
 
   // 채널 검색
   @Get('search')
-  async searchChannels(@Query() searchReqDto: SearchReqDto) {
-    const results = await this.channelsService.searchChannels(searchReqDto);
+  async searchChannels(
+    @Query() searchReqDto: SearchReqDto,
+  ): Promise<Channel[]> {
+    const results = await this.channelsService.searchChannels({ searchReqDto });
     return results;
   }
 
@@ -82,7 +87,7 @@ export class ChannelsController {
 
   @UseGuards(AccessAuthGuard)
   @Get('admin/managers')
-  async getManagers(@User() user: UserAfterAuth) {
+  async getManagers(@User() user: UserAfterAuth): Promise<EUser[]> {
     const managers = await this.channelsService.getManagers({
       userId: user.id,
     });
@@ -96,7 +101,7 @@ export class ChannelsController {
   async createChannel(
     @Body() createChannelDto: CreateChannelDto, //
     @User() user: UserAfterAuth,
-  ) {
+  ): Promise<Channel> {
     const channel = await this.channelsService.createChannel({
       createChannelDto,
       userId: user.id,
@@ -111,7 +116,7 @@ export class ChannelsController {
     @Param('channelId') channelId: string,
     @Body() updateChannelDto: UpdateChannelDto,
     @User() user: UserAfterAuth,
-  ) {
+  ): Promise<Channel> {
     const result = await this.channelsService.updateChannel({
       userId: user.id,
       channelId,
@@ -126,7 +131,7 @@ export class ChannelsController {
   async addManager(
     @Body() updateChannelManagerDto: UpdateChannelManagerDto,
     @User() user: UserAfterAuth,
-  ) {
+  ): Promise<Channel> {
     const result = await this.channelsService.addManager({
       userId: user.id,
       updateChannelManagerDto,
@@ -140,7 +145,7 @@ export class ChannelsController {
   async subtractManager(
     @Body() deleteChannelManagerDto: DeleteChannelManagerDto,
     @User() user: UserAfterAuth,
-  ) {
+  ): Promise<OkResDto> {
     await this.channelsService.subtractManager({
       userId: user.id,
       deleteChannelManagerDto,
@@ -154,12 +159,12 @@ export class ChannelsController {
   async deleteChannel(
     @Param('channelId') channelId: string,
     @User() user: UserAfterAuth,
-  ) {
+  ): Promise<MessageResDto> {
     const result = await this.channelsService.deleteChannel({
       userId: user.id,
       channelId,
     });
 
-    return result;
+    return { message: result };
   }
 }
