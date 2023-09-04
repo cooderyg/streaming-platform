@@ -56,7 +56,7 @@ export class SubscribesController {
   @Post('/dummy')
   async toggleSubscribeForDummy(
     @Body() toggleSubscribeDto: { channelId: string; userId: string },
-  ) {
+  ): Promise<ToggleSubscribeResDto> {
     const isSubscribed = await this.subscribesService.toggleSubscribeForDummy(
       toggleSubscribeDto,
     );
