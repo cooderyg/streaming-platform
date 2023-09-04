@@ -7,9 +7,15 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreditHistory } from './entities/credit-history.entity';
 import { Repository, DataSource } from 'typeorm';
-import { CreateCreditHistoryDto } from './dto/create-credit-history.dto';
 import { ChannelsService } from '../channels/channels.service';
 import { UsersService } from '../users/users.service';
+import {
+  ICreaditHistoriesServiceCreateCreditHistory,
+  ICreaditHistoriesServiceFindByLiveId,
+  ICreaditHistoriesServiceFindCreditHistoryByChannel,
+  ICreditHistoriesServiceFindCreditHistoryListByLive,
+  ICreditHistoriesServiceFindCreditHistroyList,
+} from './interfaces/creditHistories-service.interface';
 
 @Injectable()
 export class CreditHistoriesService {
@@ -57,7 +63,11 @@ export class CreditHistoriesService {
     }
   }
 
-  async findCreditHistoryList({ userId, page, size }) {
+  async findCreditHistoryList({
+    userId,
+    page,
+    size,
+  }: ICreditHistoriesServiceFindCreditHistroyList) {
     const creditHistoryList = await this.creditHistoriesRepository
       .createQueryBuilder('creditHistory')
       .select([
@@ -84,7 +94,7 @@ export class CreditHistoriesService {
   async findCreditHistoryListByLive({
     liveId,
     userId,
-  }: IFindCreditHistoryListByLive) {
+  }: ICreditHistoriesServiceFindCreditHistoryListByLive) {
     const channel = await this.channelsService.findByUserId({ userId });
     if (!channel)
       throw new NotFoundException(
@@ -104,7 +114,11 @@ export class CreditHistoriesService {
     return creditHistoryListByLive;
   }
 
-  async findCreditHistoryByChannel({ channelId }) {
+  async findCreditHistoryByChannel({
+    channelId,
+  }: ICreaditHistoriesServiceFindCreditHistoryByChannel): Promise<
+    CreditHistory[]
+  > {
     const creditHistoryLiist = await this.creditHistoriesRepository
       .createQueryBuilder('history')
       .select([
@@ -126,18 +140,4 @@ export class CreditHistoriesService {
       .getRawMany();
     return creditHistoryLiist;
   }
-}
-
-interface ICreaditHistoriesServiceCreateCreditHistory {
-  createCreditHistoryDto: CreateCreditHistoryDto;
-  userId: string;
-}
-
-interface IFindCreditHistoryListByLive {
-  liveId: string;
-  userId: string;
-}
-
-interface ICreaditHistoriesServiceFindByLiveId {
-  liveId: string;
 }
