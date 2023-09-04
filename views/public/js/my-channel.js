@@ -50,16 +50,56 @@ async function getMyChannelNoticeData(channelId) {
     if (noticeImg.length) {
       channelNotices.insertAdjacentHTML(
         'beforeend',
-        `<p data-notice-id=${noticeId}>${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></p>`,
+        `<div>
+        <p data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></p>
+        </div>`,
       );
     } else {
       channelNotices.insertAdjacentHTML(
         'beforeend',
-        `<p data-notice-id=${noticeId}>${noticeContent}</p>`,
+        `<div>
+        <p data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}</p>
+        </div>`,
       );
     }
   });
 }
+
+// 공지 상세 받아오기
+const getNoticeDetail = async (channelId) => {
+  const noticeDetailModal = document.getElementById('notice-detail-modal');
+  console.log(noticeDetailModal);
+  noticeDetailModal.addEventListener('shown.bs.modal', async (event) => {
+    const notice = event.relatedTarget;
+    const noticeId = notice.getAttribute('data-notice-id');
+    const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
+    const data = await res.json();
+    console.log(data);
+    const temp = `<img src="${data.imageUrl}">
+    <div>${data.content}</div>
+    <div>${data.createdAt.split('T')[0]}`;
+    document.getElementById('notice-detail-body').innerHTML = temp;
+    document
+      .getElementById('notice-delete-btn')
+      .setAttribute('data-notice-id', noticeId);
+    deleteNotice(channelId);
+  });
+};
+
+//공지 삭제
+const deleteNotice = (channelId) => {
+  const noticeDeleteBtn = document.getElementById('notice-delete-btn');
+  noticeDeleteBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const noticeId = noticeDeleteBtn.getAttribute('data-notice-id');
+    const res = await fetch(`/api/${channelId}/notices/${noticeId}`, {
+      method: 'DELETE',
+    });
+    const data = res.json();
+    console.log(data);
+    window.location.reload();
+  });
+};
 
 function mySubscribe(channelId) {
   fetch('/api/subscribes', {
@@ -131,6 +171,7 @@ async function writeMyNotice(channelId) {
     });
     const uploadData = await uploadRes.json();
     imageUrl = uploadData.url;
+    console.log(imageUrl);
   });
 }
 
@@ -225,6 +266,9 @@ async function writeMyChannel(channelId) {
 
   // Notice 데이터 뿌려주기
   await getMyChannelNoticeData(channelId);
+
+  // NoticeDetail 모달 활성화
+  await getNoticeDetail(channelId);
 
   //후원 top5명 뿌려주기
   await getChannelDonationTop5(channelId);
