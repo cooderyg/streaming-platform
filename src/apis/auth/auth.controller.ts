@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, Render, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
 import { RefreshAuthGuard } from './guard/auth.guard';
 import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
+import { MessageResDto } from 'src/commons/dto/message-res.dto';
 
 @Controller('api/auth')
 export class AuthController {
@@ -15,7 +16,7 @@ export class AuthController {
   async login(
     @Body() loginDto: LoginDto, //
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<MessageResDto> {
     const { accessToken, refreshToken } = await this.authService.login({
       loginDto,
     });
@@ -32,8 +33,8 @@ export class AuthController {
   async refresh(
     @User() user: UserAfterAuth,
     @Res({ passthrough: true }) res: Response,
-  ) {
-    const accessToken = await this.authService.refresh({
+  ): Promise<MessageResDto> {
+    const accessToken = this.authService.refresh({
       userId: user.id,
     });
 
@@ -42,7 +43,7 @@ export class AuthController {
   }
 
   @Get('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
+  logout(@Res({ passthrough: true }) res: Response): void {
     res.cookie('accessToken', '', { expires: new Date(0) });
     res.cookie('refreshToken', '', { expires: new Date(0) });
   }
