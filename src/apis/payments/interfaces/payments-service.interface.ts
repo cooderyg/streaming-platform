@@ -3,6 +3,11 @@ import { CancelPaymentDto } from '../dto/cancel-payment.dto';
 import { CreatePaymentDto } from '../dto/create-payments.dto';
 import { Payment } from '../entities/payment.entity';
 
+export interface IPaymentsServiceFindPayment {
+  paymentId: string;
+  userId: string;
+}
+
 export interface IPaymentsServiceFindPayments {
   page: number;
   size: number;

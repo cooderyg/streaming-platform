@@ -14,6 +14,7 @@ import {
   IPaymentsServiceFindById,
   IPaymentsServiceFindByIdAndUserId,
   IPaymentsServiceFindByImpUid,
+  IPaymentsServiceFindPayment,
   IPaymentsServiceFindPayments,
   IPaymentsServiceUpdateStatusWithManager,
 } from './interfaces/payments-service.interface';
@@ -27,7 +28,10 @@ export class PaymentsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async findPayment({ paymentId, userId }): Promise<Payment> {
+  async findPayment({
+    paymentId,
+    userId,
+  }: IPaymentsServiceFindPayment): Promise<Payment> {
     const payment = await this.findByIdAneUserId({ paymentId, userId });
     if (!payment) throw new NotFoundException();
     return payment;
