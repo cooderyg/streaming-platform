@@ -75,7 +75,7 @@ export class NoticeCommentsController {
   async deleteNoticeComment(
     @Param('noticeCommentId') noticeCommentId: string,
     @User() user: UserAfterAuth,
-  ) {
+  ): Promise<void> {
     await this.noticeCommentsService.deleteNoticeComment({
       noticeCommentId,
       userId: user.id,
