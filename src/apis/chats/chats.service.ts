@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { Repository } from 'typeorm';
-import { CreateCategoryDto } from '../categories/dto/create-category.dto';
-import { CreateChatDto } from './dto/create-chat.dto';
+import {
+  ICreateChat,
+  IFindChatsByLive,
+} from './interfaces/chats-service.interface';
 
 @Injectable()
 export class ChatsService {
@@ -12,7 +14,7 @@ export class ChatsService {
     private readonly chatsRepository: Repository<Chat>,
   ) {}
 
-  async findChatsByLive({ userId, liveId }: IFindChatsByLive) {
+  async findChatsByLive({ userId, liveId }: IFindChatsByLive): Promise<Chat[]> {
     const chats = await this.chatsRepository.find({
       where: { live: { id: liveId }, user: { id: userId } },
     });
@@ -28,14 +30,4 @@ export class ChatsService {
     });
     return chat;
   }
-}
-
-interface ICreateChat {
-  createChatDto: CreateChatDto;
-  userId: string;
-}
-
-interface IFindChatsByLive {
-  userId: string;
-  liveId: string;
 }

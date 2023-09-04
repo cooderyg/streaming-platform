@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './entities/tag.entity';
-import { In, Repository } from 'typeorm';
-import { CreateTagDto } from './dto/create-tag.dto';
+import { Repository } from 'typeorm';
+import { ITagsServiceCreateTag } from './interfaces/tags-service.interface';
 
 @Injectable()
 export class TagsService {
@@ -33,8 +33,4 @@ export class TagsService {
     }
     return tags;
   }
-}
-
-interface ITagsServiceCreateTag {
-  createTagDto: CreateTagDto;
 }

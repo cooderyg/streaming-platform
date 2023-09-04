@@ -6,16 +6,28 @@ import {
 } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateLiveDto } from './dto/create-live.dto';
 import { ChannelsService } from 'src/apis/channels/channels.service';
 import { Live } from './entities/live.entity';
 import { TagsService } from '../tags/tags.service';
-import { UpdateLiveDto } from './dto/update-live.dto';
 import { CreditHistoriesService } from '../creditHistories/credit-histories.service';
 import { Channel } from '../channels/entities/channel.entity';
-import { PageReqDto, SearchReqDto } from 'src/commons/dto/page-req.dto';
-import { DateReqDto } from 'src/commons/dto/date-req.dto';
 import { EventsGateway } from '../events/events.gateway';
+import {
+  ILivesServiceAddThumbnail,
+  ILivesServiceCloseOBS,
+  ILivesServiceCreateLive,
+  ILivesServiceGetLiveById,
+  ILivesServiceGetLiveForAdmin,
+  ILivesServiceGetLiveIncome,
+  ILivesServiceGetLives,
+  ILivesServiceGetLivesForAdmin,
+  ILivesServiceGetReplaysByChannelId,
+  ILivesServiceSearch,
+  ILivesServiceStartLive,
+  ILivesServiceUpdateLive,
+  ILivesServiceVerifyOwner,
+  ILivesServiceVerifyOwnerRetrun,
+} from './interfaces/lives-service.interface';
 import { UsersService } from '../users/users.service';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
@@ -32,10 +44,9 @@ export class LivesService {
     private readonly dataSource: DataSource,
     private readonly eventsGateway: EventsGateway,
     private readonly tagsService: TagsService,
-    private readonly usersService: UsersService,
   ) {}
 
-  async getLives({ pageReqDto }) {
+  async getLives({ pageReqDto }: ILivesServiceGetLives): Promise<Live[]> {
     const { page, size } = pageReqDto;
     const lives = await this.livesRepository
       .createQueryBuilder('live')
@@ -63,7 +74,7 @@ export class LivesService {
     return lives;
   }
 
-  async getLiveById({ liveId }) {
+  async getLiveById({ liveId }: ILivesServiceGetLiveById): Promise<Live> {
     return await this.livesRepository
       .createQueryBuilder('live')
       .select([
@@ -83,7 +94,9 @@ export class LivesService {
       .getOne();
   }
 
-  async getReplaysByChannelId({ channelId }) {
+  async getReplaysByChannelId({
+    channelId,
+  }: ILivesServiceGetReplaysByChannelId): Promise<Live[]> {
     return await this.livesRepository
       .createQueryBuilder('live')
       .select([
@@ -119,7 +132,9 @@ export class LivesService {
     return lives;
   }
 
-  async getLiveForAdmin({ userId }) {
+  async getLiveForAdmin({
+    userId,
+  }: ILivesServiceGetLiveForAdmin): Promise<Live> {
     const live = await this.livesRepository
       .createQueryBuilder('live')
       .leftJoinAndSelect('live.channel', 'channel')
@@ -187,7 +202,10 @@ export class LivesService {
     return lives;
   }
 
-  async createLive({ userId, createLiveDto }: ILivesServiceCreateLive) {
+  async createLive({
+    userId,
+    createLiveDto,
+  }: ILivesServiceCreateLive): Promise<Live> {
     const { title, ...createTagDto } = createLiveDto;
     const channel = await this.channelsService.findByUserId({ userId });
     const tags = await this.tagsService.createTags({ createTagDto });
@@ -199,7 +217,7 @@ export class LivesService {
     return live;
   }
 
-  async startLive({ liveId }) {
+  async startLive({ liveId }: ILivesServiceStartLive): Promise<void> {
     const live = await this.getLiveById({ liveId });
     if (!live) throw new NotFoundException();
     await this.livesRepository.save({
@@ -256,7 +274,10 @@ export class LivesService {
   }
 
   // 썸네일 추가
-  async addThumbnail({ thumbnailUrl, liveId }) {
+  async addThumbnail({
+    thumbnailUrl,
+    liveId,
+  }: ILivesServiceAddThumbnail): Promise<Live> {
     const result = await this.livesRepository.save({
       id: liveId,
       thumbnailUrl,
@@ -317,7 +338,7 @@ export class LivesService {
   //   }
   // }
 
-  async closeOBS({ liveId }): Promise<void> {
+  async closeOBS({ liveId }: ILivesServiceCloseOBS): Promise<void> {
     const live = await this.getLiveById({ liveId });
     const now = new Date();
     const playtime = Math.floor(
@@ -345,7 +366,7 @@ export class LivesService {
       const totalChannelIncome = channel.income + totalLiveIncome;
 
       // 다시보기 url 등록(서버에서 수정 필요)
-      live.replayUrl = `http://localhost:8000/live/${liveId}/index.m3u8`;
+      live.replayUrl = `http://d2hv45obrzuf2s.cloudfront.net/videos/${liveId}/index.m3u8`;
 
       await manager.save(Live, {
         ...live,
@@ -371,7 +392,7 @@ export class LivesService {
   async verifyOwner({
     userId,
     liveId,
-  }): Promise<{ channel: Channel; live: Live }> {
+  }: ILivesServiceVerifyOwner): Promise<ILivesServiceVerifyOwnerRetrun> {
     const channel = await this.channelsService.findByUserId({ userId });
     const live = await this.livesRepository.findOne({
       where: { id: liveId },
@@ -385,34 +406,4 @@ export class LivesService {
 
     return { channel, live };
   }
-}
-
-interface ILivesServiceGetLivesForAdmin {
-  userId: string;
-  pageReqDto: PageReqDto;
-}
-
-interface ILivesServiceCreateLive {
-  createLiveDto: CreateLiveDto;
-  userId: string;
-}
-
-interface ILivesServiceUpdateLive {
-  updateLiveDto: UpdateLiveDto;
-  userId: string;
-  liveId: string;
-}
-
-// interface ILivesServiceTurnOff {
-//   userId: string;
-//   liveId: string;
-// }
-
-interface ILivesServiceGetLiveIncome {
-  userId: string;
-  dateReqDto: DateReqDto;
-}
-
-interface ILivesServiceSearch {
-  searchReqDto: SearchReqDto;
 }

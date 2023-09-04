@@ -33,12 +33,12 @@ export class NoticesController {
     });
     return notice;
   }
-  // 공지 개별조회 내부적으로만 사용하기에 주석처리함
-  // @Get(':noticeId')
-  // async getNotice(@Param('noticeId') noticeId: string):Promise<Notice> {
-  //   const notice = await this.noticesService.getNotice({ noticeId });
-  //   return notice;
-  // }
+
+  @Get(':noticeId')
+  async getNotice(@Param('noticeId') noticeId: string): Promise<Notice> {
+    const notice = await this.noticesService.getNotice({ noticeId });
+    return notice;
+  }
 
   // 공지생성
   @UseGuards(AccessAuthGuard)

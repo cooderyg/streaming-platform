@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadsService } from './uploads.service';
+import { UploadFileResDto } from './dto/res.dto';
 
 @Controller('api/uploads')
 export class UploadsController {
@@ -13,7 +14,9 @@ export class UploadsController {
 
   @Post('profile-image')
   @UseInterceptors(FileInterceptor('file'))
-  uploadProfileImage(@UploadedFile() file: Express.MulterS3.File) {
+  uploadProfileImage(
+    @UploadedFile() file: Express.MulterS3.File,
+  ): UploadFileResDto {
     return this.uploadsService.uploadFile(file);
   }
 
@@ -22,13 +25,17 @@ export class UploadsController {
    */
   @Post('channel-top-banner-image')
   @UseInterceptors(FileInterceptor('file'))
-  uploadChannelTopBanner(@UploadedFile() file: Express.MulterS3.File) {
+  uploadChannelTopBanner(
+    @UploadedFile() file: Express.MulterS3.File,
+  ): UploadFileResDto {
     return this.uploadsService.uploadFile(file);
   }
 
   @Post('channel-profile-image')
   @UseInterceptors(FileInterceptor('file'))
-  uploadChannelProfile(@UploadedFile() file: Express.MulterS3.File) {
+  uploadChannelProfile(
+    @UploadedFile() file: Express.MulterS3.File,
+  ): UploadFileResDto {
     return this.uploadsService.uploadFile(file);
   }
 
@@ -38,13 +45,17 @@ export class UploadsController {
    */
   @Post('stream-video')
   @UseInterceptors(FileInterceptor('file'))
-  uploadStreamVideo(@UploadedFile() file: Express.MulterS3.File) {
+  uploadStreamVideo(
+    @UploadedFile() file: Express.MulterS3.File,
+  ): UploadFileResDto {
     return this.uploadsService.uploadFile(file);
   }
 
   @Post('channel-notice-image')
   @UseInterceptors(FileInterceptor('file'))
-  uploadChannelNotice(@UploadedFile() file: Express.MulterS3.File) {
+  uploadChannelNotice(
+    @UploadedFile() file: Express.MulterS3.File,
+  ): UploadFileResDto {
     return this.uploadsService.uploadFile(file);
   }
 }

@@ -48,12 +48,14 @@ export class CreditHistoriesController {
   }
 
   @Get('/channels/:channelId')
-  async findCreditHistoryByChannel(@Param('channelId') channelId: string) {
-    const creditHistoryLiist =
+  async findCreditHistoryByChannel(
+    @Param('channelId') channelId: string,
+  ): Promise<CreditHistory[]> {
+    const creditHistoryList =
       await this.creditHistoriesService.findCreditHistoryByChannel({
         channelId,
       });
-    return creditHistoryLiist;
+    return creditHistoryList;
   }
 
   @UseGuards(AccessAuthGuard)
@@ -61,7 +63,7 @@ export class CreditHistoriesController {
   async findCreditHistoryListByLive(
     @User() user: UserAfterAuth,
     @Param('liveId') liveId: string,
-  ) {
+  ): Promise<CreditHistory[]> {
     const creditHistoryListByLive =
       await this.creditHistoriesService.findCreditHistoryListByLive({
         liveId,
