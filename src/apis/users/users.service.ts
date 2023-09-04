@@ -15,10 +15,15 @@ import {
   IUsersServiceCreateUser,
   IUsersServiceFindByEmail,
   IUsersServiceFindById,
+  IUsersServiceFindByIds,
+  IUsersServiceFindSubscribedUsers,
+  IUsersServiceFindUser,
   IUsersServiceUpdateCreditWithManager,
   IUsersServiceUpdateUser,
+  IUsersServiceVerifyEmail,
 } from './interfaces/users-service.interface';
 import { MailerService } from '@nestjs-modules/mailer';
+import { CreateDummyUserResDto } from './dto/res.dto';
 
 @Injectable()
 export class UsersService {
@@ -30,7 +35,7 @@ export class UsersService {
     private readonly mailerService: MailerService,
   ) {}
 
-  async findUser({ userId }): Promise<User> {
+  async findUser({ userId }: IUsersServiceFindUser): Promise<User> {
     const user = await this.findById({ userId });
 
     if (!user) new NotFoundException();
@@ -40,7 +45,9 @@ export class UsersService {
 
   // ex 구독자 10만명이면 많은 시간동안 대기해야 함 페이지네이션
   // 데이터가 크면 함수가 돌다가 실패할 수 있음
-  async findSubscribedUsers({ channelId }) {
+  async findSubscribedUsers({
+    channelId,
+  }: IUsersServiceFindSubscribedUsers): Promise<User[]> {
     return await this.usersRepository
       .createQueryBuilder('user')
       .select(['user.id'])
@@ -73,7 +80,7 @@ export class UsersService {
     return await this.usersRepository.findOne({ where: { email } });
   }
 
-  async verifyEmail({ email }) {
+  async verifyEmail({ email }: IUsersServiceVerifyEmail): Promise<number> {
     const exUser = await this.findByEmail({ email });
     if (exUser) {
       throw new ForbiddenException('해당 이메일로는 가입하실 수 없습니다');
@@ -105,7 +112,7 @@ export class UsersService {
     });
   }
 
-  async findByIds({ userIds }) {
+  async findByIds({ userIds }: IUsersServiceFindByIds): Promise<User[]> {
     return await this.usersRepository.find({
       where: { id: In(userIds) },
       select: ['id', 'email', 'nickname', 'imageUrl', 'createdAt'],
@@ -148,7 +155,9 @@ export class UsersService {
   }
 
   // 더미데이터 생성용(추후 제거할 것)
-  async createDummyUser({ createUserDto }: IUsersServiceCreateUser) {
+  async createDummyUser({
+    createUserDto,
+  }: IUsersServiceCreateUser): Promise<CreateDummyUserResDto> {
     const { email, nickname, password } = createUserDto;
     const user = await this.findByEmail({ email });
     if (user) throw new ConflictException('이미 등록된 이메일입니다.');

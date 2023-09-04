@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  ForbiddenException,
-  Get,
-  Post,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AccessAuthGuard } from '../auth/guard/auth.guard';
@@ -16,7 +8,11 @@ import {
 } from 'src/commons/decorators/user.decorator';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateUserResDto } from './dto/res.dto';
+import {
+  CreateDummyUserResDto,
+  CreateUserResDto,
+  FindUserByEmailResDto,
+} from './dto/res.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 
 @Controller('api/users')
@@ -32,7 +28,9 @@ export class UsersController {
   }
 
   @Post('/verify-email')
-  async findUserByEmail(@Body() body: VerifyEmailDto) {
+  async findUserByEmail(
+    @Body() body: VerifyEmailDto,
+  ): Promise<FindUserByEmailResDto> {
     const result = await this.usersSerivce.verifyEmail({ email: body.email });
     return { message: result };
   }
@@ -64,7 +62,7 @@ export class UsersController {
   @Post('/dummy')
   async createDummyUser(
     @Body() createUserDto: CreateUserDto, //
-  ) {
+  ): Promise<CreateDummyUserResDto> {
     const result = await this.usersSerivce.createDummyUser({ createUserDto });
 
     return result;
