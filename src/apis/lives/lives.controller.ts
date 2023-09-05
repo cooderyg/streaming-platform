@@ -22,13 +22,39 @@ import { Cache } from 'cache-manager';
 import { GetLiveIncomeResDto } from './dto/res.dto';
 import { MessageResDto } from 'src/commons/dto/message-res.dto';
 import { AddThumbNailDto } from './dto/addThumbnail.dto';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Controller('api/lives')
 export class LivesController {
   constructor(
     private readonly livesService: LivesService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly elasticsearchService: ElasticsearchService,
   ) {}
+
+  @Post('elastic-search')
+  async createElasticSearch() {
+    await this.elasticsearchService.create({
+      id: 'id',
+      index: 'live',
+      document: {
+        name: '영큐',
+        age: 13,
+        school: '부천초등학교',
+      },
+    });
+  }
+
+  @Get('search/elastic-search')
+  async getElasticSearch() {
+    const result = await this.elasticsearchService.search({
+      index: 'live',
+      query: {
+        match_all: {},
+      },
+    });
+    return result;
+  }
 
   @Get()
   async getLives(@Query() pageReqDto: PageReqDto): Promise<Live[]> {

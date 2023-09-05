@@ -10,6 +10,7 @@ import { Channel } from '../channels/entities/channel.entity';
 import { EventsModule } from '../events/events.module';
 import { AlertsModule } from '../alerts/alerts.module';
 import { UsersModule } from '../users/users.module';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
 
 @Module({
   imports: [
@@ -17,6 +18,9 @@ import { UsersModule } from '../users/users.module';
     ChannelsModule,
     CreditHistoriesModule,
     EventsModule,
+    ElasticsearchModule.register({
+      node: 'http://localhost:9200',
+    }),
     TagsModule,
     TypeOrmModule.forFeature([Live, Channel]),
     UsersModule,
