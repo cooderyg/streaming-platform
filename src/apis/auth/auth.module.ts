@@ -6,6 +6,7 @@ import { UsersModule } from '../users/users.module';
 import { JwtAccessStrategy } from './strategies/jwt-access.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { JwtKakaoStrategy } from './strategies/jwt-social-kakao.strategy';
+import { JwtGoogleStrategy } from './strategies/jwt-social-google.strategy';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { JwtKakaoStrategy } from './strategies/jwt-social-kakao.strategy';
     JwtAccessStrategy,
     JwtRefreshStrategy,
     JwtKakaoStrategy,
+    JwtGoogleStrategy,
   ],
 })
 export class AuthModule {}
