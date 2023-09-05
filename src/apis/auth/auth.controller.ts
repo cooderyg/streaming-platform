@@ -47,10 +47,6 @@ export class AuthController {
 
   @UseGuards(KakaoAuthGuard)
   @Get('login/kakao')
-  async loginKakao() {}
-
-  @UseGuards(KakaoAuthGuard)
-  @Get('login/kakao/callback')
   async kakaoCallback(
     @SocialUser() socialUser: SocialUserAfterAuth,
     @Res({ passthrough: true }) res: Response,
@@ -67,10 +63,6 @@ export class AuthController {
 
   @UseGuards(GoogleAuthGuard)
   @Get('login/google')
-  async loginGoogle() {}
-
-  @UseGuards(GoogleAuthGuard)
-  @Get('login/google/callback')
   async googleCallback(
     @SocialUser() socialUser: SocialUserAfterAuth,
     @Res({ passthrough: true }) res: Response,
