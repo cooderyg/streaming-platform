@@ -37,7 +37,7 @@ signinBtnEl.addEventListener('click', async (e) => {
 });
 
 kakaoLoginBtnEl.addEventListener('click', async (e) => {
-  window.location.href = '/api/auth/login/kakao'
+  window.location.href = '/api/auth/login/kakao';
 });
 
 googleLoginBtnEl.addEventListener('click', async (e) => {
