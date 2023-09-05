@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { JwtAccessStrategy } from './strategies/jwt-access.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { JwtKakaoStrategy } from './strategies/jwt-social-kakao.strategy';
 
 @Module({
   imports: [
@@ -12,6 +13,11 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
     UsersModule, //
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAccessStrategy, JwtRefreshStrategy],
+  providers: [
+    AuthService,
+    JwtAccessStrategy,
+    JwtRefreshStrategy,
+    JwtKakaoStrategy,
+  ],
 })
 export class AuthModule {}

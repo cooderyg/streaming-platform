@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { KakaoAuthGuard, RefreshAuthGuard } from './guard/auth.guard';
 import {
   SocialUser,
@@ -43,7 +43,11 @@ export class AuthController {
 
   @UseGuards(KakaoAuthGuard)
   @Get('login/kakao')
-  async loginKakao(
+  async loginKakao() {}
+
+  @UseGuards(KakaoAuthGuard)
+  @Get('login/kakao/callback')
+  async kakaoCallback(
     @SocialUser() socialUser: SocialUserAfterAuth,
     @Res({ passthrough: true }) res: Response,
   ) {
@@ -54,7 +58,7 @@ export class AuthController {
     res.cookie('refreshToken', refreshToken);
     res.cookie('accessToken', accessToken);
 
-    return { message: '로그인을 성공적으로 완료하였습니다.' };
+    res.redirect('/')
   }
 
   @UseGuards(RefreshAuthGuard)

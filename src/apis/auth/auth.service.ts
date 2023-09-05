@@ -41,7 +41,7 @@ export class AuthService {
     const { email } = socialLoginDto;
     let user = await this.usersService.findByEmail({ email });
 
-    if (!user) await this.usersService.createUser({ createUserDto: socialLoginDto });
+    if (!user) user = await this.usersService.createUser({ createUserDto: socialLoginDto });
 
     const accessToken = this.getAccessToken({ userId: user.id });
     const refreshToken = this.getRefreshToken({ userId: user.id });

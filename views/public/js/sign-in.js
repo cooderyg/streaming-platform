@@ -1,6 +1,7 @@
 const emailEl = document.querySelector('#email');
 const passwordEl = document.querySelector('#password');
 const signinBtnEl = document.querySelector('#signin-btn');
+const kakaoLoginBtnEl = document.querySelector('#kakao-login-btn');
 
 passwordEl.addEventListener('keydown', (e) => {
   if (e.keyCode === 13) signinBtnEl.click();
@@ -32,4 +33,8 @@ signinBtnEl.addEventListener('click', async (e) => {
     const message = error.message;
     alert(message);
   }
+});
+
+kakaoLoginBtnEl.addEventListener('click', async (e) => {
+  window.location.href = '/api/auth/login/kakao'
 });
