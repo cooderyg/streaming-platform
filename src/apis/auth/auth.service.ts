@@ -8,7 +8,9 @@ import {
   IAuthServiceLogin,
   IAuthServiceLoginReturn,
   IAuthServiceRefresh,
+  IAuthServiceSocialLogin,
 } from './interfaces/auth-service.interface';
+import { SocialLoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +30,18 @@ export class AuthService {
     const isAuth = await bcrypt.compare(password, user.password);
 
     if (!isAuth) throw new UnauthorizedException();
+
+    const accessToken = this.getAccessToken({ userId: user.id });
+    const refreshToken = this.getRefreshToken({ userId: user.id });
+
+    return { accessToken, refreshToken };
+  }
+
+  async OAuthLogin({ socialLoginDto }: IAuthServiceSocialLogin) {
+    const { email } = socialLoginDto;
+    let user = await this.usersService.findByEmail({ email });
+
+    if (!user) user = await this.usersService.createUser({ createUserDto: socialLoginDto });
 
     const accessToken = this.getAccessToken({ userId: user.id });
     const refreshToken = this.getRefreshToken({ userId: user.id });
