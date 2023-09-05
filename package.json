@@ -66,6 +66,7 @@
     "@types/nodemailer": "^6.4.9",
     "@types/passport": "^1.0.12",
     "@types/passport-jwt": "^3.0.9",
+    "@types/passport-kakao": "^1.0.0",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",

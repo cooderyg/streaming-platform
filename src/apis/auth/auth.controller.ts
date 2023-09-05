@@ -1,9 +1,22 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { Response } from 'express';
-import { RefreshAuthGuard } from './guard/auth.guard';
-import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
+import { Request, Response } from 'express';
+import { KakaoAuthGuard, RefreshAuthGuard } from './guard/auth.guard';
+import {
+  SocialUser,
+  SocialUserAfterAuth,
+  User,
+  UserAfterAuth,
+} from 'src/commons/decorators/user.decorator';
 import { MessageResDto } from 'src/commons/dto/message-res.dto';
 
 @Controller('api/auth')
@@ -24,6 +37,22 @@ export class AuthController {
     res.cookie('accessToken', accessToken);
     // , { httpOnly: true, secure: true }
     // res.setHeader('Authorization', `Bearer ${accessToken}`);
+
+    return { message: '로그인을 성공적으로 완료하였습니다.' };
+  }
+
+  @UseGuards(KakaoAuthGuard)
+  @Get('login/kakao')
+  async loginKakao(
+    @SocialUser() socialUser: SocialUserAfterAuth,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken, refreshToken } = await this.authService.OAuthLogin({
+      socialLoginDto: socialUser,
+    });
+
+    res.cookie('refreshToken', refreshToken);
+    res.cookie('accessToken', accessToken);
 
     return { message: '로그인을 성공적으로 완료하였습니다.' };
   }

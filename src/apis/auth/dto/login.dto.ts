@@ -9,3 +9,17 @@ export class LoginDto {
   @IsNotEmpty()
   password: string;
 }
+
+export class SocialLoginDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  nickname: string;
+}
