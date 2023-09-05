@@ -48,7 +48,6 @@ export class LivesService {
     private readonly tagsService: TagsService,
     private readonly usersService: UsersService,
   ) {}
-
   async getLives({ pageReqDto }: ILivesServiceGetLives): Promise<Live[]> {
     const { page, size } = pageReqDto;
     const lives = await this.livesRepository
@@ -228,49 +227,12 @@ export class LivesService {
       onAir: true,
     });
 
-    // const subscribedUsers = await this.usersService.findSubscribedUsers({
-    //   channelId: live.channel.id,
-    // });
-
-    // if (subscribedUsers?.length > 0) {
-    //   await this.alertsService.createAlerts({
-    //     users: subscribedUsers,
-    //     channelId: live.channel.id,
-    //     isOnAir: true,
-    //     channelName: live.channel.name,
-    //   });
-    // }
-    //const uuid = v4();
-    // await this.alertQueue.add(
-    //   'addAlertQueue',
-    //   { channelId: live.channel.id, channelName: live.channel.name },
-    //   { removeOnComplete: true, removeOnFail: true, jobId: uuid },
-    // );
-
     const subscribedUsers = await this.usersService.findSubscribedUsers({
       channelId: live.channel.id,
     });
 
-    // if (subscribedUsers?.length > 0) {
-    //   await this.alertsService.createAlerts({
-    //     users: subscribedUsers,
-    //     channelId: live.channel.id,
-    //     isOnAir: true,
-    //     channelName: live.channel.name,
-    //   });
-    // }
-
-    const userCount = subscribedUsers.length;
-    if (userCount > 100) {
-      for (let i = 0; i < userCount / 100; i++) {
-        const users = subscribedUsers.slice(i * 100, (i + 1) * 100);
-        await this.alertsQueue.add(
-          'addAlertQueue',
-          { channelId: live.channel.id, channelName: live.channel.name, users },
-          { removeOnComplete: true, removeOnFail: true },
-        );
-      }
-    } else if (!userCount) {
+    if (subscribedUsers?.length > 0) {
+      console.log('hi');
       await this.alertsQueue.add(
         'addAlertQueue',
         {
@@ -311,44 +273,6 @@ export class LivesService {
     live.tags = tags;
     return await this.livesRepository.save(live);
   }
-
-  // async turnOff({ userId, liveId }: ILivesServiceTurnOff) {
-  //   const { channel, live } = await this.verifyOwner({ userId, liveId });
-
-  //   // 트랜잭션
-  //   const queryRunner = this.dataSource.createQueryRunner();
-  //   await queryRunner.connect();
-  //   await queryRunner.startTransaction();
-  //   const manager = queryRunner.manager;
-  //   try {
-  //     // 종료 시간을 업데이트 합니다.
-  //     live.endDate = new Date();
-
-  //     // 방송 정산하기
-  //     const creditHistories =
-  //       await this.creditHistoriesService.findCreditHistoryListByLive({
-  //         liveId,
-  //         userId,
-  //       });
-  //     const totalLiveIncome = creditHistories.reduce(
-  //       (acc, history) => acc + history.amount,
-  //       0,
-  //     );
-  //     live.income = totalLiveIncome;
-
-  //     // 채널 정산하기
-  //     channel.income += totalLiveIncome;
-
-  //     await manager.save(Live, live);
-  //     await manager.save(Channel, channel);
-  //     await queryRunner.commitTransaction();
-  //     return { message: '방송이 종료되었습니다.' };
-  //   } catch (err) {
-  //     await queryRunner.rollbackTransaction();
-  //   } finally {
-  //     await queryRunner.release();
-  //   }
-  // }
 
   async closeOBS({ liveId }: ILivesServiceCloseOBS): Promise<void> {
     const live = await this.getLiveById({ liveId });

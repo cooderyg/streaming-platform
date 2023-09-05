@@ -1,5 +1,5 @@
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
-import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -25,8 +25,8 @@ import { UploadsModule } from './apis/uploads/uploads.module';
 import { AlertsModule } from './apis/alerts/alerts.module';
 import { BullModule } from '@nestjs/bull';
 import * as redisStore from 'cache-manager-ioredis';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MailerModule } from '@nestjs-modules/mailer';
+
 @Module({
   imports: [
     AlertsModule,
@@ -57,8 +57,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
     ConfigModule.forRoot(),
     BullModule.forRoot({
       redis: {
-        host: 'localhost',
-        port: 6379,
+        host: '127.0.0.1',
+        port: 6380,
       },
     }),
     TypeOrmModule.forRoot({
