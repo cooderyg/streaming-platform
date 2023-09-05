@@ -9,7 +9,6 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
         if (!req.cookies.accessToken) throw new UnauthorizedException();
         const cookie = req.cookies.accessToken; //accessToken=pvgkmjsklfmsk
         const accessToken = cookie.replace('accessToken=', '');
-        console.log(accessToken);
         return accessToken;
       },
       // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -17,7 +16,6 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
     });
   }
   validate(payload) {
-    console.log(payload);
     return {
       id: payload.sub,
     };
