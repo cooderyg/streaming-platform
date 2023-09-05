@@ -10,7 +10,11 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
-import { KakaoAuthGuard, RefreshAuthGuard } from './guard/auth.guard';
+import {
+  GoogleAuthGuard,
+  KakaoAuthGuard,
+  RefreshAuthGuard,
+} from './guard/auth.guard';
 import {
   SocialUser,
   SocialUserAfterAuth,
@@ -50,7 +54,7 @@ export class AuthController {
   async kakaoCallback(
     @SocialUser() socialUser: SocialUserAfterAuth,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<void> {
     const { accessToken, refreshToken } = await this.authService.OAuthLogin({
       socialLoginDto: socialUser,
     });
@@ -58,7 +62,27 @@ export class AuthController {
     res.cookie('refreshToken', refreshToken);
     res.cookie('accessToken', accessToken);
 
-    res.redirect('/')
+    res.redirect('/');
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('login/google')
+  async loginGoogle() {}
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('login/google/callback')
+  async googleCallback(
+    @SocialUser() socialUser: SocialUserAfterAuth,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    const { accessToken, refreshToken } = await this.authService.OAuthLogin({
+      socialLoginDto: socialUser,
+    });
+
+    res.cookie('refreshToken', refreshToken);
+    res.cookie('accessToken', accessToken);
+
+    res.redirect('/');
   }
 
   @UseGuards(RefreshAuthGuard)

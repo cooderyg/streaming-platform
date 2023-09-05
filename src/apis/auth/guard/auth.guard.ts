@@ -8,4 +8,7 @@ export class AccessAuthGuard extends AuthGuard('access') {}
 export class RefreshAuthGuard extends AuthGuard('refresh') {}
 
 @Injectable()
-export class KakaoAuthGuard extends AuthGuard('kakao') {}
+export class KakaoAuthGuard extends AuthGuard('kakao') { }
+
+@Injectable()
+export class GoogleAuthGuard extends AuthGuard('google') {}
