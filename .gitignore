@@ -6,6 +6,7 @@ Dockerfile
 docker-compose.yaml
 .dockerignore
 /.clinic
+logstash.conf
 
 # compiled output
 /dist

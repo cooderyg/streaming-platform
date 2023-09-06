@@ -7,6 +7,19 @@ export const User = createParamDecorator(
   },
 );
 
+export const SocialUser = createParamDecorator(
+  (data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.user;
+  },
+);
+
 export interface UserAfterAuth {
   id: string;
+}
+
+export interface SocialUserAfterAuth {
+  email: string;
+  password: string;
+  nickname: string;
 }
