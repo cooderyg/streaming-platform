@@ -1,9 +1,12 @@
-import { LoginDto } from '../dto/login.dto';
+import { LoginDto, SocialLoginDto } from '../dto/login.dto';
 
 export interface IAuthServiceLogin {
   loginDto: LoginDto;
 }
 
+export interface IAuthServiceSocialLogin {
+  socialLoginDto: SocialLoginDto;
+}
 export interface IAuthServiceRefresh {
   userId: string;
 }

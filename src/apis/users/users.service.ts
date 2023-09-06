@@ -57,7 +57,7 @@ export class UsersService {
       .getMany();
   }
 
-  async createUser({ createUserDto }: IUsersServiceCreateUser): Promise<void> {
+  async createUser({ createUserDto }: IUsersServiceCreateUser): Promise<User> {
     const { email, nickname, password } = createUserDto;
     const user = await this.findByEmail({ email });
     if (user) throw new ConflictException('이미 등록된 이메일입니다.');
@@ -74,6 +74,8 @@ export class UsersService {
       createChannelDto,
       userId: result.id,
     });
+
+    return result
   }
 
   async findByEmail({ email }: IUsersServiceFindByEmail): Promise<User> {
