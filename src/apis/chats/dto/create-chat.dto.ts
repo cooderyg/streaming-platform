@@ -7,5 +7,12 @@ export class CreateChatDto {
 
   @IsNotEmpty()
   @IsString()
+  userId: string;
+  @IsNotEmpty()
+  @IsString()
+  nickname: string;
+
+  @IsNotEmpty()
+  @IsString()
   content: string;
 }

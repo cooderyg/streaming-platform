@@ -13,6 +13,8 @@ import {
   IEventsGatewayHandleChat,
   IEventsGatewayHandleDonation,
 } from './interfaces/events-gateway.interface';
+import { ChatsService } from '../chats/chats.service';
+import { CreateChatDto } from '../chats/dto/create-chat.dto';
 
 // interface IEventGatewayOnAirStreamers {
 //   socket: Socket;
@@ -26,6 +28,8 @@ import {
 })
 @Injectable()
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  constructor(private readonly chatsService: ChatsService) {}
+
   @WebSocketServer()
   server: Server;
 
@@ -81,6 +85,15 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       user,
       chat,
     });
+
+    // mongoDB에 채팅 저장
+    const createChatDto: CreateChatDto = {
+      liveId: roomId.toString(),
+      userId: user.id,
+      nickname: user.nickname,
+      content: data.chat,
+    };
+    this.chatsService.createChat(createChatDto);
   }
 
   @SubscribeMessage('donation')
