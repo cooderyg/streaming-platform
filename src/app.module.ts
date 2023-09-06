@@ -1,5 +1,5 @@
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
-import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -24,7 +24,6 @@ import { EventsModule } from './apis/events/events.module';
 import { UploadsModule } from './apis/uploads/uploads.module';
 import { AlertsModule } from './apis/alerts/alerts.module';
 import * as redisStore from 'cache-manager-ioredis';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MailerModule } from '@nestjs-modules/mailer';
 @Module({
   imports: [
@@ -87,12 +86,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }),
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    // {
-    //   provide: APP_INTERCEPTOR, //CacheInterceptor 활성화하면 key가 자동으로 /cache로 들어감..
-    //   useClass: CacheInterceptor,
-    // },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
