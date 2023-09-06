@@ -63,6 +63,33 @@ chatBtn.addEventListener('click', () => {
   chatInput.value = '';
 });
 
+// 방 입장시 지난 채팅 30개 받기
+async function pastChat(roomId) {
+  console.log('룸아이디', roomId);
+  const chatRes = await fetch(`/api/chats/${roomId}`);
+  const chatData = await chatRes.json();
+  console.log('지난채팅', chatData);
+  chatData.forEach((data) => {
+    const chat = data.content;
+    const nickname = data.nickname;
+    const img = '/img/profile.jpg';
+    const temp = `
+    <div class="d-flex justify-content-start mb-1">
+      <div class="img_cont_msg">
+        <img src="${img}" class="rounded-circle user_img_msg">
+      </div>
+      <div class="msg_container">
+        <span class="user_nick">${nickname}</span>
+        <span class="user_chat">${chat}</span>
+      </div>
+    </div>
+    `;
+    chatContainerEl.insertAdjacentHTML('afterbegin', temp);
+    chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
+  });
+}
+pastChat(roomId);
+
 // 채팅받기
 socket.on('chat', (data) => {
   const chat = data.chat;

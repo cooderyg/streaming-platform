@@ -25,6 +25,7 @@ import { UploadsModule } from './apis/uploads/uploads.module';
 import { AlertsModule } from './apis/alerts/alerts.module';
 import * as redisStore from 'cache-manager-ioredis';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { MongooseModule } from '@nestjs/mongoose';
 @Module({
   imports: [
     AlertsModule,
@@ -66,6 +67,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       namingStrategy: new SnakeNamingStrategy(),
       timezone: 'UTC',
     }),
+    MongooseModule.forRoot(process.env.MONGO_CONNECT),
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
