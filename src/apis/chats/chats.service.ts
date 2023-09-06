@@ -1,33 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Chat } from './entities/chat.entity';
-import { Repository } from 'typeorm';
-import {
-  ICreateChat,
-  IFindChatsByLive,
-} from './interfaces/chats-service.interface';
+import { InjectModel } from '@nestjs/mongoose';
+import { Chat } from './schemas/chat.schema';
+import { Model } from 'mongoose';
+import { CreateChatDto } from './dto/create-chat.dto';
 
 @Injectable()
 export class ChatsService {
   constructor(
-    @InjectRepository(Chat)
-    private readonly chatsRepository: Repository<Chat>,
+    @InjectModel(Chat.name)
+    private chatModel: Model<Chat>,
   ) {}
 
-  async findChatsByLive({ userId, liveId }: IFindChatsByLive): Promise<Chat[]> {
-    const chats = await this.chatsRepository.find({
-      where: { live: { id: liveId }, user: { id: userId } },
-    });
+  async findChatByLiveId({ liveId }) {
+    const chats = this.chatModel
+      .find({ liveId })
+      .sort({ createdAt: -1 })
+      .limit(30);
     return chats;
   }
 
-  async createChat({ userId, createChatDto }: ICreateChat): Promise<Chat> {
-    const { content, liveId } = createChatDto;
-    const chat = await this.chatsRepository.save({
-      content,
-      user: { id: userId },
-      live: { id: liveId },
-    });
-    return chat;
+  async createChat(createChatDto: CreateChatDto): Promise<Chat> {
+    const chat = new this.chatModel(createChatDto);
+    return chat.save();
   }
 }
