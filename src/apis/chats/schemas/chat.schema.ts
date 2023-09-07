@@ -11,6 +11,8 @@ export class Chat {
   @Prop({ required: true })
   userId: string;
   @Prop({ required: true })
+  email: string;
+  @Prop({ required: true })
   nickname: string;
 
   @Prop({ required: true })
