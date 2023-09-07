@@ -90,6 +90,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const createChatDto: CreateChatDto = {
       liveId: roomId.toString(),
       userId: user.id,
+      email: user.email,
       nickname: user.nickname,
       content: data.chat,
     };
