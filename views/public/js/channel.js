@@ -13,7 +13,6 @@ const getChannelData = async () => {
   // Todo:  배너,프로필 구분 필요
   channelBannerImg = data.bannerImgUrl || '../img/curved-images/curved0.jpg';
   const streamerImg = data.user.profileImgUrl || '/img/profile.jpg';
-  console.log(channelBannerImg);
   const channelCreatedAt = data.createdAt.split('T')['0'];
   const subscribeCount = data.subscribes.length;
   const streamerEmail = data.user.email;
@@ -69,13 +68,11 @@ const getChannelNoticeData = async () => {
 // 공지 상세 받아오기
 const getNoticeDetail = async (channelId) => {
   const noticeDetailModal = document.getElementById('notice-detail-modal');
-  console.log(noticeDetailModal);
   noticeDetailModal.addEventListener('shown.bs.modal', async (event) => {
     const notice = event.relatedTarget;
     const noticeId = notice.getAttribute('data-notice-id');
     const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
     const data = await res.json();
-    console.log(data);
     const temp = `<img src="${data.imageUrl}">
     <div>${data.content}</div>
     <div>${data.createdAt.split('T')[0]}`;
@@ -87,9 +84,17 @@ getChannelData();
 getChannelNoticeData();
 getNoticeDetail(channelId);
 
+// 구독하기
 const subscribeBtn = document.getElementById('channel-subscribe-btn');
-subscribeBtn.addEventListener('click', function (event) {
-  fetch('/api/subscribes', {
+let isLoading;
+subscribeBtn.addEventListener('click', async (e) => {
+  if (isLoading) return;
+
+  isLoading = true;
+
+  const channelId = e.currentTarget.getAttribute('data-channelId');
+
+  const response = await fetch('/api/subscribes', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -98,8 +103,31 @@ subscribeBtn.addEventListener('click', function (event) {
       channelId,
     }),
   });
+  const data = await response.json();
+  const { isSubscribed } = data;
+
+  if (isSubscribed) {
+    subscribeBtn.innerText = '구독취소';
+  } else {
+    subscribeBtn.innerText = '구독하기';
+  }
+
+  isLoading = false;
   window.location.reload();
 });
+
+// 구독여부 확인
+fetch(`/api/subscribes/check/${channelId}`)
+  .then((res) => res.json())
+  .then((data) => {
+    const { isSubscribed } = data;
+    if (isSubscribed) {
+      subscribeBtn.innerText = '구독취소';
+    } else {
+      subscribeBtn.innerText = '구독하기';
+    }
+  });
+subscribeBtn.setAttribute('data-channelId', `${channelId}`);
 
 // const writeNotice = () => {
 //   let imageUrl;
@@ -194,7 +222,6 @@ const getReplays = async () => {
   const replayContainer = document.getElementById('replay-container');
   const resReplay = await fetch(`/api/lives/replay/${channelId}`);
   const dataReplay = await resReplay.json();
-  console.log(dataReplay);
   dataReplay.forEach((e) => {
     const liveId = e.id;
     const liveTitle = e.title;

@@ -151,13 +151,12 @@ const requestPay = () => {
           })
             .then((res) => res.json())
             .then((data) => {
-              console.log(data);
               alert('결제가 성공적으로 완료되었습니다.');
               getUserData();
               closeBtnEl.click();
             });
         } catch (error) {
-          console.log(error.message);
+          console.error(error.message);
         }
       } else {
         //결제 실패 시 로직

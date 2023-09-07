@@ -12,8 +12,6 @@ async function getMyChannelData() {
   const streamerEmail = data.user.email;
   const channelInfo = data.introduction || '';
 
-  console.log(data);
-
   document.getElementById(
     'channel-banner-img',
   ).style.backgroundImage = `url(${channelBannerImg})`;
@@ -68,13 +66,11 @@ async function getMyChannelNoticeData(channelId) {
 // 공지 상세 받아오기
 const getNoticeDetail = async (channelId) => {
   const noticeDetailModal = document.getElementById('notice-detail-modal');
-  console.log(noticeDetailModal);
   noticeDetailModal.addEventListener('shown.bs.modal', async (event) => {
     const notice = event.relatedTarget;
     const noticeId = notice.getAttribute('data-notice-id');
     const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
     const data = await res.json();
-    console.log(data);
     const temp = `<img src="${data.imageUrl}">
     <div>${data.content}</div>
     <div>${data.createdAt.split('T')[0]}`;
@@ -96,21 +92,9 @@ const deleteNotice = (channelId) => {
       method: 'DELETE',
     });
     const data = res.json();
-    console.log(data);
     window.location.reload();
   });
 };
-
-function mySubscribe(channelId) {
-  fetch('/api/subscribes', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ channelId }),
-  });
-  window.location.reload();
-}
 
 //후원랭킹top5
 async function getChannelDonationTop5(channelId) {
@@ -157,9 +141,7 @@ async function writeMyNotice(channelId) {
   const noticeImageUploadBtn = document.getElementById(
     'notice-image-upload-btn',
   );
-  console.log(noticeImageUploadBtn);
   noticeImageUploadBtn.addEventListener('click', async () => {
-    console.log('클릭!');
     const fileInput = document.getElementById('notice-img-input');
     let formData = new FormData();
     formData.append('file', fileInput.files[0]);
@@ -171,7 +153,6 @@ async function writeMyNotice(channelId) {
     });
     const uploadData = await uploadRes.json();
     imageUrl = uploadData.url;
-    console.log(imageUrl);
   });
 }
 
@@ -199,7 +180,6 @@ categoryCheckboxes.forEach((checkbox) => {
 
 // 변경할 베너 이미지 값 가져오기
 let bannerImgUrl = document.getElementById('channel-img-input').value;
-console.log(bannerImgUrl);
 
 const channelImageUploadBtn = document.getElementById(
   'channel-image-upload-btn',
@@ -208,7 +188,6 @@ channelImageUploadBtn.addEventListener('click', async () => {
   const fileInput = document.getElementById('channel-img-input');
   let formData = new FormData();
   formData.append('file', fileInput.files[0]);
-  console.log(fileInput.files[0]);
   const uploadRes = await fetch('/api/uploads/channel-notice-image', {
     method: 'POST',
     cache: 'no-cache',
@@ -216,7 +195,6 @@ channelImageUploadBtn.addEventListener('click', async () => {
   });
   const uploadData = await uploadRes.json();
   bannerImgUrl = uploadData.url;
-  console.log(bannerImgUrl);
 });
 
 async function writeMyChannel(channelId) {
@@ -281,10 +259,5 @@ async function writeMyChannel(channelId) {
   const channelWriteIcon = document.getElementById('channel-write-btn');
   channelWriteIcon.addEventListener('click', () => {
     writeMyChannel(channelId);
-  });
-  // 구독하기 이벤트 등록
-  const subscribeBtn = document.getElementById('channel-subscribe-btn');
-  subscribeBtn.addEventListener('click', () => {
-    mySubscribe(channelId);
   });
 })();
