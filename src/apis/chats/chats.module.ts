@@ -1,12 +1,15 @@
+import { MongooseModule } from '@nestjs/mongoose';
 import { Module } from '@nestjs/common';
 import { ChatsController } from './chats.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Chat } from './entities/chat.entity';
 import { ChatsService } from './chats.service';
+import { Chat, ChatSchema } from './schemas/chat.schema';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Chat])],
+  imports: [
+    MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]),
+  ],
   controllers: [ChatsController],
   providers: [ChatsService],
+  exports: [ChatsService],
 })
 export class ChatsModule {}

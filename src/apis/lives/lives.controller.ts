@@ -32,14 +32,15 @@ export class LivesController {
 
   @Get()
   async getLives(@Query() pageReqDto: PageReqDto): Promise<Live[]> {
-    const cachedList: Live[] = await this.cacheManager.get('liveList'); // 캐싱된 리스트가 있는지 조회
+    const { size, page } = pageReqDto;
+    const cachedList: Live[] = await this.cacheManager.get(`liveList${page}`); // 캐싱된 리스트가 있는지 조회
     if (cachedList) {
       console.log('Cache Hit');
       return cachedList;
     } else {
       console.log('Cache Miss');
       const lives = await this.livesService.getLives({ pageReqDto });
-      await this.cacheManager.set('liveList', lives, 5); // 캐싱된 데이터가 없을경우 set
+      await this.cacheManager.set(`liveList${page}`, lives, 5); // 캐싱된 데이터가 없을경우 set
       return lives;
     }
   }

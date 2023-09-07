@@ -9,3 +9,7 @@ export interface IFindChatsByLive {
   userId: string;
   liveId: string;
 }
+
+export interface IChat {
+  createChatDto: CreateChatDto;
+}

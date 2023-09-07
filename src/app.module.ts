@@ -1,5 +1,6 @@
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { CacheModule } from '@nestjs/cache-manager';
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -27,6 +28,7 @@ import { BullModule } from '@nestjs/bull';
 import * as redisStore from 'cache-manager-ioredis';
 import { MailerModule } from '@nestjs-modules/mailer';
 
+import { MongooseModule } from '@nestjs/mongoose';
 @Module({
   imports: [
     AlertsModule,
@@ -74,6 +76,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       namingStrategy: new SnakeNamingStrategy(),
       timezone: 'UTC',
     }),
+    MongooseModule.forRoot(process.env.MONGO_CONNECT),
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
@@ -94,12 +97,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }),
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    // {
-    //   provide: APP_INTERCEPTOR, //CacheInterceptor 활성화하면 key가 자동으로 /cache로 들어감..
-    //   useClass: CacheInterceptor,
-    // },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}

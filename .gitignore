@@ -46,3 +46,5 @@ lerna-debug.log*
 
 .gitmessage.txt
 git_init
+
+/artillery
