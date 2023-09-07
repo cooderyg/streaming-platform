@@ -24,6 +24,8 @@ import {
 } from './interfaces/users-service.interface';
 import { MailerService } from '@nestjs-modules/mailer';
 import { CreateDummyUserResDto } from './dto/res.dto';
+import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
 
 @Injectable()
 export class UsersService {
@@ -33,6 +35,8 @@ export class UsersService {
     @Inject(forwardRef(() => ChannelsService))
     private readonly channelsService: ChannelsService,
     private readonly mailerService: MailerService,
+    @InjectQueue('mailsQueue')
+    private readonly mailsQueue: Queue,
   ) {}
 
   async findUser({ userId }: IUsersServiceFindUser): Promise<User> {
@@ -88,13 +92,11 @@ export class UsersService {
       throw new ForbiddenException('해당 이메일로는 가입하실 수 없습니다');
     } else if (!exUser) {
       const randomNumber = Math.floor(100000 + Math.random() * 900000);
-      await this.mailerService.sendMail({
-        to: email,
-        from: process.env.MAIL_USER,
-        subject: 'Freely B 이메일 인증번호입니다.',
-        text: '인증번호를 입력해주세요.',
-        html: `<b>인증번호: ${randomNumber}</b>`,
-      });
+      await this.mailsQueue.add(
+        'sendMailProcess',
+        { email, randomNumber },
+        { removeOnComplete: true, removeOnFail: true },
+      );
       return randomNumber;
     }
   }
