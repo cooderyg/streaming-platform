@@ -4,10 +4,11 @@ const getData = async () => {
   const response = await fetch('/api/channels/admin/managers');
   const data = await response.json();
 
-  const temp = data.map((data) => {
-    const createDate = new Date(data.createdAt).toLocaleDateString();
-    const image = data.imageUrl ? data.imageUrl : '/img/profile.jpg';
-    return `
+  const temp = data
+    .map((data) => {
+      const createDate = new Date(data.createdAt).toLocaleDateString();
+      const image = data.imageUrl ? data.imageUrl : '/img/profile.jpg';
+      return `
     <tr>
         <td>
         <div class="d-flex px-2 py-1">
@@ -57,7 +58,8 @@ const getData = async () => {
         </td>
     </tr>
     `;
-  });
+    })
+    .join('');
 
   managersEl.innerHTML = temp;
 };
