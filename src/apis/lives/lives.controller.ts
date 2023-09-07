@@ -31,26 +31,36 @@ export class LivesController {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly elasticsearchService: ElasticsearchService,
   ) {}
-
-  @Post('elastic-search')
-  async createElasticSearch() {
-    await this.elasticsearchService.create({
-      id: 'id',
-      index: 'live',
-      document: {
-        name: '영큐',
-        age: 13,
-        school: '부천초등학교',
-      },
-    });
-  }
-
   @Get('search/elastic-search')
-  async getElasticSearch() {
+  async getElasticSearch(@Query() searchReqDto: SearchReqDto) {
+    const { keyword, page, size } = searchReqDto;
     const result = await this.elasticsearchService.search({
-      index: 'live',
+      index: 'test-4',
+      size: size,
+      from: page - 1,
       query: {
-        match_all: {},
+        bool: {
+          must: {
+            multi_match: {
+              query: keyword,
+              fields: ['title', 'tags', 'channel_name', 'category_name'],
+            },
+          },
+          must_not: {
+            exists: {
+              field: 'end_date',
+            },
+          },
+        },
+
+        // constant_score: {
+        //   filter: {
+        //     missing: { field: 'end_date' },
+        //   },
+        // },
+        // bool: {
+        //   should: [{ prefix: { title: keyword } }],
+        // },
       },
     });
     return result;
