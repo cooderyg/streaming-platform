@@ -78,9 +78,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const roomId = socket.handshake.headers['room-id'];
 
-    console.log('유저', user);
-    console.log('룸아이디', roomId);
-    console.log('데이터', data);
     this.server.of('/').to(roomId).emit('chat', {
       user,
       chat,

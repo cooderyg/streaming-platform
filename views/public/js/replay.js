@@ -98,7 +98,6 @@ const getData = async () => {
   const replayContainer = document.getElementById('replay-container');
   const resReplay = await fetch(`/api/lives/replay/${channelId}`);
   const dataReplay = await resReplay.json();
-  console.log(dataReplay);
   dataReplay.forEach((e) => {
     const liveId = e.id;
     const liveTitle = e.title;
@@ -141,6 +140,7 @@ const getData = async () => {
 };
 getData();
 
+//구독하기
 let isLoading;
 subscribeBtn.addEventListener('click', async (e) => {
   if (isLoading) return;
@@ -224,7 +224,7 @@ setTimeout(() => {
         //   console.log(hls.media.currentTime);
         // });
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     });
   }

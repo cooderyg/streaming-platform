@@ -66,8 +66,6 @@ const insert = async () => {
       '12345678',
       faker.person.fullName(),
     );
-    console.log('node', res.userId);
-    // 96대장영큐: 'cda7944b-7dea-4bf6-a1a5-721c416b9d04'
     await subscribe(res.userId, 'cda7944b-7dea-4bf6-a1a5-721c416b9d04');
   }
 };
