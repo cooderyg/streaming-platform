@@ -106,7 +106,7 @@
                         구독자
                       </p>
                       <h5 id="subscribe" class="font-weight-bolder mb-0">
-                        2,300
+                        0
                         <!-- <span class="text-success text-sm font-weight-bolder"
                           >+3%</span
                         > -->
@@ -168,7 +168,7 @@
                         이번 달 수익
                       </p>
                       <h5 id="monthly-income" class="font-weight-bolder mb-0">
-                        ￦ 103,430
+                        ￦ 0
                         <!-- <span class="text-success text-sm font-weight-bolder"
                           >+5%</span
                         > -->
@@ -190,7 +190,93 @@
             </div>
           </div>
         </div>
-        <div class="row my-6">
+        <div class="chat-search-container" style="text-align: right">
+          <button
+            id="chat-search-open-btn"
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#chat-search"
+          >
+            채팅 기록 검색하기
+          </button>
+        </div>
+        <!-- 채팅 검색 모달창 start -->
+        <div
+          class="modal fade"
+          id="chat-search"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                  채팅 기록 검색
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <label>검색 대상</label>
+                <input
+                  class="form-control form-control-sm"
+                  id="chat-search-input"
+                  type="text"
+                  placeholder="대상의 이메일을 입력해 주세요. (ex. nickname@exmaple.com)"
+                  aria-label=".form-control-sm example"
+                />
+                <label>검색 결과</label>
+                <div
+                  id="chat-search-output"
+                  style="
+                    border: 1px solid #d2d6da;
+                    width: auto;
+                    height: 350px;
+                    border-radius: 10px;
+                    padding-left: 5px;
+                    overflow: scroll;
+                    display: none;
+                  "
+                >
+                  <!-- 결과 채워주는 곳 -->
+                  <p>11111111</p>
+                  <p>22222222</p>
+                </div>
+                <!-- <input
+                  class="form-control form-control-sm"
+                  id="chat-search-output"
+                  type="text"
+                  placeholder="태그를 입력해주세요."
+                  aria-label=".form-control-sm example"
+                /> -->
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  닫기
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="chat-search-start-btn"
+                >
+                  검색
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 채팅 검색 모달창 end -->
+        <div class="row my-3">
           <div class="col-12">
             <div class="card mb-4">
               <div class="card-header pb-0">

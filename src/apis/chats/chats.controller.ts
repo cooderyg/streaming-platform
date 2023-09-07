@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { AccessAuthGuard } from '../auth/guard/auth.guard';
 import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
-import { CreateChatDto } from './dto/create-chat.dto';
 import { ChatsService } from './chats.service';
 import { Chat } from './schemas/chat.schema';
 
@@ -13,6 +12,20 @@ export class ChatsController {
   async findChatByLiveId(@Param() live): Promise<Chat[]> {
     const chats = await this.chatsService.findChatByLiveId({
       liveId: live.liveId,
+    });
+    return chats;
+  }
+
+  @UseGuards(AccessAuthGuard)
+  @Get('search/:email')
+  async findChatByEmail(
+    @User() user: UserAfterAuth,
+    @Param('email') email: string,
+  ): Promise<Chat[]> {
+    console.log(email);
+    const chats = await this.chatsService.findChatByEmail({
+      userId: user.id,
+      email,
     });
     return chats;
   }

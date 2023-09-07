@@ -3,6 +3,9 @@ const subscribeEl = document.querySelector('#subscribe');
 const livesEl = document.querySelector('#lives');
 const monthlyIncome = document.querySelector('#monthly-income');
 const playtimeEl = document.querySelector('#playtime');
+const chatSearchInputEl = document.querySelector('#chat-search-input');
+const chatSearchBtnEl = document.querySelector('#chat-search-start-btn');
+const chatSearchOutputEl = document.querySelector('#chat-search-output');
 
 const switchMoneyString = (number) => {
   return `₩ ${number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
@@ -20,7 +23,7 @@ const getSubscribeData = async () => {
   const response = await fetch('/api/subscribes');
   const data = await response.json();
 
-  subscribeEl.innerText = data.count;
+  subscribeEl.innerText = `${data.count} 명`;
 };
 
 getSubscribeData();
@@ -82,3 +85,33 @@ const getMonthlyIncome = async () => {
   monthlyIncome.textContent = switchMoneyString(data.income);
 };
 getMonthlyIncome();
+
+const chatSearch = async () => {
+  const email = chatSearchInputEl.value;
+
+  try {
+    const response = await fetch(`/api/chats/search/${email}`);
+    const data = await response.json();
+    chatSearchOutputEl.style.display = 'block';
+    chatSearchOutputEl.innerHTML = '';
+    if (data.length === 0) {
+    }
+    const result = data.reduce((acc, chat) => {
+      return (
+        acc +
+        `
+      <div style="margin-bottom: 10px;">
+        <p style="margin-bottom: 0; font-size: 10px;">생성 일자: ${chat.createdAt
+          .replace('T', ' ')
+          .replace(/\.\d+Z$/, '')}</p>
+        <p style="margin-bottom: 0; font-size: 13px;">내용: ${chat.content}</p>
+      </div>
+      `
+      );
+    }, '');
+    chatSearchOutputEl.innerHTML = result;
+  } catch (err) {
+    alert(err);
+  }
+};
+chatSearchBtnEl.addEventListener('click', chatSearch);
