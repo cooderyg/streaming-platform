@@ -1,14 +1,12 @@
 const url = new URL(window.location.href);
 const queryString = url.searchParams;
 const keyword = queryString.get('keyword');
-console.log(keyword);
 const searchContainerEl = document.querySelector('#search-container');
 const searchTitleEl = document.querySelector('#search-title');
 
 const getData = async () => {
   const response = await fetch(`/api/lives/search/keywords?keyword=${keyword}`);
   const data = await response.json();
-  console.log(data);
   searchTitleEl.innerText = `"${keyword}"`;
   const temp = data
     .map((el) => {

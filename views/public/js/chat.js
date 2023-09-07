@@ -12,7 +12,7 @@ const getUserData = async () => {
     const data = await response.json();
     user = data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 getUserData();

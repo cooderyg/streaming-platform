@@ -103,7 +103,6 @@ const getData = async () => {
   const replayContainer = document.getElementById('replay-container');
   const resReplay = await fetch(`/api/lives/replay/${channelId}`);
   const dataReplay = await resReplay.json();
-  console.log('aaaaaaaaaa', dataReplay);
   if (dataReplay.length) {
     dataReplay.forEach((e) => {
       const liveId = e.id;
@@ -215,8 +214,6 @@ setTimeout(() => {
       video.play();
     });
     video.addEventListener('play', () => {
-      console.log(hls);
-      console.log(hls.liveSyncPosition);
       hls.media.currentTime = hls.liveSyncPosition;
     });
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -229,7 +226,7 @@ setTimeout(() => {
           video.currentTime = duration;
         });
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     });
   }
