@@ -8,6 +8,7 @@ import {
   ToggleSubscribeResDto,
   getSubscribeCountResDto,
 } from './dto/res.dto';
+import { Subscribe } from './entities/subscribe.entity';
 
 @Controller('api/subscribes')
 export class SubscribesController {
@@ -23,6 +24,15 @@ export class SubscribesController {
     });
 
     return { count };
+  }
+
+  @UseGuards(AccessAuthGuard)
+  @Get('channels')
+  async getSubscribeChannel(@User() user: UserAfterAuth): Promise<Subscribe[]> {
+    const subscribes = await this.subscribesService.getSubscribeChannel({
+      userId: user.id,
+    });
+    return subscribes;
   }
 
   @UseGuards(AccessAuthGuard)

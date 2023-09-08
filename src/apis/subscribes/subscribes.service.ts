@@ -29,6 +29,17 @@ export class SubscribesService {
     return count;
   }
 
+  async getSubscribeChannel({ userId }): Promise<Subscribe[]> {
+    const subscribes = await this.subscribesRepository
+      .createQueryBuilder('subscribe')
+      .select(['subscribe.id', 'channel.id'])
+      .leftJoin('subscribe.channel', 'channel')
+      .where('subscribe.user_id =:userId', { userId })
+      .getMany();
+
+    return subscribes;
+  }
+
   async checkSubscribe({ channelId, userId }): Promise<boolean> {
     const subscribe = await this.findByChannelIdAndUserId({
       channelId,
