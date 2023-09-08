@@ -11,6 +11,7 @@ import { EventsModule } from '../events/events.module';
 import { AlertsModule } from '../alerts/alerts.module';
 import { UsersModule } from '../users/users.module';
 import { BullModule } from '@nestjs/bull';
+import { LivesProcessor } from './lives.processor';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { BullModule } from '@nestjs/bull';
     UsersModule,
   ],
   controllers: [LivesController],
-  providers: [LivesService],
+  providers: [LivesService, LivesProcessor],
   exports: [LivesService],
 })
 export class LivesModule {}
