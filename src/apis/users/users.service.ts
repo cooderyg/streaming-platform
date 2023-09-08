@@ -75,7 +75,7 @@ export class UsersService {
       userId: result.id,
     });
 
-    return result
+    return result;
   }
 
   async findByEmail({ email }: IUsersServiceFindByEmail): Promise<User> {

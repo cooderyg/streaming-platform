@@ -93,6 +93,7 @@ const emailEl = document.querySelector('#email');
 
 managerBtnEl.addEventListener('click', async (e) => {
   e.preventDefault();
+  console.log('aaaaa');
   const email = emailEl.value;
   if (!email) return alert('이메일을 입력해주세요.');
 
