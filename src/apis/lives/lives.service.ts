@@ -28,6 +28,7 @@ import {
   ILivesServiceVerifyOwner,
   ILivesServiceVerifyOwnerRetrun,
 } from './interfaces/lives-service.interface';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Injectable()
 export class LivesService {
@@ -39,7 +40,32 @@ export class LivesService {
     private readonly dataSource: DataSource,
     private readonly eventsGateway: EventsGateway,
     private readonly tagsService: TagsService,
+    private readonly elasticsearchService: ElasticsearchService,
   ) {}
+
+  async getElasticsearch({ keyword, page, size }) {
+    const lives = await this.elasticsearchService.search({
+      index: 'test-8',
+      size: size,
+      from: (page - 1) * size,
+      query: {
+        bool: {
+          must: {
+            multi_match: {
+              query: keyword,
+              fields: ['title', 'tags', 'channel_name', 'category_name'],
+            },
+          },
+          must_not: {
+            exists: {
+              field: 'end_date',
+            },
+          },
+        },
+      },
+    });
+    return lives;
+  }
 
   async getLives({ pageReqDto }: ILivesServiceGetLives): Promise<Live[]> {
     const { page, size } = pageReqDto;

@@ -22,48 +22,24 @@ import { Cache } from 'cache-manager';
 import { GetLiveIncomeResDto } from './dto/res.dto';
 import { MessageResDto } from 'src/commons/dto/message-res.dto';
 import { AddThumbNailDto } from './dto/addThumbnail.dto';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Controller('api/lives')
 export class LivesController {
   constructor(
     private readonly livesService: LivesService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private readonly elasticsearchService: ElasticsearchService,
   ) {}
   @Get('search/elastic-search')
   async getElasticSearch(@Query() searchReqDto: SearchReqDto) {
     const { keyword, page, size } = searchReqDto;
-    const result = await this.elasticsearchService.search({
-      index: 'test-4',
-      size: size,
-      from: page - 1,
-      query: {
-        bool: {
-          must: {
-            multi_match: {
-              query: keyword,
-              fields: ['title', 'tags', 'channel_name', 'category_name'],
-            },
-          },
-          must_not: {
-            exists: {
-              field: 'end_date',
-            },
-          },
-        },
 
-        // constant_score: {
-        //   filter: {
-        //     missing: { field: 'end_date' },
-        //   },
-        // },
-        // bool: {
-        //   should: [{ prefix: { title: keyword } }],
-        // },
-      },
+    const lives = await this.livesService.getElasticsearch({
+      keyword,
+      page,
+      size,
     });
-    return result;
+
+    return lives;
   }
 
   @Get()
