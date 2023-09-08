@@ -1,10 +1,8 @@
 import {
   ConflictException,
-  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
-  forwardRef,
 } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,7 +28,6 @@ import {
   ILivesServiceVerifyOwner,
   ILivesServiceVerifyOwnerRetrun,
 } from './interfaces/lives-service.interface';
-import { ChatsService } from '../chats/chats.service';
 
 @Injectable()
 export class LivesService {
@@ -276,46 +273,10 @@ export class LivesService {
     return await this.livesRepository.save(live);
   }
 
-  // async turnOff({ userId, liveId }: ILivesServiceTurnOff) {
-  //   const { channel, live } = await this.verifyOwner({ userId, liveId });
-
-  //   // 트랜잭션
-  //   const queryRunner = this.dataSource.createQueryRunner();
-  //   await queryRunner.connect();
-  //   await queryRunner.startTransaction();
-  //   const manager = queryRunner.manager;
-  //   try {
-  //     // 종료 시간을 업데이트 합니다.
-  //     live.endDate = new Date();
-
-  //     // 방송 정산하기
-  //     const creditHistories =
-  //       await this.creditHistoriesService.findCreditHistoryListByLive({
-  //         liveId,
-  //         userId,
-  //       });
-  //     const totalLiveIncome = creditHistories.reduce(
-  //       (acc, history) => acc + history.amount,
-  //       0,
-  //     );
-  //     live.income = totalLiveIncome;
-
-  //     // 채널 정산하기
-  //     channel.income += totalLiveIncome;
-
-  //     await manager.save(Live, live);
-  //     await manager.save(Channel, channel);
-  //     await queryRunner.commitTransaction();
-  //     return { message: '방송이 종료되었습니다.' };
-  //   } catch (err) {
-  //     await queryRunner.rollbackTransaction();
-  //   } finally {
-  //     await queryRunner.release();
-  //   }
-  // }
-
   async closeOBS({ liveId }: ILivesServiceCloseOBS): Promise<void> {
     const live = await this.getLiveById({ liveId });
+    if (!live) throw new NotFoundException();
+
     const now = new Date();
     const playtime = Math.floor(
       (now.getTime() - live.createdAt.getTime()) / 1000 / 60,
