@@ -86,30 +86,79 @@ const getMonthlyIncome = async () => {
 };
 getMonthlyIncome();
 
+const setTemplete = (data) => {
+  const result = data.reduce((acc, chat) => {
+    return (
+      acc +
+      `
+    <div style="margin-bottom: 10px;">
+      <p style="margin-bottom: 0; font-size: 10px;">생성 일자: ${chat.createdAt
+        .replace('T', ' ')
+        .replace(/\.\d+Z$/, '')}</p>
+      <p style="margin-bottom: 0; font-size: 13px;">내용: ${chat.content}</p>
+    </div>
+    `
+    );
+  }, '');
+  chatSearchOutputEl.insertAdjacentHTML('beforeend', result);
+};
+
+let io;
+let isFirst = true;
+let count = 1;
+let lastDiv;
 const chatSearch = async () => {
+  if (!isFirst) {
+    io.disconnect();
+  }
+  count = 1;
+  chatSearchOutputEl.innerHTML = '';
   const email = chatSearchInputEl.value;
 
+  io = new IntersectionObserver((entries, observer) => {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        count++;
+        io.unobserve(lastDiv);
+        const ioFetch = async () => {
+          try {
+            const response = await fetch(
+              `/api/chats/search/${email}?page=${count}&size=10`,
+            );
+            const data = await response.json();
+
+            setTemplete(data);
+            lastDiv = document.querySelector(
+              '#chat-search-output > div:last-child',
+            );
+            io.observe(lastDiv); // 마지막 div 선택자로 선택해서 넣기
+          } catch (err) {
+            alert(err);
+          }
+        };
+        ioFetch();
+      }
+    });
+  });
+
+  chatSearchOutputEl.style.display = 'block';
   try {
-    const response = await fetch(`/api/chats/search/${email}`);
+    const response = await fetch(
+      `/api/chats/search/${email}?page=${count}&size=10`,
+    );
     const data = await response.json();
-    chatSearchOutputEl.style.display = 'block';
-    chatSearchOutputEl.innerHTML = '';
     if (data.length === 0) {
+      const result = `
+                <div style="margin-bottom: 10px;">
+                  <p style="margin-bottom: 0; font-size: 13px;">검색 결과가 없습니다.</p>
+                </div>
+              `;
+      chatSearchOutputEl.innerHTML = result;
+      return;
     }
-    const result = data.reduce((acc, chat) => {
-      return (
-        acc +
-        `
-      <div style="margin-bottom: 10px;">
-        <p style="margin-bottom: 0; font-size: 10px;">생성 일자: ${chat.createdAt
-          .replace('T', ' ')
-          .replace(/\.\d+Z$/, '')}</p>
-        <p style="margin-bottom: 0; font-size: 13px;">내용: ${chat.content}</p>
-      </div>
-      `
-      );
-    }, '');
-    chatSearchOutputEl.innerHTML = result;
+    setTemplete(data);
+    lastDiv = document.querySelector('#chat-search-output > div:last-child');
+    io.observe(lastDiv); // 마지막 div 선택자로 선택해서 넣기
   } catch (err) {
     alert(err);
   }
