@@ -120,7 +120,7 @@ const mediaContainerEl = document.querySelector('#media-container');
 socket.on('endLive', () => {
   mediaContainerEl.innerHTML = `
     <img
-        src="https://blog.kakaocdn.net/dn/cu6FRS/btrdswyTELB/zgpbDlAoEaTFcCXf2LI0Jk/img.png"
+        src="/img/freelyb-banner.png"
         class="card-img-top"
         alt="..."
       />
