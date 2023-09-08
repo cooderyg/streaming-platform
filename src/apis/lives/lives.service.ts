@@ -1,8 +1,10 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  forwardRef,
 } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -29,6 +31,7 @@ import {
   ILivesServiceVerifyOwnerRetrun,
 } from './interfaces/lives-service.interface';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { ChatsService } from '../chats/chats.service';
 
 @Injectable()
 export class LivesService {
@@ -113,6 +116,15 @@ export class LivesService {
       .leftJoin('live.channel', 'channel')
       .where('live.id = :id', { id: liveId })
       .getOne();
+  }
+
+  async getLivesByChannelId({ channelId }) {
+    return await this.livesRepository
+      .createQueryBuilder('live')
+      .select(['live.id', 'live.title', 'live.createdAt', 'channel.id'])
+      .leftJoin('live.channel', 'channel')
+      .where('channel.id = :id', { id: channelId })
+      .getMany();
   }
 
   async getReplaysByChannelId({
