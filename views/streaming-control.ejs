@@ -127,6 +127,16 @@
                     >
                       정보 변경
                     </button>
+                    <button
+                      class="btn btn-ban-user"
+                      style="height: 40px"
+                      type="button"
+                      id="ban-user-btn"
+                      data-bs-toggle="modal"
+                      data-bs-target="#userBan"
+                    >
+                      유저 밴
+                    </button>
                   </div>
                 </div>
               </div>
@@ -254,6 +264,60 @@
             </div>
           </div>
           <!-- 정보변경 모달 끝 -->
+          <!-- 밴 사유 모달 창 -->
+          <div class="modal fade" id="userBan" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    유저 채팅 밴
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <label>채팅 유저 닉네임</label>
+                  <input
+                    class="form-control form-control-sm"
+                    id="ban-user-input"
+                    type="text"
+                    placeholder="밴할 유저닉네임을 입력해주세요."
+                    aria-label=".form-control-sm example"
+                  />
+                  <label>밴 사유</label>
+                  <input
+                    class="form-control form-control-sm"
+                    id="ban-reason-input"
+                    type="text"
+                    placeholder="밴 이유를 입력해주세요."
+                    aria-label=".form-control-sm example"
+                  />
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    닫기
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="user-ban-btn"
+                    data-bs-dismiss="modal"
+                  >
+                    유저 밴
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 밴 사유 모달 창 끝 -->
           <div
             class="card col-3 chat-list"
             style="

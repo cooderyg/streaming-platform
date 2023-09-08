@@ -26,6 +26,7 @@ import { AlertsModule } from './apis/alerts/alerts.module';
 import * as redisStore from 'cache-manager-ioredis';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { ChatBanModule } from './apis/chatBans/chatBans.module';
 @Module({
   imports: [
     AlertsModule,
@@ -45,6 +46,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     UsersModule,
     ViewHistoriesModule,
     SubscribesModule,
+    ChatBanModule,
     CacheModule.register({
       isGlobal: true,
       store: redisStore,

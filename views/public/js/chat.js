@@ -4,6 +4,8 @@ const chatInput = document.querySelector('#chat-input');
 const chatContainerEl = document.querySelector('#chat-container');
 
 let user;
+let channelId;
+let banList = [];
 
 const getUserData = async () => {
   try {
@@ -16,6 +18,29 @@ const getUserData = async () => {
   }
 };
 getUserData();
+
+const getChannelId = async () => {
+  try {
+    const response = await fetch(`/api/lives/${roomId}`);
+    const liveRoomData = await response.json();
+    channelId = liveRoomData.channel.id;
+  } catch (error) {
+    console.log(error);
+  }
+};
+getChannelId();
+
+const getBanList = async () => {
+  try {
+    const response = await fetch(`/api/channel/${channelId}/ban`);
+    banList = await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+getBanList();
+
+const isUserInBanList = banList.some((item) => item.user.id === user.id);
 
 const socket = io('/', {
   extraHeaders: {
@@ -31,6 +56,9 @@ chatInput.addEventListener('focus', (e) => {
   if (!user) {
     e.currentTarget.blur();
     return alert('로그인 후 이용해주세요.');
+  } else if (isUserInBanList) {
+    e.currentTarget.blur();
+    return alert('채팅이 금지되었습니다.');
   }
 });
 
