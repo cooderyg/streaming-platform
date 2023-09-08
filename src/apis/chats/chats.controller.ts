@@ -1,8 +1,9 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AccessAuthGuard } from '../auth/guard/auth.guard';
 import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
 import { ChatsService } from './chats.service';
 import { Chat } from './schemas/chat.schema';
+import { PageReqDto } from 'src/commons/dto/page-req.dto';
 
 @Controller('/api/chats')
 export class ChatsController {
@@ -21,11 +22,13 @@ export class ChatsController {
   async findChatByEmail(
     @User() user: UserAfterAuth,
     @Param('email') email: string,
+    @Query() { page, size }: PageReqDto,
   ): Promise<Chat[]> {
-    console.log(email);
     const chats = await this.chatsService.findChatByEmail({
       userId: user.id,
       email,
+      page,
+      size,
     });
     return chats;
   }
