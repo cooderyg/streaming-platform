@@ -118,6 +118,7 @@ export class LivesService {
       .leftJoin('live.tags', 'tag')
       .where('channel.id = :id', { id: channelId })
       .andWhere('live.endDate IS NOT NULL')
+      .orderBy('live.createdAt', 'DESC')
       .getMany();
   }
 
