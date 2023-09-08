@@ -24,7 +24,12 @@ export class ChatsService {
     return chats;
   }
 
-  async findChatByEmail({ userId, email }: IFindChatByEmail): Promise<Chat[]> {
+  async findChatByEmail({
+    userId,
+    email,
+    page,
+    size,
+  }: IFindChatByEmail): Promise<Chat[]> {
     const channel = await this.channelsService.findByUserId({ userId });
     const lives = await this.livesService.getLivesByChannelId({
       channelId: channel.id,
@@ -33,7 +38,9 @@ export class ChatsService {
     const liveIds = lives.map((live) => live.id);
     const chats = this.chatModel
       .find({ liveId: { $in: liveIds }, email })
-      .sort({ createdAt: 1 });
+      .sort({ createdAt: 1 })
+      .skip((page - 1) * size)
+      .limit(size);
     return chats;
   }
 
@@ -46,4 +53,6 @@ export class ChatsService {
 export interface IFindChatByEmail {
   userId: string;
   email: string;
+  page: number;
+  size: number;
 }
