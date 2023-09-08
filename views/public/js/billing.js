@@ -20,7 +20,7 @@ const getPayments = async () => {
   const data = await response.json();
   const cancelTemp = `
     <div class="ms-auto text-end">
-        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;" >결제취소</a>
+        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;" >결제 취소하기</a>
     </div>
     `;
 
