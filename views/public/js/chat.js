@@ -120,7 +120,7 @@ const mediaContainerEl = document.querySelector('#media-container');
 socket.on('endLive', () => {
   mediaContainerEl.innerHTML = `
     <img
-        src="https://blog.kakaocdn.net/dn/cu6FRS/btrdswyTELB/zgpbDlAoEaTFcCXf2LI0Jk/img.png"
+        src="/img/freelyb-banner.png"
         class="card-img-top"
         alt="..."
       />
@@ -164,8 +164,18 @@ donationBtn.addEventListener('click', async (e) => {
 
   const donaitonAmount = Number(donationAmountInputEl.value);
   if (!donaitonAmount) return alert('금액을 입력해주세요!');
-  if (donaitonAmount > creditAmount)
-    return alert('보유하신 포인트보다 후원금액이 많습니다.');
+  if (donaitonAmount > creditAmount) {
+    if (
+      confirm(
+        '보유하신 크레딧보다 후원금액이 많습니다. 크레딧을 충전 하시겠습니까?',
+      )
+    ) {
+      window.location.href = '/billing';
+    }
+
+    return;
+  }
+
   //TODO 프론트 결제기능 만들면 충전하러 갈지 바꾸기
   const form = JSON.stringify({
     amount: donaitonAmount,
