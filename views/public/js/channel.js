@@ -73,10 +73,19 @@ const getNoticeDetail = async (channelId) => {
     const noticeId = notice.getAttribute('data-notice-id');
     const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
     const data = await res.json();
-    const temp = `<img src="${data.imageUrl}">
-    <div>${data.content}</div>
-    <div>${data.createdAt.split('T')[0]}`;
-    document.getElementById('notice-detail-body').innerHTML = temp;
+    if (data.imageUrl) {
+      const temp = `<img src="${
+        data.imageUrl
+      }" style="width: 100%; height: 100%; object-fit: contain;">
+      <div>${data.content}</div>
+      <div>${data.createdAt.split('T')[0]}`;
+      document.getElementById('notice-detail-body').innerHTML = temp;
+    } else {
+      const temp = `
+      <div>${data.content}</div>
+      <div>${data.createdAt.split('T')[0]}`;
+      document.getElementById('notice-detail-body').innerHTML = temp;
+    }
   });
 };
 

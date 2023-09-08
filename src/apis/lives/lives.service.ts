@@ -1,10 +1,8 @@
 import {
   ConflictException,
-  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
-  forwardRef,
 } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -34,7 +32,6 @@ import { UsersService } from '../users/users.service';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { AlertsService } from '../alerts/alerts.service';
-import { ChatsService } from '../chats/chats.service';
 
 @Injectable()
 export class LivesService {
@@ -125,6 +122,7 @@ export class LivesService {
       .leftJoin('live.tags', 'tag')
       .where('channel.id = :id', { id: channelId })
       .andWhere('live.endDate IS NOT NULL')
+      .orderBy('live.createdAt', 'DESC')
       .getMany();
   }
 
@@ -288,6 +286,8 @@ export class LivesService {
 
   async closeOBS({ liveId }: ILivesServiceCloseOBS): Promise<void> {
     const live = await this.getLiveById({ liveId });
+    if (!live) throw new NotFoundException();
+
     const now = new Date();
     const playtime = Math.floor(
       (now.getTime() - live.createdAt.getTime()) / 1000 / 60,
