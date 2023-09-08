@@ -111,6 +111,7 @@ const chatSearch = async () => {
   if (!isFirst) {
     io.disconnect();
   }
+  isFirst = false;
   count = 1;
   chatSearchOutputEl.innerHTML = '';
   const email = chatSearchInputEl.value;
@@ -127,11 +128,13 @@ const chatSearch = async () => {
             );
             const data = await response.json();
 
-            setTemplete(data);
-            lastDiv = document.querySelector(
-              '#chat-search-output > div:last-child',
-            );
-            io.observe(lastDiv); // 마지막 div 선택자로 선택해서 넣기
+            if (data.length) {
+              setTemplete(data);
+              lastDiv = document.querySelector(
+                '#chat-search-output > div:last-child',
+              );
+              io.observe(lastDiv); // 마지막 div 선택자로 선택해서 넣기
+            }
           } catch (err) {
             alert(err);
           }
