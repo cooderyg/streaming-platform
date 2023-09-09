@@ -16,11 +16,6 @@ import {
 import { ChatsService } from '../chats/chats.service';
 import { CreateChatDto } from '../chats/dto/create-chat.dto';
 
-// interface IEventGatewayOnAirStreamers {
-//   socket: Socket;
-//   liveId: string;
-// }
-
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -33,18 +28,27 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  // onAirStreamers: IEventGatewayOnAirStreamers[] = [];
-
   async handleConnection(@ConnectedSocket() socket: Socket): Promise<void> {
     if (typeof socket.handshake.headers['room-id'] !== 'string') return;
 
     const roomId: string = socket.handshake.headers['room-id'];
+    if (roomId) {
+      socket.join(roomId);
 
-    socket.join(roomId);
+      const userCount = this.server.of('/').adapter.rooms.get(roomId).size;
 
-    const userCount = this.server.of('/').adapter.rooms.get(roomId).size;
+      this.server.of('/').to(roomId).emit('userCount', { userCount });
+    } else {
+      if (typeof socket.handshake.headers['channel-ids'] !== 'string') return;
 
-    this.server.of('/').to(roomId).emit('userCount', { userCount });
+      const channelIds: string[] = JSON.parse(
+        socket.handshake.headers['channel-ids'],
+      ).channelIds;
+
+      channelIds.forEach((channelId) => {
+        socket.join(channelId);
+      });
+    }
   }
 
   // 프론트에서 연결 끊길 시
@@ -113,28 +117,4 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       amount,
     });
   }
-
-  // @SubscribeMessage('createLive')
-  // handleCreateLive(@ConnectedSocket() socket: Socket) {
-  //   if (typeof socket.handshake.headers['room-id'] !== 'string') return;
-  //   const liveId: string = socket.handshake.headers['room-id'];
-
-  //   const temp = {
-  //     socket,
-  //     liveId,
-  //   };
-  //   this.onAirStreamers.push(temp);
-  //   console.log(this.onAirStreamers);
-  // }
-
-  // @SubscribeMessage('createRoom')
-  // handleCreateRoom(client: Socket, room: string) {
-  //   // client.join(room);
-  // }
-
-  // @SubscribeMessage('leaveRoom')
-  // handleLeaveRoom(client: Socket, room: string) {
-  //   // 스트리밍 페이지를 나가면 자동으로 disconnect 되기 때문에 필요없을 것 같음 추가적인 작업이 있는 경우 사용
-  //   client.leave(room);
-  // }
 }
