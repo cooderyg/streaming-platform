@@ -401,6 +401,21 @@
           // TODO: alert id 역추적
 
           alertListEl.insertAdjacentHTML('afterbegin', temp);
+
+          const firstLiDeleteBtn = document.querySelector(
+            '#alert-list > li:first-child .alert-delete-btn',
+          );
+
+          firstLiDeleteBtn.addEventListener('click', (e) => {
+            const alertLiEl = e.target.parentNode.parentNode;
+            alertLiEl.remove();
+            if (Number(alertCountNum.innerText) - 1 === 0) {
+              alertCountNum.innerText = 0;
+              alertCount.classList.add('off');
+            } else {
+              alertCountNum.innerText = Number(alertCountNum.innerText) - 1;
+            }
+          });
         });
       }
     };
