@@ -109,24 +109,3 @@ window.onscroll = async function (e) {
     });
   }
 };
-const mainPath = window.location.pathname.split('/')[1];
-if (mainPath !== 'streaming' && mainPath !== 'streaming-control') {
-  const getUserData = async () => {
-    const response = await fetch('/api/subscribes/channels');
-    const data = await response.json();
-    const channelIds = data.map((el) => el.channel.id);
-    if (response.ok) {
-      const socket = io('/', {
-        extraHeaders: {
-          'room-id': '',
-          'channel-ids': JSON.stringify({ channelIds }), // api 만들고 구독채널 넣기
-        },
-      });
-      socket.on('alert', (data) => {
-        console.log(data.isOnAir);
-        console.log(data.channelName);
-      });
-    }
-  };
-  getUserData();
-}

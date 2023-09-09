@@ -243,10 +243,11 @@ export class LivesService {
     //   });
     // }
 
-    this.eventsGateway.server
-      .of('/')
-      .to(live.channel.id)
-      .emit('alert', { isOnAir: true, channelName: live.channel.name });
+    this.eventsGateway.server.of('/').to(live.channel.id).emit('alert', {
+      isOnAir: true,
+      channelName: live.channel.name,
+      profileImgUrl: live.channel.profileImgUrl,
+    });
     this.eventsGateway.server.of('/').to(liveId).emit('startLive', { liveId });
   }
 

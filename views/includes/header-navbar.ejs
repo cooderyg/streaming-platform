@@ -11,7 +11,8 @@
     position: absolute;
     border-radius: 100px;
     top: -4px;
-    left: 8px;
+    left: 13px;
+    z-index: 99;
   }
   #alert-count.off {
     display: none;
@@ -264,6 +265,7 @@
   const alertListEl = document.querySelector('#alert-list');
   const alertCount = document.querySelector('#alert-count');
   const alertCountNum = document.querySelector('#alert-count-num');
+  const alertBell = document.querySelector('.fa-bell');
 
   const getAlerts = async () => {
     if (document.cookie) {
@@ -337,6 +339,73 @@
   };
 
   getAlerts();
+
+  const mainPath = window.location.pathname.split('/')[1];
+
+  if (mainPath !== 'streaming' && mainPath !== 'streaming-control') {
+    const setSocket = async () => {
+      const response = await fetch('/api/subscribes/channels');
+      const data = await response.json();
+      const channelIds = data.map((el) => el.channel.id);
+      if (response.ok) {
+        const socket = io('/', {
+          extraHeaders: {
+            'room-id': '',
+            'channel-ids': JSON.stringify({ channelIds }), // api 만들고 구독채널 넣기
+          },
+        });
+        socket.on('alert', (data) => {
+          if (alertCount.classList.contains('off')) {
+            alertCount.classList.remove('off');
+          }
+          alertBell.classList.add('animate__animated', 'animate__swing');
+          setTimeout(() => {
+            alertBell.classList.remove('animate__animated', 'animate__swing');
+          }, 1000);
+
+          alertCountNum.innerText = alertCountNum.innerText
+            ? Number(alertCountNum.innerText) + 1
+            : 1;
+          const messageTemp = data.isOnAir
+            ? `${data.channelName} 채널이 방송을 시작했습니다.`
+            : `${data.channelName} 채널의 공지: ${data?.noticeContent}`;
+
+          const imgTemp = data.profileImgUrl || '/img/profile.jpg';
+          const temp = `
+            <li class="mb-2">
+              <a class="dropdown-item border-radius-md" href="javascript:;">
+                <div class="d-flex py-1">
+                  <div class="my-auto">
+                    <img
+                      src=${imgTemp}
+                      class="avatar avatar-sm me-3"
+                      style="border-radius: 100px"
+                    />
+                  </div>
+                  <div class="d-flex flex-column justify-content-center">
+                    <h6 class="text-sm font-weight-normal mb-1">
+                      ${messageTemp}
+                    </h6>
+                    <p class="text-xs text-secondary mb-0">
+                      <i class="fa fa-clock me-1"></i>
+                      ${new Date(Date.now()).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </a>
+              <button>
+                <i class="fa fa-times alert-delete-btn" data-id="" aria-hidden="true"></i>
+              </button>
+            </li>
+          `;
+          // TODO: alert id 역추적
+
+          alertListEl.insertAdjacentHTML('afterbegin', temp);
+        });
+      }
+    };
+    setSocket();
+  }
 
   const searchInputEl = document.querySelector('#search-input');
   searchInputEl.addEventListener('keydown', (e) => {
