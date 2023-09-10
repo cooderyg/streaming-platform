@@ -22,6 +22,7 @@ import {
   IChannelsServiceGetAllPlayTimes,
   IChannelsServiceGetChannel,
   IChannelsServiceGetManagers,
+  IChannelsServiceGetManagersByChannelId,
   IChannelsServiceGetMyChannel,
   IChannelsServiceGetSubscribedChannels,
   IChannelsServiceSearchChannels,
@@ -128,6 +129,20 @@ export class ChannelsService {
 
   async getManagers({ userId }: IChannelsServiceGetManagers): Promise<User[]> {
     const channel = await this.findByUserId({ userId });
+
+    if (!channel) throw new NotFoundException();
+
+    const userIds = channel.role.manager;
+
+    const managers = await this.usersService.findByIds({ userIds });
+
+    return managers;
+  }
+
+  async getManagersByChannelId({
+    channelId,
+  }: IChannelsServiceGetManagersByChannelId): Promise<User[]> {
+    const channel = await this.getChannel({ channelId });
 
     if (!channel) throw new NotFoundException();
 

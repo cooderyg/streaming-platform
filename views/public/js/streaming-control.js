@@ -298,26 +298,20 @@ document.addEventListener('DOMContentLoaded', function () {
         reason: banReason,
       }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data) {
-          alert(`${userNickname} 님의 채팅을 금지시켰습니다.`);
-        } else {
-          alert('이미 채팅이 금지된 유저입니다.');
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((errorData) => {
+            throw new Error(errorData.message);
+          });
         }
+        return response.json();
+      })
+      .then((data) => {
+        alert(`${userNickname}님의 채팅을 금지했습니다.`);
+        banListUpdate();
       })
       .catch((error) => {
-        console.error('사용자 금지 실패', error);
+        alert(`${error.message}`);
       });
   });
 });
-
-// 소켓에서 강퇴
-
-// async function setBanUser(channelId) {
-//   const response = await fetch(`/api/channel/${channelId}/ban`);
-//   if (!response.ok) return;
-//   const data = await response.json();
-//   // const list = JSON.stringify(data);
-//   channelBanList.push(...data);
-// }

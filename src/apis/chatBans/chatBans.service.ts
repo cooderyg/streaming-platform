@@ -33,12 +33,12 @@ export class ChatBanService {
       channel.user.id === userId ||
       channel.role.manager.filter((el) => el === userId)
     ) {
-      const banUsers = await this.chatBanRepository
+      const chatBanUser = await this.chatBanRepository
         .createQueryBuilder('chatBan')
         .leftJoinAndSelect('chatBan.user', 'user')
         .where('chatBan.channel.id = :id', { id: channelId })
         .getMany();
-      return banUsers;
+      return chatBanUser;
     } else {
       throw new NotFoundException('권한이 없습니다.');
     }

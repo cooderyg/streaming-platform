@@ -22,8 +22,8 @@ getUserData();
 const getChannelId = async () => {
   try {
     const response = await fetch(`/api/lives/${roomId}`);
-    const liveRoomData = await response.json();
-    channelId = liveRoomData.channel.id;
+    const data = await response.json();
+    channelId = data.channel.id;
   } catch (error) {
     console.log(error);
   }
@@ -48,6 +48,12 @@ const socket = io('/', {
   },
 });
 
+const banListUpdate = async () => {
+  await getUserData();
+  await getChannelId();
+  await getBanList();
+};
+
 chatInput.addEventListener('keydown', (e) => {
   if (e.keyCode === 13) chatBtn.click();
 });
@@ -67,6 +73,7 @@ let socketCommCount = 0;
 
 // 채팅보내기
 chatBtn.addEventListener('click', () => {
+  if (isUserInBanList) return alert('채팅이 금지되었습니다.');
   if (!user) return alert('로그인 후 이용해주세요.');
   if (chatInput.value === '') return alert('채팅을 입력해주세요.');
   const abuse = new RegExp(

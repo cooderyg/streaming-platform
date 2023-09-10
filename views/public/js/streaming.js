@@ -99,6 +99,17 @@ const getData = async () => {
     });
   subscribeBtn.setAttribute('data-channelId', `${channelId}`);
 
+  // 매니저 확인
+  fetch(`/api/channels/${channelId}/admin/managers`)
+    .then((res) => res.json())
+    .then((data) => {
+      const isChannelManager = data.some((item) => item.id === user.id);
+      if (isChannelManager) {
+        const btn = document.getElementById('channel-usr-ban-btn');
+        btn.style.display = 'block';
+      }
+    });
+
   // 다시보기 불러오기
   const replayContainer = document.getElementById('replay-container');
   const resReplay = await fetch(`/api/lives/replay/${channelId}`);
@@ -149,6 +160,42 @@ const getData = async () => {
   }
 };
 getData();
+
+// 채팅 밴
+document.addEventListener('DOMContentLoaded', function () {
+  const banUserBtn = document.getElementById('user-ban-btn');
+
+  banUserBtn.addEventListener('click', function () {
+    const userNickname = document.getElementById('ban-user-input').value;
+    const banReason = document.getElementById('ban-reason-input').value;
+
+    fetch(`/api/channel/${channelId}/ban`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userNickname: userNickname,
+        reason: banReason,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((errorData) => {
+            throw new Error(errorData.message);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        alert(`${userNickname}님의 채팅을 금지했습니다.`);
+        banListUpdate();
+      })
+      .catch((error) => {
+        alert(`${error.message}`);
+      });
+  });
+});
 
 let isLoading;
 subscribeBtn.addEventListener('click', async (e) => {
