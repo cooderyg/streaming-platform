@@ -11,6 +11,7 @@ import { EventsModule } from '../events/events.module';
 import { AlertsModule } from '../alerts/alerts.module';
 import { UsersModule } from '../users/users.module';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import { Livesubscriber } from './lives.subscriber';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
     UsersModule,
   ],
   controllers: [LivesController],
-  providers: [LivesService],
+  providers: [LivesService, Livesubscriber],
   exports: [LivesService],
 })
 export class LivesModule {}

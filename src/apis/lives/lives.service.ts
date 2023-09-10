@@ -43,30 +43,6 @@ export class LivesService {
     private readonly elasticsearchService: ElasticsearchService,
   ) {}
 
-  async getElasticsearch({ keyword, page, size }) {
-    const lives = await this.elasticsearchService.search({
-      index: 'test-8',
-      size: size,
-      from: (page - 1) * size,
-      query: {
-        bool: {
-          must: {
-            multi_match: {
-              query: keyword,
-              fields: ['title', 'tags', 'channel_name', 'category_name'],
-            },
-          },
-          must_not: {
-            exists: {
-              field: 'end_date',
-            },
-          },
-        },
-      },
-    });
-    return lives;
-  }
-
   async getLives({ pageReqDto }: ILivesServiceGetLives): Promise<Live[]> {
     const { page, size } = pageReqDto;
     const lives = await this.livesRepository
@@ -101,7 +77,13 @@ export class LivesService {
       .select([
         'live.id',
         'live.title',
+        'live.income',
+        'live.thumbnailUrl',
+        'live.endDate',
+        'live.replayUrl',
+        'live.playtime',
         'live.createdAt',
+        'live.updatedAt',
         'tag.id',
         'tag.name',
         'channel.id',
@@ -233,6 +215,57 @@ export class LivesService {
     return lives;
   }
 
+  async getElasticsearch({ keyword, page, size }) {
+    const lives = await this.elasticsearchService.search({
+      index: 'test13',
+      size: size,
+      from: (page - 1) * size,
+      query: {
+        bool: {
+          must: {
+            multi_match: {
+              query: keyword,
+              fields: ['title', 'tags', 'channel_name'],
+            },
+          },
+          must_not: {
+            exists: {
+              field: 'end_date',
+            },
+          },
+        },
+      },
+    });
+    return lives;
+  }
+
+  async getElasticsearchReplaies({ keyword, page, size }) {
+    const lives = await this.elasticsearchService.search({
+      index: 'test13',
+      size: size,
+      from: (page - 1) * size,
+      query: {
+        bool: {
+          must: [
+            {
+              multi_match: {
+                query: keyword,
+                fields: ['title', 'tags', 'channel_name'],
+              },
+            },
+            {
+              exists: {
+                field: 'replay_url',
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    return lives;
+  }
+
   async createLive({
     userId,
     createLiveDto,
@@ -242,7 +275,7 @@ export class LivesService {
     const tags = await this.tagsService.createTags({ createTagDto });
     const live = await this.livesRepository.save({
       title,
-      channel: { id: channel.id },
+      channel: { id: channel.id, name: channel.name },
       tags,
     });
     return live;
@@ -251,8 +284,9 @@ export class LivesService {
   async startLive({ liveId }: ILivesServiceStartLive): Promise<void> {
     const live = await this.getLiveById({ liveId });
     if (!live) throw new NotFoundException();
+
     await this.livesRepository.save({
-      id: liveId,
+      ...live,
       onAir: true,
     });
 
@@ -282,8 +316,10 @@ export class LivesService {
     thumbnailUrl,
     liveId,
   }: ILivesServiceAddThumbnail): Promise<Live> {
+    const live = await this.getLiveById({ liveId });
+    console.log('service', live);
     const result = await this.livesRepository.save({
-      id: liveId,
+      ...live,
       thumbnailUrl,
     });
     return result;
@@ -312,7 +348,7 @@ export class LivesService {
     const playtime = Math.floor(
       (now.getTime() - live.createdAt.getTime()) / 1000 / 60,
     );
-    const channel = await this.channelsService.getChannel({
+    const channel = await this.channelsService.getOnlyChannel({
       channelId: live.channel.id,
     });
 

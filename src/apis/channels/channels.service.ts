@@ -73,6 +73,29 @@ export class ChannelsService {
     return channel;
   }
 
+  async getOnlyChannel({
+    channelId,
+  }: IChannelsServiceGetChannel): Promise<Channel> {
+    const channel = await this.channelsRepository
+      .createQueryBuilder('channel')
+      .select([
+        'channel.id',
+        'channel.name',
+        'channel.role',
+        'channel.income',
+        'channel.profileImgUrl',
+        'channel.bannerImgUrl',
+        'channel.introduction',
+        'channel.createdAt',
+      ])
+      .where('channel.id = :id', { id: channelId })
+      .getOne();
+
+    if (!channel) throw new NotFoundException();
+
+    return channel;
+  }
+
   async searchChannels({
     searchReqDto,
   }: IChannelsServiceSearchChannels): Promise<Channel[]> {
