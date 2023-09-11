@@ -16,11 +16,11 @@ export interface IChatBansServiceChatBanUser {
 export interface IChatBansServiceFindChatBanUser {
   userId: string;
   channelId: string;
-  findChatBanDto: FindChatBanDto;
+  email: string;
 }
 
 export interface IChatBansServiceDeleteBanUser {
   userId: string;
   channelId: string;
-  deleteBanUserDto: DeleteBanUserDto;
+  email: string;
 }

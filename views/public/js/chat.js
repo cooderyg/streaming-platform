@@ -40,6 +40,7 @@ const getBanList = async () => {
 };
 getBanList();
 
+// 블랙리스트 확인
 const isUserInBanList = banList.some((item) => item.user.id === user.id);
 if (isUserInBanList) {
   window.location.href = '/';
@@ -248,6 +249,7 @@ socket.on('donation', (data) => {
   chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
 });
 
+// 블랙리스트 정보 업데이트
 socket.on('ban', () => {
   getUserData();
   getChannelId();

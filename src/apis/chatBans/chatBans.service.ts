@@ -48,14 +48,13 @@ export class ChatBanService {
   async findChatBanUser({
     userId,
     channelId,
-    findChatBanDto,
+    email,
   }: IChatBansServiceFindChatBanUser): Promise<ChatBan> {
     const channel = await this.channelsService.getChannel({
       channelId,
     });
 
-    const { userEmail } = findChatBanDto;
-    const findUser = await this.usersService.findByEmail({ email: userEmail });
+    const findUser = await this.usersService.findByEmail({ email });
 
     if (!channel) throw new NotFoundException('채널정보 확인을 해주세요.');
     if (
@@ -115,15 +114,13 @@ export class ChatBanService {
   async banUserDelete({
     userId,
     channelId,
-    deleteBanUserDto,
+    email,
   }: IChatBansServiceDeleteBanUser): Promise<string> {
-    const { nickname } = deleteBanUserDto;
-
     const channel = await this.channelsService.getChannel({
       channelId,
     });
-    const banUser = await this.usersService.findByNickname({
-      nickname,
+    const banUser = await this.usersService.findByEmail({
+      email,
     });
     if (!channel) throw new NotFoundException('채널정보 확인을 해주세요.');
     if (

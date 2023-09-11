@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AccessAuthGuard } from '../auth/guard/auth.guard';
 import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
@@ -37,12 +38,12 @@ export class ChatBanController {
   async findChatBanUserByChannel(
     @Param('channelId') channelId: string,
     @User() user: UserAfterAuth,
-    @Body() findChatBanDto: FindChatBanDto,
+    @Query() { email }: FindChatBanDto,
   ): Promise<ChatBan> {
     const banUser = await this.chatBansService.findChatBanUser({
       userId: user.id,
       channelId,
-      findChatBanDto,
+      email,
     });
     return banUser;
   }
@@ -67,12 +68,12 @@ export class ChatBanController {
   async banUserDelete(
     @User() user: UserAfterAuth,
     @Param('channelId') channelId: string,
-    @Body() deleteBanUserDto: DeleteBanUserDto,
+    @Body() { email }: DeleteBanUserDto,
   ): Promise<string> {
     return await this.chatBansService.banUserDelete({
       userId: user.id,
       channelId,
-      deleteBanUserDto,
+      email,
     });
   }
 }

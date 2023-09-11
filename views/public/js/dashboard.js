@@ -6,6 +6,8 @@ const playtimeEl = document.querySelector('#playtime');
 const chatSearchInputEl = document.querySelector('#chat-search-input');
 const chatSearchBtnEl = document.querySelector('#chat-search-start-btn');
 const chatSearchOutputEl = document.querySelector('#chat-search-output');
+const banSearchInputEl = document.querySelector('#ban-search-input');
+const banSearchBtnEl = document.querySelector('#ban-search-start-btn');
 
 const switchMoneyString = (number) => {
   return `₩ ${number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
@@ -167,3 +169,52 @@ const chatSearch = async () => {
   }
 };
 chatSearchBtnEl.addEventListener('click', chatSearch);
+
+const banSearch = async () => {
+  const email = banSearchInputEl.value;
+  const channel = await fetch('/api/channels');
+  const channelData = await channel.json();
+
+  const res = await fetch(
+    `/api/channel/${channelData.id}/ban/user?email=${email}`,
+  );
+  const outputDiv = document.querySelector('#ban-search-output');
+  const resData = await res.json();
+
+  if (res.ok) {
+    outputDiv.innerHTML = `
+      <div>
+        <p>Email: ${email}</p>
+        <p>밴 사유: ${resData.reason}</p>
+        <button id="unBanBtn"
+        type="button"
+        class="btn btn-primary"
+        data-bs-dismiss="modal"
+        >밴 해제</button>
+      </div>
+    `;
+    // 밴 해제 버튼에 이벤트 리스너 추가
+    const unBanBtn = document.getElementById('unBanBtn');
+    unBanBtn.addEventListener('click', async () => {
+      // 밴 해제 로직을 여기에 추가
+      const unBanRes = await fetch(`/api/channel/${channelData.id}/ban`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      });
+      if (unBanRes.ok) {
+        alert('밴이 해제되었습니다.');
+      } else {
+        alert('밴 해제에 실패했습니다.');
+      }
+    });
+  } else {
+    outputDiv.innerHTML = `유저를 찾을 수 없습니다.`;
+  }
+};
+
+banSearchBtnEl.addEventListener('click', banSearch);

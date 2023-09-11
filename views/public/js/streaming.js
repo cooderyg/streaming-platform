@@ -1,3 +1,5 @@
+const { async } = require('rxjs');
+
 //\ 다시보기 후원하기 페이지, 알림 연결
 const params = window.location.pathname;
 const splits = params.split('/');
@@ -164,11 +166,11 @@ getData();
 document.addEventListener('DOMContentLoaded', function () {
   const banUserBtn = document.getElementById('user-ban-btn');
 
-  banUserBtn.addEventListener('click', function () {
+  banUserBtn.addEventListener('click', async () => {
     const userNickname = document.getElementById('ban-user-input').value;
     const banReason = document.getElementById('ban-reason-input').value;
 
-    fetch(`/api/channel/${channelId}/ban`, {
+    await fetch(`/api/channel/${channelId}/ban`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
