@@ -48,15 +48,17 @@ export class UsersService {
   async findSubscribedUsers({
     channelId,
     page,
+    size,
   }: IUsersServiceFindSubscribedUsers): Promise<User[]> {
     return await this.usersRepository
       .createQueryBuilder('user')
-      .select(['user.id'])
+      .select(['user.id', 'user.createdAt'])
       .leftJoin('user.subscribes', 'subscribe')
       .leftJoin('subscribe.channel', 'channel')
       .where('channel.id = :channelId', { channelId })
-      .take(500)
-      .skip((page - 1) * 500)
+      .orderBy('user.createdAt', 'DESC')
+      .take(size)
+      .skip((page - 1) * size)
       .getMany();
   }
 

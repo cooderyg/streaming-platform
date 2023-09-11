@@ -241,11 +241,13 @@ export class LivesService {
       channelId: live.channel.id,
     });
 
-    if (subscribedUsersCount > 500) {
-      for (let i = 0; i < subscribedUsersCount / 500; i++) {
+    const size = 50;
+    if (subscribedUsersCount > size) {
+      for (let i = 0; i < subscribedUsersCount / size; i++) {
         const subscribedUsers = await this.usersService.findSubscribedUsers({
           channelId: live.channel.id,
           page: i + 1,
+          size,
         });
         await this.alertsQueue.add(
           'addAlertsQueue',
@@ -257,10 +259,11 @@ export class LivesService {
           { removeOnComplete: true, removeOnFail: true },
         );
       }
-    } else if (subscribedUsersCount > 0 && subscribedUsersCount <= 500) {
+    } else if (subscribedUsersCount > 0 && subscribedUsersCount <= size) {
       const subscribedUsers = await this.usersService.findSubscribedUsers({
         channelId: live.channel.id,
         page: 1,
+        size,
       });
       await this.alertsQueue.add(
         'addAlertsQueue',

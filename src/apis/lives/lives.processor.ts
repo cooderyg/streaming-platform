@@ -9,7 +9,7 @@ export class LivesProcessor {
   constructor(private readonly alertsService: AlertsService) {}
   private readonly logger = new Logger(LivesProcessor.name);
 
-  @Process('addAlertsQueue')
+  @Process({ name: 'addAlertsQueue', concurrency: 6 })
   async addOrderQueue(job: IAddAlertQueueJob): Promise<void> {
     this.logger.debug('대기열 큐가 실행되었습니다.');
     try {
