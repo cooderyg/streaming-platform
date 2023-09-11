@@ -25,6 +25,7 @@ import { SubscribesModule } from '../subscribes/subscribes.module';
     EventsModule,
     ElasticsearchModule.register({
       node: 'http://localhost:9200',
+      // node: process.env.ELASTIC_SEARCH_NODE,
     }),
     SubscribesModule,
     TagsModule,
