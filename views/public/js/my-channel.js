@@ -42,6 +42,7 @@ async function getMyChannelNoticeData(channelId) {
   const data = await res.json();
   const channelNotices = document.getElementById('channel-notices');
   data.forEach((notice) => {
+    const noticeDate = notice.createdAt.split('T')[0];
     const noticeContent = notice.content;
     const noticeId = notice.id;
     const noticeImg = notice.imageUrl;
@@ -49,14 +50,16 @@ async function getMyChannelNoticeData(channelId) {
       channelNotices.insertAdjacentHTML(
         'beforeend',
         `<div>
-        <p data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></p>
+        <p data-notice-id=${noticeId} style=" white-space: nowrap; overflow: hidden;text-overflow: ellipsis; margin-bottom: 0;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></p>
+        <p style="font-size: 10px;">${noticeDate}</p>
         </div>`,
       );
     } else {
       channelNotices.insertAdjacentHTML(
         'beforeend',
         `<div>
-        <p data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}</p>
+        <p data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis; margin-bottom: 0;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}</p>
+        <p style="font-size: 10px;">${noticeDate}</p>
         </div>`,
       );
     }
@@ -76,12 +79,16 @@ const getNoticeDetail = async (channelId) => {
         data.imageUrl
       }" style="width: 100%; height: 100%; object-fit: contain;">
       <div>${data.content}</div>
-      <div>${data.createdAt.split('T')[0]}`;
+      <div style="font-size: 10px; margin-top:5px;">${
+        data.createdAt.split('T')[0]
+      }</div>`;
       document.getElementById('notice-detail-body').innerHTML = temp;
     } else {
       const temp = `
       <div>${data.content}</div>
-      <div>${data.createdAt.split('T')[0]}`;
+      <div style="font-size: 10px; margin-top:5px;">${
+        data.createdAt.split('T')[0]
+      }</div>`;
       document.getElementById('notice-detail-body').innerHTML = temp;
     }
     document
