@@ -10,19 +10,24 @@ import { Channel } from '../channels/entities/channel.entity';
 import { EventsModule } from '../events/events.module';
 import { AlertsModule } from '../alerts/alerts.module';
 import { UsersModule } from '../users/users.module';
+import { BullModule } from '@nestjs/bull';
+import { LivesProcessor } from './lives.processor';
+import { SubscribesModule } from '../subscribes/subscribes.module';
 
 @Module({
   imports: [
     AlertsModule,
+    BullModule.registerQueue({ name: 'alertsQueue' }),
     ChannelsModule,
     CreditHistoriesModule,
     EventsModule,
+    SubscribesModule,
     TagsModule,
     TypeOrmModule.forFeature([Live, Channel]),
     UsersModule,
   ],
   controllers: [LivesController],
-  providers: [LivesService],
+  providers: [LivesService, LivesProcessor],
   exports: [LivesService],
 })
 export class LivesModule {}

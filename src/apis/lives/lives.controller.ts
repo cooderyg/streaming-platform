@@ -164,19 +164,6 @@ export class LivesController {
     return live;
   }
 
-  // @UseGuards(AccessAuthGuard)
-  // @Put(':liveId/turn-off')
-  // async turnOff(
-  //   @Param() params: { liveId: string },
-  //   @User() user: UserAfterAuth,
-  // ) {
-  //   const live = await this.livesService.turnOff({
-  //     userId: user.id,
-  //     liveId: params.liveId,
-  //   });
-  //   return live;
-  // }
-
   @Put(':liveId/close-obs')
   async closeOBS(@Param('liveId') liveId: string): Promise<MessageResDto> {
     await this.livesService.closeOBS({ liveId });
