@@ -4,6 +4,8 @@ const chatInput = document.querySelector('#chat-input');
 const chatContainerEl = document.querySelector('#chat-container');
 
 let user;
+let channelId;
+let banList = [];
 
 const getUserData = async () => {
   try {
@@ -16,6 +18,34 @@ const getUserData = async () => {
   }
 };
 getUserData();
+
+const getChannelId = async () => {
+  try {
+    const response = await fetch(`/api/lives/${roomId}`);
+    const data = await response.json();
+    channelId = data.channel.id;
+  } catch (error) {
+    console.log(error);
+  }
+};
+getChannelId();
+
+const getBanList = async () => {
+  try {
+    const response = await fetch(`/api/channel/${channelId}/ban`);
+    banList = await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+getBanList();
+
+// 블랙리스트 확인
+const isUserInBanList = banList.some((item) => item.user.id === user.id);
+if (isUserInBanList) {
+  window.location.href = '/';
+  alert('블랙리스트 유저입니다');
+}
 
 const socket = io('/', {
   extraHeaders: {
@@ -31,6 +61,9 @@ chatInput.addEventListener('focus', (e) => {
   if (!user) {
     e.currentTarget.blur();
     return alert('로그인 후 이용해주세요.');
+  } else if (isUserInBanList) {
+    e.currentTarget.blur();
+    return alert('채팅이 금지되었습니다.');
   }
 });
 
@@ -39,6 +72,7 @@ let socketCommCount = 0;
 
 // 채팅보내기
 chatBtn.addEventListener('click', () => {
+  if (isUserInBanList) return alert('채팅이 금지되었습니다.');
   if (!user) return alert('로그인 후 이용해주세요.');
   if (chatInput.value === '') return alert('채팅을 입력해주세요.');
   const abuse = new RegExp(
@@ -213,4 +247,11 @@ socket.on('donation', (data) => {
 
   chatContainerEl.insertAdjacentHTML('beforeend', temp);
   chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
+});
+
+// 블랙리스트 정보 업데이트
+socket.on('ban', () => {
+  getUserData();
+  getChannelId();
+  getBanList();
 });

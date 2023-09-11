@@ -23,9 +23,12 @@ import { NoticeCommentsModule } from './apis/noticeComments/notice-comment.modul
 import { EventsModule } from './apis/events/events.module';
 import { UploadsModule } from './apis/uploads/uploads.module';
 import { AlertsModule } from './apis/alerts/alerts.module';
+import { BullModule } from '@nestjs/bull';
 import * as redisStore from 'cache-manager-ioredis';
 import { MailerModule } from '@nestjs-modules/mailer';
+
 import { MongooseModule } from '@nestjs/mongoose';
+import { ChatBanModule } from './apis/chatBans/chatBans.module';
 @Module({
   imports: [
     AlertsModule,
@@ -45,6 +48,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     UsersModule,
     ViewHistoriesModule,
     SubscribesModule,
+    ChatBanModule,
     CacheModule.register({
       isGlobal: true,
       store: redisStore,
@@ -54,6 +58,12 @@ import { MongooseModule } from '@nestjs/mongoose';
       ttl: 10,
     }),
     ConfigModule.forRoot(),
+    BullModule.forRoot({
+      redis: {
+        host: '127.0.0.1',
+        port: 6380,
+      },
+    }),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',
       host: process.env.DATABASE_HOST,
@@ -63,7 +73,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       database: process.env.DATABASE_DATABASE,
       entities: [__dirname + '/apis/**/*.entity.*'],
       synchronize: true, // 개발환경에서만 사용
-      logging: true,
+      // logging: true,
       namingStrategy: new SnakeNamingStrategy(),
       timezone: 'UTC',
     }),

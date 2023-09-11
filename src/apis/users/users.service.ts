@@ -16,6 +16,7 @@ import {
   IUsersServiceFindByEmail,
   IUsersServiceFindById,
   IUsersServiceFindByIds,
+  IUsersServiceFindByNickname,
   IUsersServiceFindSubscribedUsers,
   IUsersServiceFindUser,
   IUsersServiceUpdateCreditWithManager,
@@ -47,13 +48,18 @@ export class UsersService {
   // 데이터가 크면 함수가 돌다가 실패할 수 있음
   async findSubscribedUsers({
     channelId,
+    page,
+    size,
   }: IUsersServiceFindSubscribedUsers): Promise<User[]> {
     return await this.usersRepository
       .createQueryBuilder('user')
-      .select(['user.id'])
+      .select(['user.id', 'user.createdAt'])
       .leftJoin('user.subscribes', 'subscribe')
       .leftJoin('subscribe.channel', 'channel')
       .where('channel.id = :channelId', { channelId })
+      .orderBy('user.createdAt', 'DESC')
+      .take(size)
+      .skip((page - 1) * size)
       .getMany();
   }
 
@@ -80,6 +86,12 @@ export class UsersService {
 
   async findByEmail({ email }: IUsersServiceFindByEmail): Promise<User> {
     return await this.usersRepository.findOne({ where: { email } });
+  }
+
+  async findByNickname({
+    nickname,
+  }: IUsersServiceFindByNickname): Promise<User> {
+    return await this.usersRepository.findOne({ where: { nickname } });
   }
 
   async verifyEmail({ email }: IUsersServiceVerifyEmail): Promise<number> {

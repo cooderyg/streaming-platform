@@ -9,5 +9,6 @@ import { ChannelsModule } from '../channels/channels.module';
   imports: [TypeOrmModule.forFeature([Subscribe]), ChannelsModule],
   controllers: [SubscribesController],
   providers: [SubscribesService],
+  exports: [SubscribesService],
 })
 export class SubscribesModule {}

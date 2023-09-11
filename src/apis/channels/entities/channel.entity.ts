@@ -1,5 +1,6 @@
 import { Alert } from 'src/apis/alerts/entities/alert.entity';
 import { Category } from 'src/apis/categories/entities/category.entity';
+import { ChatBan } from 'src/apis/chatBans/entities/chatBans.entity';
 import { Live } from 'src/apis/lives/entities/live.entity';
 import { Notice } from 'src/apis/notices/entities/notice.entity';
 import { Subscribe } from 'src/apis/subscribes/entities/subscribe.entity';
@@ -81,4 +82,9 @@ export class Channel {
   @JoinTable({ name: 'category_channel' })
   @ManyToMany(() => Category, (category) => category.channels)
   categories: Category[];
+
+  @OneToMany(() => ChatBan, (chatBan) => chatBan.channel, {
+    cascade: true,
+  })
+  chatBan: ChatBan[];
 }

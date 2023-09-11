@@ -29,20 +29,27 @@ import {
   ILivesServiceVerifyOwnerRetrun,
 } from './interfaces/lives-service.interface';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { UsersService } from '../users/users.service';
+import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
+import { SubscribesService } from '../subscribes/subscribes.service';
 
 @Injectable()
 export class LivesService {
   constructor(
     @InjectRepository(Live)
     private readonly livesRepository: Repository<Live>,
+    @InjectQueue('alertsQueue')
+    private readonly alertsQueue: Queue,
     private readonly channelsService: ChannelsService,
     private readonly creditHistoriesService: CreditHistoriesService,
     private readonly dataSource: DataSource,
     private readonly eventsGateway: EventsGateway,
+    private readonly subscribesService: SubscribesService,
     private readonly tagsService: TagsService,
     private readonly elasticsearchService: ElasticsearchService,
+    private readonly usersService: UsersService,
   ) {}
-
   async getLives({ pageReqDto }: ILivesServiceGetLives): Promise<Live[]> {
     const { page, size } = pageReqDto;
     const lives = await this.livesRepository
@@ -290,18 +297,44 @@ export class LivesService {
       onAir: true,
     });
 
-    // const subscribedUsers = await this.usersService.findSubscribedUsers({
-    //   channelId: live.channel.id,
-    // });
+    const subscribedUsersCount = await this.subscribesService.countByChannel({
+      channelId: live.channel.id,
+    });
 
-    // if (subscribedUsers?.length > 0) {
-    //   await this.alertsService.createAlerts({
-    //     users: subscribedUsers,
-    //     channelId: live.channel.id,
-    //     isOnAir: true,
-    //     channelName: live.channel.name,
-    //   });
-    // }
+    const size = 50;
+    if (subscribedUsersCount > size) {
+      for (let i = 0; i < subscribedUsersCount / size; i++) {
+        const subscribedUsers = await this.usersService.findSubscribedUsers({
+          channelId: live.channel.id,
+          page: i + 1,
+          size,
+        });
+        await this.alertsQueue.add(
+          'addAlertsQueue',
+          {
+            channelId: live.channel.id,
+            channelName: live.channel.name,
+            users: subscribedUsers,
+          },
+          { removeOnComplete: true, removeOnFail: true },
+        );
+      }
+    } else if (subscribedUsersCount > 0 && subscribedUsersCount <= size) {
+      const subscribedUsers = await this.usersService.findSubscribedUsers({
+        channelId: live.channel.id,
+        page: 1,
+        size,
+      });
+      await this.alertsQueue.add(
+        'addAlertsQueue',
+        {
+          channelId: live.channel.id,
+          channelName: live.channel.name,
+          users: subscribedUsers,
+        },
+        { removeOnComplete: true, removeOnFail: true },
+      );
+    }
 
     this.eventsGateway.server.of('/').to(live.channel.id).emit('alert', {
       isOnAir: true,

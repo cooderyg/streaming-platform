@@ -12,22 +12,27 @@ import { AlertsModule } from '../alerts/alerts.module';
 import { UsersModule } from '../users/users.module';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { Livesubscriber } from './lives.subscriber';
+import { BullModule } from '@nestjs/bull';
+import { LivesProcessor } from './lives.processor';
+import { SubscribesModule } from '../subscribes/subscribes.module';
 
 @Module({
   imports: [
     AlertsModule,
+    BullModule.registerQueue({ name: 'alertsQueue' }),
     ChannelsModule,
     CreditHistoriesModule,
     EventsModule,
     ElasticsearchModule.register({
       node: 'http://localhost:9200',
     }),
+    SubscribesModule,
     TagsModule,
     TypeOrmModule.forFeature([Live, Channel]),
     UsersModule,
   ],
   controllers: [LivesController],
-  providers: [LivesService, Livesubscriber],
+  providers: [LivesService, Livesubscriber, LivesProcessor],
   exports: [LivesService],
 })
 export class LivesModule {}

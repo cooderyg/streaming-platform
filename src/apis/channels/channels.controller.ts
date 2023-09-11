@@ -8,7 +8,6 @@ import {
   Put,
   Query,
   UseGuards,
-  Inject,
 } from '@nestjs/common';
 import { ChannelsService } from './channels.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
@@ -21,8 +20,6 @@ import {
   UpdateChannelManagerDto,
 } from './dto/update-channel-manager.dto';
 import { Channel } from './entities/channel.entity';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
 import { User as EUser } from '../users/entities/user.entity';
 import { OkResDto } from 'src/commons/dto/ok-res.dto';
 import { MessageResDto } from 'src/commons/dto/message-res.dto';
@@ -30,8 +27,7 @@ import { MessageResDto } from 'src/commons/dto/message-res.dto';
 @Controller('/api/channels')
 export class ChannelsController {
   constructor(
-    private readonly channelsService: ChannelsService, //
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly channelsService: ChannelsService, // // @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   // 나의 채널 조회
@@ -90,6 +86,19 @@ export class ChannelsController {
   async getManagers(@User() user: UserAfterAuth): Promise<EUser[]> {
     const managers = await this.channelsService.getManagers({
       userId: user.id,
+    });
+
+    return managers;
+  }
+
+  @UseGuards(AccessAuthGuard)
+  @Get('/:channelId/admin/managers')
+  async getManagersByChannelId(
+    @User() user: UserAfterAuth,
+    @Param('channelId') channelId: string,
+  ): Promise<EUser[]> {
+    const managers = await this.channelsService.getManagersByChannelId({
+      channelId,
     });
 
     return managers;
