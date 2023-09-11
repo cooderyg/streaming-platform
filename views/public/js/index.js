@@ -23,8 +23,8 @@ window.addEventListener('DOMContentLoaded', () => {
                               </a>
                             </div>
                             <div class="card-body pt-2">
-                              <span class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2">OnAir</span>
-                                <div class="author align-items-center">
+                              <span class="text-gradient text-primary p-1 text-uppercase text-xs font-weight-bold my-2">OnAir</span>
+                                <div class="author align-items-center pb-4">
                                   <img src="${streamerImg}" alt="..." class="avatar shadow" style="border: 1px solid #ccc; border-radius: 100px"/>
                                     <div class="name ps-3">
                                       <span>${streamer}</span>
@@ -52,7 +52,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 let count = 1;
-window.onscroll = async function (e) {
+window.onscroll = async function () {
   //추가되는 임시 콘텐츠
   //window height + window scrollY 값이 document height보다 클 경우,
 

@@ -54,6 +54,8 @@ import { ChatBanModule } from './apis/chatBans/chatBans.module';
       store: redisStore,
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
+      // host: process.env.CACHE_REDIS_HOST
+      // port: process.env.CACHE_REDIS_PORT
       // password: process.env.REDIS_PW,
       ttl: 10,
     }),
@@ -62,6 +64,8 @@ import { ChatBanModule } from './apis/chatBans/chatBans.module';
       redis: {
         host: '127.0.0.1',
         port: 6380,
+        // host: process.env.BULL_REDIS_HOST
+        // port: process.env.BULL_REDIS_PORT
       },
     }),
     TypeOrmModule.forRoot({
@@ -73,7 +77,7 @@ import { ChatBanModule } from './apis/chatBans/chatBans.module';
       database: process.env.DATABASE_DATABASE,
       entities: [__dirname + '/apis/**/*.entity.*'],
       synchronize: true, // 개발환경에서만 사용
-      // logging: true,
+      //logging: true,
       namingStrategy: new SnakeNamingStrategy(),
       timezone: 'UTC',
     }),

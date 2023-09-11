@@ -98,6 +98,31 @@ export class LivesController {
     return lives;
   }
 
+  @Get('search/elastic-search')
+  async getElasticSearch(@Query() searchReqDto: SearchReqDto) {
+    const { keyword, page, size } = searchReqDto;
+
+    const lives = await this.livesService.getElasticsearch({
+      keyword,
+      page,
+      size,
+    });
+
+    return lives;
+  }
+
+  @Get('search/elastic-search/replaies')
+  async getElasticSearchReplays(@Query() searchReqDto: SearchReqDto) {
+    const { keyword, page, size } = searchReqDto;
+
+    const lives = await this.livesService.getElasticsearchReplaies({
+      keyword,
+      page,
+      size,
+    });
+    return lives;
+  }
+
   @UseGuards(AccessAuthGuard)
   @Post()
   async createLive(
@@ -133,7 +158,7 @@ export class LivesController {
   }
 
   // 썸네일 업로드 시 URL 추가
-  @Put('/:liveId/thumbnails')
+  @Put(':liveId/thumbnails')
   async addThumbnail(
     @Body() addThumbnailDto: AddThumbNailDto,
     @Param('liveId') liveId: string,
