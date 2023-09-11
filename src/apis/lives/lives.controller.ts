@@ -29,30 +29,6 @@ export class LivesController {
     private readonly livesService: LivesService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
-  @Get('search/elastic-search')
-  async getElasticSearch(@Query() searchReqDto: SearchReqDto) {
-    const { keyword, page, size } = searchReqDto;
-
-    const lives = await this.livesService.getElasticsearch({
-      keyword,
-      page,
-      size,
-    });
-
-    return lives;
-  }
-
-  @Get('search/elastic-search/replaies')
-  async getElasticSearchReplays(@Query() searchReqDto: SearchReqDto) {
-    const { keyword, page, size } = searchReqDto;
-
-    const lives = await this.livesService.getElasticsearchReplaies({
-      keyword,
-      page,
-      size,
-    });
-    return lives;
-  }
 
   @Get()
   async getLives(@Query() pageReqDto: PageReqDto): Promise<Live[]> {
@@ -119,6 +95,31 @@ export class LivesController {
   @Get('search/keywords')
   async getSearchLives(@Query() searchReqDto: SearchReqDto): Promise<Live[]> {
     const lives = await this.livesService.searchLives({ searchReqDto });
+    return lives;
+  }
+
+  @Get('search/elastic-search')
+  async getElasticSearch(@Query() searchReqDto: SearchReqDto) {
+    const { keyword, page, size } = searchReqDto;
+
+    const lives = await this.livesService.getElasticsearch({
+      keyword,
+      page,
+      size,
+    });
+
+    return lives;
+  }
+
+  @Get('search/elastic-search/replaies')
+  async getElasticSearchReplays(@Query() searchReqDto: SearchReqDto) {
+    const { keyword, page, size } = searchReqDto;
+
+    const lives = await this.livesService.getElasticsearchReplaies({
+      keyword,
+      page,
+      size,
+    });
     return lives;
   }
 
