@@ -136,6 +136,21 @@ export class LivesController {
     return live;
   }
 
+  // // 추후 삭제 필요 (더미 생성용)
+  // @Post('dummy')
+  // async createLiveDummy(
+  //   @Body('userId') userId: string,
+  //   @Body('title') title: string,
+  //   @Body('tagNames') tagNames: string[],
+  // ): Promise<Live> {
+  //   const createLiveDto = { title, tagNames };
+  //   const live = await this.livesService.createLive({
+  //     userId,
+  //     createLiveDto,
+  //   });
+  //   return live;
+  // }
+
   @Post('/start/:liveId')
   async startLive(@Param('liveId') liveId: string): Promise<MessageResDto> {
     this.livesService.startLive({ liveId });

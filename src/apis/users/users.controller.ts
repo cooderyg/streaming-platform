@@ -58,13 +58,13 @@ export class UsersController {
     return updatedUser;
   }
 
-  // 더미 유저 생성
-  @Post('/dummy')
-  async createDummyUser(
-    @Body() createUserDto: CreateUserDto, //
-  ): Promise<CreateDummyUserResDto> {
-    const result = await this.usersSerivce.createDummyUser({ createUserDto });
+//   // 추후 삭제 필요 (더미 유저 생성용)
+//   @Post('/dummy')
+//   async createDummyUser(
+//     @Body() createUserDto: CreateUserDto, //
+//   ): Promise<CreateDummyUserResDto> {
+//     const result = await this.usersSerivce.createDummyUser({ createUserDto });
 
-    return result;
-  }
+//     return result;
+//   }
 }
