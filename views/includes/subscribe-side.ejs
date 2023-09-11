@@ -47,12 +47,11 @@
       try {
         const response = await fetch('/api/channels/subscribe/profiles');
         const data = await response.json();
-        console.log(data);
-
-        const temp = data.map((data) => {
-          const imgTemp = data.profileImgUrl || '/img/profile.jpg';
-          return `
-        <li class="nav-item">
+        const temp = data
+          .map((data) => {
+            const imgTemp = data.profileImgUrl || '/img/profile.jpg';
+            return `
+        <li class="nav-item" style="width: auto;">
             <a class="nav-link" href="/channel/${data.id}">
             <div
                 class="icon icon-shape icon-sm shadow bg-white text-center me-2 d-flex align-items-center justify-content-center"
@@ -67,11 +66,12 @@
             </a>
         </li>
         `;
-        });
+          })
+          .join('');
 
         subscribeChannelNavEl.innerHTML = temp;
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   };

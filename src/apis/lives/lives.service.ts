@@ -89,6 +89,15 @@ export class LivesService {
       .getOne();
   }
 
+  async getLivesByChannelId({ channelId }) {
+    return await this.livesRepository
+      .createQueryBuilder('live')
+      .select(['live.id', 'live.title', 'live.createdAt', 'channel.id'])
+      .leftJoin('live.channel', 'channel')
+      .where('channel.id = :id', { id: channelId })
+      .getMany();
+  }
+
   async getReplaysByChannelId({
     channelId,
   }: ILivesServiceGetReplaysByChannelId): Promise<Live[]> {
@@ -106,6 +115,7 @@ export class LivesService {
       .leftJoin('live.tags', 'tag')
       .where('channel.id = :id', { id: channelId })
       .andWhere('live.endDate IS NOT NULL')
+      .orderBy('live.createdAt', 'DESC')
       .getMany();
   }
 
@@ -233,6 +243,11 @@ export class LivesService {
     //   });
     // }
 
+    this.eventsGateway.server.of('/').to(live.channel.id).emit('alert', {
+      isOnAir: true,
+      channelName: live.channel.name,
+      profileImgUrl: live.channel.profileImgUrl,
+    });
     this.eventsGateway.server.of('/').to(liveId).emit('startLive', { liveId });
   }
 
@@ -263,46 +278,10 @@ export class LivesService {
     return await this.livesRepository.save(live);
   }
 
-  // async turnOff({ userId, liveId }: ILivesServiceTurnOff) {
-  //   const { channel, live } = await this.verifyOwner({ userId, liveId });
-
-  //   // 트랜잭션
-  //   const queryRunner = this.dataSource.createQueryRunner();
-  //   await queryRunner.connect();
-  //   await queryRunner.startTransaction();
-  //   const manager = queryRunner.manager;
-  //   try {
-  //     // 종료 시간을 업데이트 합니다.
-  //     live.endDate = new Date();
-
-  //     // 방송 정산하기
-  //     const creditHistories =
-  //       await this.creditHistoriesService.findCreditHistoryListByLive({
-  //         liveId,
-  //         userId,
-  //       });
-  //     const totalLiveIncome = creditHistories.reduce(
-  //       (acc, history) => acc + history.amount,
-  //       0,
-  //     );
-  //     live.income = totalLiveIncome;
-
-  //     // 채널 정산하기
-  //     channel.income += totalLiveIncome;
-
-  //     await manager.save(Live, live);
-  //     await manager.save(Channel, channel);
-  //     await queryRunner.commitTransaction();
-  //     return { message: '방송이 종료되었습니다.' };
-  //   } catch (err) {
-  //     await queryRunner.rollbackTransaction();
-  //   } finally {
-  //     await queryRunner.release();
-  //   }
-  // }
-
   async closeOBS({ liveId }: ILivesServiceCloseOBS): Promise<void> {
     const live = await this.getLiveById({ liveId });
+    if (!live) throw new NotFoundException();
+
     const now = new Date();
     const playtime = Math.floor(
       (now.getTime() - live.createdAt.getTime()) / 1000 / 60,

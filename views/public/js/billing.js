@@ -20,7 +20,7 @@ const getPayments = async () => {
   const data = await response.json();
   const cancelTemp = `
     <div class="ms-auto text-end">
-        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;" >결제취소</a>
+        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;" >결제 취소하기</a>
     </div>
     `;
 
@@ -151,13 +151,12 @@ const requestPay = () => {
           })
             .then((res) => res.json())
             .then((data) => {
-              console.log(data);
               alert('결제가 성공적으로 완료되었습니다.');
               getUserData();
               closeBtnEl.click();
             });
         } catch (error) {
-          console.log(error.message);
+          console.error(error.message);
         }
       } else {
         //결제 실패 시 로직

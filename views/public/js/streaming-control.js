@@ -308,7 +308,9 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .then((data) => {
         alert(`${userNickname}님의 채팅을 금지했습니다.`);
-        banListUpdate();
+        if (data) {
+          socket.emit('ban');
+        }
       })
       .catch((error) => {
         alert(`${error.message}`);

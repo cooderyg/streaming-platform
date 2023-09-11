@@ -1,37 +1,35 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AccessAuthGuard } from '../auth/guard/auth.guard';
 import { User, UserAfterAuth } from 'src/commons/decorators/user.decorator';
-import { CreateChatDto } from './dto/create-chat.dto';
 import { ChatsService } from './chats.service';
-import { Chat } from './entities/chat.entity';
+import { Chat } from './schemas/chat.schema';
+import { PageReqDto } from 'src/commons/dto/page-req.dto';
 
 @Controller('/api/chats')
 export class ChatsController {
   constructor(private readonly chatsService: ChatsService) {}
 
-  @UseGuards(AccessAuthGuard)
-  @Get('/:liveId')
-  async findChatsByLive(
-    @Param('liveId') liveId: string,
-    @User() user: UserAfterAuth,
-  ): Promise<Chat[]> {
-    const chats = await this.chatsService.findChatsByLive({
-      userId: user.id,
-      liveId,
+  @Get(':liveId')
+  async findChatByLiveId(@Param() live): Promise<Chat[]> {
+    const chats = await this.chatsService.findChatByLiveId({
+      liveId: live.liveId,
     });
     return chats;
   }
 
   @UseGuards(AccessAuthGuard)
-  @Post()
-  async createChat(
+  @Get('search/:email')
+  async findChatByEmail(
     @User() user: UserAfterAuth,
-    @Body() createChatDto: CreateChatDto,
-  ): Promise<Chat> {
-    const chat = await this.chatsService.createChat({
+    @Param('email') email: string,
+    @Query() { page, size }: PageReqDto,
+  ): Promise<Chat[]> {
+    const chats = await this.chatsService.findChatByEmail({
       userId: user.id,
-      createChatDto,
+      email,
+      page,
+      size,
     });
-    return chat;
+    return chats;
   }
 }

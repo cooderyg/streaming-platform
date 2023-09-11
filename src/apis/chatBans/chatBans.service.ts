@@ -45,27 +45,32 @@ export class ChatBanService {
   }
 
   // 밴유저 개별 조회
-  // async findChatBanUser({
-  //   userId,
-  //   channelId,
-  //   banUserId,
-  // }: IChatBansServiceFindChatBanUser): Promise<ChatBan> {
-  //   const channel = await this.channelsService.getChannel({
-  //     channelId,
-  //   });
-  //   if (!channel) throw new NotFoundException('채널정보 확인을 해주세요.');
-  //   if (
-  //     channel.user.id === userId ||
-  //     channel.role.manager.filter((el) => el === userId)
-  //   ) {
-  //     const banUsers = await this.chatBanRepository.findOne({
-  //       where: { user: { id: banUserId }, channel: { id: channelId } },
-  //     });
-  //     return banUsers;
-  //   } else {
-  //     throw new NotFoundException('권한이 없습니다.');
-  //   }
-  // }
+  async findChatBanUser({
+    userId,
+    channelId,
+    findChatBanDto,
+  }: IChatBansServiceFindChatBanUser): Promise<ChatBan> {
+    const channel = await this.channelsService.getChannel({
+      channelId,
+    });
+
+    const { userEmail } = findChatBanDto;
+    const findUser = await this.usersService.findByEmail({ email: userEmail });
+
+    if (!channel) throw new NotFoundException('채널정보 확인을 해주세요.');
+    if (
+      channel.user.id === userId ||
+      channel.role.manager.filter((el) => el === userId)
+    ) {
+      const banUser = await this.chatBanRepository.findOne({
+        where: { user: { id: findUser.id }, channel: { id: channelId } },
+      });
+      if (!banUser) throw new NotFoundException('밴 유저를 찾지 못 했습니다.');
+      return banUser;
+    } else {
+      throw new NotFoundException('권한이 없습니다.');
+    }
+  }
 
   // 유저 밴
   async chatBanUser({
@@ -88,7 +93,6 @@ export class ChatBanService {
     const findBanUser = await this.chatBanRepository.findOne({
       where: { user: { id: banUser.id }, channel: { id: channelId } },
     });
-    console.log(findBanUser);
     if (findBanUser)
       throw new NotFoundException('이미 채팅이 금지된 유저입니다.');
 

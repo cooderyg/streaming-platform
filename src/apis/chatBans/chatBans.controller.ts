@@ -13,6 +13,7 @@ import { ChatBan } from './entities/chatBans.entity';
 import { CreateChatBanDto } from './dto/create-chat-ban.dto';
 import { ChatBanService } from './chatBans.service';
 import { DeleteBanUserDto } from './dto/delete-ban-user.dto';
+import { FindChatBanDto } from './dto/find-chat-ban.dto';
 
 @Controller('/api/channel/:channelId/ban')
 export class ChatBanController {
@@ -29,6 +30,21 @@ export class ChatBanController {
       channelId,
     });
     return chatBans;
+  }
+
+  @UseGuards(AccessAuthGuard)
+  @Get('/user')
+  async findChatBanUserByChannel(
+    @Param('channelId') channelId: string,
+    @User() user: UserAfterAuth,
+    @Body() findChatBanDto: FindChatBanDto,
+  ): Promise<ChatBan> {
+    const banUser = await this.chatBansService.findChatBanUser({
+      userId: user.id,
+      channelId,
+      findChatBanDto,
+    });
+    return banUser;
   }
 
   @UseGuards(AccessAuthGuard)

@@ -114,7 +114,6 @@ const getData = async () => {
   const replayContainer = document.getElementById('replay-container');
   const resReplay = await fetch(`/api/lives/replay/${channelId}`);
   const dataReplay = await resReplay.json();
-  console.log('aaaaaaaaaa', dataReplay);
   if (dataReplay.length) {
     dataReplay.forEach((e) => {
       const liveId = e.id;
@@ -189,7 +188,9 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .then((data) => {
         alert(`${userNickname}님의 채팅을 금지했습니다.`);
-        banListUpdate();
+        if (data) {
+          socket.emit('ban');
+        }
       })
       .catch((error) => {
         alert(`${error.message}`);
@@ -262,8 +263,6 @@ setTimeout(() => {
       video.play();
     });
     video.addEventListener('play', () => {
-      console.log(hls);
-      console.log(hls.liveSyncPosition);
       hls.media.currentTime = hls.liveSyncPosition;
     });
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -276,7 +275,7 @@ setTimeout(() => {
           video.currentTime = duration;
         });
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     });
   }

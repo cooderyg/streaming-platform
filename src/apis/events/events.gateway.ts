@@ -13,11 +13,8 @@ import {
   IEventsGatewayHandleChat,
   IEventsGatewayHandleDonation,
 } from './interfaces/events-gateway.interface';
-
-// interface IEventGatewayOnAirStreamers {
-//   socket: Socket;
-//   liveId: string;
-// }
+import { ChatsService } from '../chats/chats.service';
+import { CreateChatDto } from '../chats/dto/create-chat.dto';
 
 @WebSocketGateway({
   cors: {
@@ -26,21 +23,32 @@ import {
 })
 @Injectable()
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  constructor(private readonly chatsService: ChatsService) {}
+
   @WebSocketServer()
   server: Server;
-
-  // onAirStreamers: IEventGatewayOnAirStreamers[] = [];
 
   async handleConnection(@ConnectedSocket() socket: Socket): Promise<void> {
     if (typeof socket.handshake.headers['room-id'] !== 'string') return;
 
     const roomId: string = socket.handshake.headers['room-id'];
+    if (roomId) {
+      socket.join(roomId);
 
-    socket.join(roomId);
+      const userCount = this.server.of('/').adapter.rooms.get(roomId).size;
 
-    const userCount = this.server.of('/').adapter.rooms.get(roomId).size;
+      this.server.of('/').to(roomId).emit('userCount', { userCount });
+    } else {
+      if (typeof socket.handshake.headers['channel-ids'] !== 'string') return;
 
-    this.server.of('/').to(roomId).emit('userCount', { userCount });
+      const channelIds: string[] = JSON.parse(
+        socket.handshake.headers['channel-ids'],
+      ).channelIds;
+
+      channelIds.forEach((channelId) => {
+        socket.join(channelId);
+      });
+    }
   }
 
   // 프론트에서 연결 끊길 시
@@ -74,13 +82,20 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const roomId = socket.handshake.headers['room-id'];
 
-    console.log('유저', user);
-    console.log('룸아이디', roomId);
-    console.log('데이터', data);
     this.server.of('/').to(roomId).emit('chat', {
       user,
       chat,
     });
+
+    // mongoDB에 채팅 저장
+    const createChatDto: CreateChatDto = {
+      liveId: roomId.toString(),
+      userId: user.id,
+      email: user.email,
+      nickname: user.nickname,
+      content: data.chat,
+    };
+    this.chatsService.createChat(createChatDto);
   }
 
   @SubscribeMessage('donation')
@@ -103,27 +118,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  // @SubscribeMessage('createLive')
-  // handleCreateLive(@ConnectedSocket() socket: Socket) {
-  //   if (typeof socket.handshake.headers['room-id'] !== 'string') return;
-  //   const liveId: string = socket.handshake.headers['room-id'];
-
-  //   const temp = {
-  //     socket,
-  //     liveId,
-  //   };
-  //   this.onAirStreamers.push(temp);
-  //   console.log(this.onAirStreamers);
-  // }
-
-  // @SubscribeMessage('createRoom')
-  // handleCreateRoom(client: Socket, room: string) {
-  //   // client.join(room);
-  // }
-
-  // @SubscribeMessage('leaveRoom')
-  // handleLeaveRoom(client: Socket, room: string) {
-  //   // 스트리밍 페이지를 나가면 자동으로 disconnect 되기 때문에 필요없을 것 같음 추가적인 작업이 있는 경우 사용
-  //   client.leave(room);
-  // }
+  @SubscribeMessage('ban')
+  handleBanUser(@ConnectedSocket() socket: Socket) {
+    const roomId = socket.handshake.headers['room-id'];
+    this.server.of('/').to(roomId).emit('ban');
+  }
 }

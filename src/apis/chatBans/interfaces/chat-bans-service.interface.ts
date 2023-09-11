@@ -1,5 +1,6 @@
 import { CreateChatBanDto } from '../dto/create-chat-ban.dto';
 import { DeleteBanUserDto } from '../dto/delete-ban-user.dto';
+import { FindChatBanDto } from '../dto/find-chat-ban.dto';
 
 export interface IChatBansServiceFindChatBan {
   userId: string;
@@ -15,7 +16,7 @@ export interface IChatBansServiceChatBanUser {
 export interface IChatBansServiceFindChatBanUser {
   userId: string;
   channelId: string;
-  nickname: string;
+  findChatBanDto: FindChatBanDto;
 }
 
 export interface IChatBansServiceDeleteBanUser {

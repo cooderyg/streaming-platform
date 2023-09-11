@@ -21,8 +21,7 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <link rel="apple-touch-icon" sizes="76x76" href="../img/apple-icon.png" />
-    <link rel="icon" type="image/png" href="../img/favicon.png" />
-    <title>Freely B 라이브 스트리밍 플랫폼</title>
+    <%-include('includes/head.ejs') %>
     <!--     Fonts and icons     -->
     <link
       href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"
@@ -143,7 +142,9 @@
                   <div class="card-footer text-center pt-0 px-lg-0 px-0">
                     <p class="mb-4 text-sm mx-auto">
                       아직 계정이 없으시다구요?
-                      <a href="/sign-up" style="color: #5551ff">회원가입</a>
+                      <a href="/sign-up" class="text-dark font-weight-bolder"
+                        >회원가입</a
+                      >
                     </p>
                   </div>
                   <div style="text-align: center; display: inline-block">

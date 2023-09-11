@@ -11,15 +11,16 @@
     position: absolute;
     border-radius: 100px;
     top: -4px;
-    left: 8px;
+    left: 13px;
+    z-index: 99;
   }
   #alert-count.off {
     display: none;
   }
   .navbar-nav > li {
     position: relative;
-    margin-left: 10px;
-    margin-right: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   #alert-list > li > button {
     position: absolute;
@@ -59,6 +60,16 @@
         </div>
       </div>
       <ul class="navbar-nav justify-content-end">
+        <li id="manual-btn">
+          <a
+            href="https://www.notion.so/Freely-B-24175c3b86da4ccbba357adf11dc864d"
+            class="nav-item d-flex align-items-center d-block"
+            target="_blank"
+          >
+            <i class="fa fa-book me-sm-1"></i>
+            <span class="d-sm-inline d-none">스트리밍 가이드</span>
+          </a>
+        </li>
         <li id="signin-btn">
           <a href="/sign-in" class="nav-item d-flex align-items-center d-block">
             <i class="fa fa-key me-sm-1"></i>
@@ -93,11 +104,11 @@
             </div>
           </a>
         </li>
-        <li class="nav-item px-3 d-flex align-items-center">
+        <!-- <li class="nav-item px-3 d-flex align-items-center">
           <a href="javascript:;" class="nav-link text-body p-0">
             <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
           </a>
-        </li>
+        </li> -->
         <li class="nav-item dropdown pe-2 d-flex align-items-center">
           <div id="alert-count"><span id="alert-count-num"></span></div>
           <a
@@ -254,6 +265,7 @@
   const alertListEl = document.querySelector('#alert-list');
   const alertCount = document.querySelector('#alert-count');
   const alertCountNum = document.querySelector('#alert-count-num');
+  const alertBell = document.querySelector('.fa-bell');
 
   const getAlerts = async () => {
     if (document.cookie) {
@@ -263,14 +275,14 @@
         alertCount.classList.add('off');
         return;
       }
-      console.log(data);
       if (!data.length) alertCount.classList.add('off');
       alertCountNum.innerText = data.length;
 
-      const temp = data.map((el) => {
-        const imgTemp = el.channel.profileImgUrl || '/img/profile.jpg';
+      const temp = data
+        .map((el) => {
+          const imgTemp = el.channel.profileImgUrl || '/img/profile.jpg';
 
-        return `
+          return `
             <li class="mb-2">
               <a class="dropdown-item border-radius-md" href="javascript:;">
                 <div class="d-flex py-1">
@@ -299,7 +311,8 @@
               </button>
             </li>
           `;
-      });
+        })
+        .join('');
       alertListEl.innerHTML = temp;
 
       alertListEl.addEventListener('click', (e) => {
@@ -326,6 +339,88 @@
   };
 
   getAlerts();
+
+  const mainPath = window.location.pathname.split('/')[1];
+
+  if (mainPath !== 'streaming' && mainPath !== 'streaming-control') {
+    const setSocket = async () => {
+      const response = await fetch('/api/subscribes/channels');
+      const data = await response.json();
+      const channelIds = data.map((el) => el.channel.id);
+      if (response.ok) {
+        const socket = io('/', {
+          extraHeaders: {
+            'room-id': '',
+            'channel-ids': JSON.stringify({ channelIds }), // api 만들고 구독채널 넣기
+          },
+        });
+        socket.on('alert', (data) => {
+          if (alertCount.classList.contains('off')) {
+            alertCount.classList.remove('off');
+          }
+          alertBell.classList.add('animate__animated', 'animate__swing');
+          setTimeout(() => {
+            alertBell.classList.remove('animate__animated', 'animate__swing');
+          }, 1000);
+
+          alertCountNum.innerText = alertCountNum.innerText
+            ? Number(alertCountNum.innerText) + 1
+            : 1;
+          const messageTemp = data.isOnAir
+            ? `${data.channelName} 채널이 방송을 시작했습니다.`
+            : `${data.channelName} 채널의 공지: ${data?.noticeContent}`;
+
+          const imgTemp = data.profileImgUrl || '/img/profile.jpg';
+          const temp = `
+            <li class="mb-2">
+              <a class="dropdown-item border-radius-md" href="javascript:;">
+                <div class="d-flex py-1">
+                  <div class="my-auto">
+                    <img
+                      src=${imgTemp}
+                      class="avatar avatar-sm me-3"
+                      style="border-radius: 100px"
+                    />
+                  </div>
+                  <div class="d-flex flex-column justify-content-center">
+                    <h6 class="text-sm font-weight-normal mb-1">
+                      ${messageTemp}
+                    </h6>
+                    <p class="text-xs text-secondary mb-0">
+                      <i class="fa fa-clock me-1"></i>
+                      ${new Date(Date.now()).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </a>
+              <button>
+                <i class="fa fa-times alert-delete-btn" data-id="" aria-hidden="true"></i>
+              </button>
+            </li>
+          `;
+          // TODO: alert id 역추적
+
+          alertListEl.insertAdjacentHTML('afterbegin', temp);
+
+          const firstLiDeleteBtn = document.querySelector(
+            '#alert-list > li:first-child .alert-delete-btn',
+          );
+
+          firstLiDeleteBtn.addEventListener('click', (e) => {
+            const alertLiEl = e.target.parentNode.parentNode;
+            alertLiEl.remove();
+            if (Number(alertCountNum.innerText) - 1 === 0) {
+              alertCountNum.innerText = 0;
+              alertCount.classList.add('off');
+            } else {
+              alertCountNum.innerText = Number(alertCountNum.innerText) - 1;
+            }
+          });
+        });
+      }
+    };
+    setSocket();
+  }
 
   const searchInputEl = document.querySelector('#search-input');
   searchInputEl.addEventListener('keydown', (e) => {

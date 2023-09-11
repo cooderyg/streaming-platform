@@ -14,7 +14,7 @@ const getUserData = async () => {
     const data = await response.json();
     user = data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 getUserData();
@@ -41,18 +41,16 @@ const getBanList = async () => {
 getBanList();
 
 const isUserInBanList = banList.some((item) => item.user.id === user.id);
+if (isUserInBanList) {
+  window.location.href = '/';
+  alert('블랙리스트 유저입니다');
+}
 
 const socket = io('/', {
   extraHeaders: {
     'room-id': roomId,
   },
 });
-
-const banListUpdate = async () => {
-  await getUserData();
-  await getChannelId();
-  await getBanList();
-};
 
 chatInput.addEventListener('keydown', (e) => {
   if (e.keyCode === 13) chatBtn.click();
@@ -98,6 +96,31 @@ chatBtn.addEventListener('click', () => {
   chatInput.value = '';
 });
 
+// 방 입장시 지난 채팅 30개 받기
+async function pastChat(roomId) {
+  const chatRes = await fetch(`/api/chats/${roomId}`);
+  const chatData = await chatRes.json();
+  chatData.forEach((data) => {
+    const chat = data.content;
+    const nickname = data.nickname;
+    const img = '/img/profile.jpg';
+    const temp = `
+    <div class="d-flex justify-content-start mb-1">
+      <div class="img_cont_msg">
+        <img src="${img}" class="rounded-circle user_img_msg">
+      </div>
+      <div class="msg_container">
+        <span class="user_nick">${nickname}</span>
+        <span class="user_chat">${chat}</span>
+      </div>
+    </div>
+    `;
+    chatContainerEl.insertAdjacentHTML('afterbegin', temp);
+    chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
+  });
+}
+pastChat(roomId);
+
 // 채팅받기
 socket.on('chat', (data) => {
   const chat = data.chat;
@@ -130,7 +153,7 @@ const mediaContainerEl = document.querySelector('#media-container');
 socket.on('endLive', () => {
   mediaContainerEl.innerHTML = `
     <img
-        src="https://blog.kakaocdn.net/dn/cu6FRS/btrdswyTELB/zgpbDlAoEaTFcCXf2LI0Jk/img.png"
+        src="/img/freelyb-banner.png"
         class="card-img-top"
         alt="..."
       />
@@ -174,8 +197,18 @@ donationBtn.addEventListener('click', async (e) => {
 
   const donaitonAmount = Number(donationAmountInputEl.value);
   if (!donaitonAmount) return alert('금액을 입력해주세요!');
-  if (donaitonAmount > creditAmount)
-    return alert('보유하신 포인트보다 후원금액이 많습니다.');
+  if (donaitonAmount > creditAmount) {
+    if (
+      confirm(
+        '보유하신 크레딧보다 후원금액이 많습니다. 크레딧을 충전 하시겠습니까?',
+      )
+    ) {
+      window.location.href = '/billing';
+    }
+
+    return;
+  }
+
   //TODO 프론트 결제기능 만들면 충전하러 갈지 바꾸기
   const form = JSON.stringify({
     amount: donaitonAmount,
@@ -213,4 +246,10 @@ socket.on('donation', (data) => {
 
   chatContainerEl.insertAdjacentHTML('beforeend', temp);
   chatContainerEl.scrollTop = chatContainerEl.scrollHeight;
+});
+
+socket.on('ban', () => {
+  getUserData();
+  getChannelId();
+  getBanList();
 });

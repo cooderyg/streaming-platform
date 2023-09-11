@@ -198,6 +198,16 @@ export class ChannelsService {
     return channel;
   }
 
+  async findByUserIdForAddManager({
+    userId,
+  }: IChannelsServiceFindByUserId): Promise<Channel> {
+    const channel = await this.channelsRepository.findOne({
+      where: { user: { id: userId } },
+    });
+
+    return channel;
+  }
+
   async updateChannel({
     userId,
     channelId,
@@ -227,7 +237,7 @@ export class ChannelsService {
     updateChannelManagerDto,
   }: IChannelServiceUpdateChannelManager): Promise<Channel> {
     const { email } = updateChannelManagerDto;
-    const channel = await this.findByUserId({ userId });
+    const channel = await this.findByUserIdForAddManager({ userId });
 
     if (!channel) throw new NotFoundException('존재하지 않는 채널입니다.');
 
@@ -239,7 +249,6 @@ export class ChannelsService {
       throw new ForbiddenException(
         '채널 소유자 자신이 매니저가 될 수 없습니다.',
       );
-
     const filteredRole = channel.role.manager.filter((el) => el === manager.id);
     if (filteredRole.length)
       throw new ConflictException('이미 매니저인 유저입니다.');
