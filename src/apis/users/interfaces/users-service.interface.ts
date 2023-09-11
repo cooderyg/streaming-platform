@@ -9,6 +9,7 @@ export interface IUsersServiceFindUser {
 
 export interface IUsersServiceFindSubscribedUsers {
   channelId: string;
+  page: number;
 }
 
 export interface IUsersServiceCreateUser {

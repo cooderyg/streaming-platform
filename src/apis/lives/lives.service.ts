@@ -31,7 +31,7 @@ import {
 import { UsersService } from '../users/users.service';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
-import { AlertsService } from '../alerts/alerts.service';
+import { SubscribesService } from '../subscribes/subscribes.service';
 
 @Injectable()
 export class LivesService {
@@ -40,11 +40,11 @@ export class LivesService {
     private readonly livesRepository: Repository<Live>,
     @InjectQueue('alertsQueue')
     private readonly alertsQueue: Queue,
-    private readonly alertsService: AlertsService,
     private readonly channelsService: ChannelsService,
     private readonly creditHistoriesService: CreditHistoriesService,
     private readonly dataSource: DataSource,
     private readonly eventsGateway: EventsGateway,
+    private readonly subscribesService: SubscribesService,
     private readonly tagsService: TagsService,
     private readonly usersService: UsersService,
   ) {}
@@ -237,14 +237,33 @@ export class LivesService {
       onAir: true,
     });
 
-    const subscribedUsers = await this.usersService.findSubscribedUsers({
+    const subscribedUsersCount = await this.subscribesService.countByChannel({
       channelId: live.channel.id,
     });
 
-    if (subscribedUsers?.length > 0) {
-      console.log('hi');
+    if (subscribedUsersCount > 500) {
+      for (let i = 0; i < subscribedUsersCount / 500; i++) {
+        const subscribedUsers = await this.usersService.findSubscribedUsers({
+          channelId: live.channel.id,
+          page: i + 1,
+        });
+        await this.alertsQueue.add(
+          'addAlertsQueue',
+          {
+            channelId: live.channel.id,
+            channelName: live.channel.name,
+            users: subscribedUsers,
+          },
+          { removeOnComplete: true, removeOnFail: true },
+        );
+      }
+    } else if (subscribedUsersCount > 0 && subscribedUsersCount <= 500) {
+      const subscribedUsers = await this.usersService.findSubscribedUsers({
+        channelId: live.channel.id,
+        page: 1,
+      });
       await this.alertsQueue.add(
-        'addAlertQueue',
+        'addAlertsQueue',
         {
           channelId: live.channel.id,
           channelName: live.channel.name,

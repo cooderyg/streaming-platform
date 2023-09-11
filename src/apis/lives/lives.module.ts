@@ -12,6 +12,7 @@ import { AlertsModule } from '../alerts/alerts.module';
 import { UsersModule } from '../users/users.module';
 import { BullModule } from '@nestjs/bull';
 import { LivesProcessor } from './lives.processor';
+import { SubscribesModule } from '../subscribes/subscribes.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { LivesProcessor } from './lives.processor';
     ChannelsModule,
     CreditHistoriesModule,
     EventsModule,
+    SubscribesModule,
     TagsModule,
     TypeOrmModule.forFeature([Live, Channel]),
     UsersModule,
