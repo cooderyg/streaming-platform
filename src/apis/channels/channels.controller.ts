@@ -95,6 +95,19 @@ export class ChannelsController {
     return managers;
   }
 
+  @UseGuards(AccessAuthGuard)
+  @Get('/:channelId/admin/managers')
+  async getManagersByChannelId(
+    @User() user: UserAfterAuth,
+    @Param('channelId') channelId: string,
+  ): Promise<EUser[]> {
+    const managers = await this.channelsService.getManagersByChannelId({
+      channelId,
+    });
+
+    return managers;
+  }
+
   // 채널 생성
   @UseGuards(AccessAuthGuard)
   @Post()

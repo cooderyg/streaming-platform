@@ -16,6 +16,7 @@ import {
   IUsersServiceFindByEmail,
   IUsersServiceFindById,
   IUsersServiceFindByIds,
+  IUsersServiceFindByNickname,
   IUsersServiceFindSubscribedUsers,
   IUsersServiceFindUser,
   IUsersServiceUpdateCreditWithManager,
@@ -80,6 +81,12 @@ export class UsersService {
 
   async findByEmail({ email }: IUsersServiceFindByEmail): Promise<User> {
     return await this.usersRepository.findOne({ where: { email } });
+  }
+
+  async findByNickname({
+    nickname,
+  }: IUsersServiceFindByNickname): Promise<User> {
+    return await this.usersRepository.findOne({ where: { nickname } });
   }
 
   async verifyEmail({ email }: IUsersServiceVerifyEmail): Promise<number> {

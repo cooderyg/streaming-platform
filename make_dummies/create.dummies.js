@@ -47,7 +47,7 @@ const subscribe = async (userId, channelId) => {
 
 const jsonFile = fs.readFileSync('./twitch_data.json', 'utf8');
 let jsonData = JSON.parse(jsonFile); // 더미 655개
-const dummyCount = 1000
+const dummyCount = 1000;
 let progress;
 const jsonDataLength = jsonData.length;
 // check?

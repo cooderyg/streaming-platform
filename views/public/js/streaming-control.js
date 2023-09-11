@@ -1,5 +1,6 @@
 let socket;
 let user;
+let channelId;
 
 liveExistCheck();
 setLiveStartBtn();
@@ -51,6 +52,7 @@ async function showLiveRoomData(liveId) {
     liveRoomData.channel.name,
     liveRoomData.channel.profileImgUrl || '/img/profile.jpg',
   ];
+  channelId = liveRoomData.channel.id;
 
   document.querySelector('.live-title').innerText = title;
   document.querySelector('.channel-name').innerText = channelName;
@@ -277,3 +279,41 @@ function setViewCountEvent() {
     userConutEl.innerText = `시청자 ${data.userCount}` || `시청자 0`;
   });
 }
+
+// 채팅 밴
+document.addEventListener('DOMContentLoaded', function () {
+  const banUserBtn = document.getElementById('user-ban-btn');
+
+  banUserBtn.addEventListener('click', function () {
+    const userNickname = document.getElementById('ban-user-input').value;
+    const banReason = document.getElementById('ban-reason-input').value;
+
+    fetch(`/api/channel/${channelId}/ban`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userNickname: userNickname,
+        reason: banReason,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((errorData) => {
+            throw new Error(errorData.message);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        alert(`${userNickname}님의 채팅을 금지했습니다.`);
+        if (data) {
+          socket.emit('ban');
+        }
+      })
+      .catch((error) => {
+        alert(`${error.message}`);
+      });
+  });
+});

@@ -117,4 +117,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       amount,
     });
   }
+
+  @SubscribeMessage('ban')
+  handleBanUser(@ConnectedSocket() socket: Socket) {
+    const roomId = socket.handshake.headers['room-id'];
+    this.server.of('/').to(roomId).emit('ban');
+  }
 }
