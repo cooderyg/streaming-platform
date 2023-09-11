@@ -24,8 +24,7 @@ import { SubscribesModule } from '../subscribes/subscribes.module';
     CreditHistoriesModule,
     EventsModule,
     ElasticsearchModule.register({
-      node: 'http://localhost:9200',
-      // node: process.env.ELASTIC_SEARCH_NODE,
+      node: process.env.ELASTIC_SEARCH_NODE,
     }),
     SubscribesModule,
     TagsModule,

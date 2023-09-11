@@ -54,18 +54,18 @@ import { ChatBanModule } from './apis/chatBans/chatBans.module';
       store: redisStore,
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
-      // host: process.env.CACHE_REDIS_HOST
-      // port: process.env.CACHE_REDIS_PORT
+      // host: process.env.CACHE_REDIS_HOST,
+      // port: process.env.CACHE_REDIS_PORT,
       // password: process.env.REDIS_PW,
       ttl: 10,
     }),
     ConfigModule.forRoot(),
     BullModule.forRoot({
       redis: {
-        host: '127.0.0.1',
-        port: 6380,
-        // host: process.env.BULL_REDIS_HOST
-        // port: process.env.BULL_REDIS_PORT
+        host: process.env.BULL_HOST,
+        port: Number(process.env.BULL_PORT),
+        // host: process.env.BULL_REDIS_HOST,
+        // port: Number(process.env.BULL_REDIS_PORT),
       },
     }),
     TypeOrmModule.forRoot({
