@@ -44,3 +44,7 @@ export interface IUsersServiceUpdateUser {
   userId: string;
   updateUserDto: UpdateUserDto;
 }
+
+export interface IUsersServiceFindByNickname {
+  nickname: string;
+}

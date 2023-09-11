@@ -28,6 +28,7 @@ import * as redisStore from 'cache-manager-ioredis';
 import { MailerModule } from '@nestjs-modules/mailer';
 
 import { MongooseModule } from '@nestjs/mongoose';
+import { ChatBanModule } from './apis/chatBans/chatBans.module';
 @Module({
   imports: [
     AlertsModule,
@@ -47,6 +48,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     UsersModule,
     ViewHistoriesModule,
     SubscribesModule,
+    ChatBanModule,
     CacheModule.register({
       isGlobal: true,
       store: redisStore,

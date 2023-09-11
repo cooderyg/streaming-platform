@@ -30,6 +30,10 @@ export interface IChannelsServiceGetManagers {
   userId: string;
 }
 
+export interface IChannelsServiceGetManagersByChannelId {
+  channelId: string;
+}
+
 export interface IChannelsServiceCreateChannel {
   createChannelDto: CreateChannelDto;
   userId: string;

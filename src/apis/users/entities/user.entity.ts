@@ -1,5 +1,6 @@
 import { Alert } from 'src/apis/alerts/entities/alert.entity';
 import { Channel } from 'src/apis/channels/entities/channel.entity';
+import { ChatBan } from 'src/apis/chatBans/entities/chatBans.entity';
 import { Chat } from 'src/apis/chats/entities/chat.entity';
 import { CreditHistory } from 'src/apis/creditHistories/entities/credit-history.entity';
 import { Interest } from 'src/apis/interests/entities/interest.entity';
@@ -82,4 +83,9 @@ export class User {
     cascade: true,
   })
   alerts: Alert[];
+
+  @OneToMany(() => ChatBan, (chatBan) => chatBan.user, {
+    cascade: true,
+  })
+  chatBan: ChatBan[];
 }
