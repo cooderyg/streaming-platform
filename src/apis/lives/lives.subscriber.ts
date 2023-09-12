@@ -50,10 +50,8 @@ export class Livesubscriber implements EntitySubscriberInterface {
         },
       });
     } catch (error) {
-      throw new HttpException(
-        error?.body?.error?.type || 'ES',
-        error?.body?.status || 500,
-      );
+      console.log('엘라', error?.body?.error?.type || 'ES');
+      console.log('코드', error?.body?.status || 500);
     }
   }
 
@@ -82,10 +80,8 @@ export class Livesubscriber implements EntitySubscriberInterface {
         },
       });
     } catch (error) {
-      throw new HttpException(
-        error?.body?.error?.type || 'ES',
-        error?.body?.status || 500,
-      );
+      console.log('엘라', error?.body?.error?.type || 'ES');
+      console.log('코드', error?.body?.status || 500);
     }
   }
 }
