@@ -1,0 +1,49 @@
+version: '3.7'
+
+# 가상컴퓨터들
+
+services:
+  # 가상컴퓨터 이름
+  main-nest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/app/src
+      - ./views:/app/views
+    ports:
+      - 3000:3000
+    env_file:
+      - '.env.docker'
+
+  # 가상컴퓨터 이름
+  cache-redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+  bull-redis:
+    image: redis:latest
+    ports:
+      - 6380:6379
+
+  elasticsearch:
+    image: elasticsearch:7.17.0
+    environment:
+      discovery.type: single-node
+    ports:
+      - 9200:9200
+
+  # logstash:
+  #   image: logstash:7.17.0
+  #   volumes:
+  #     - ./elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  #     - ./elk/logstash/mysql-connector-java-8.0.28.jar:/usr/share/logstash/mysql-connector-java-8.0.28.jar
+
+  # kibana:
+  #   image: kibana:7.17.0
+  #   environment:
+  #     ELASTICSERCH_UTL: http://elasticsearch:9200
+  #     ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+  #   ports:
+  #     - 5601:5601

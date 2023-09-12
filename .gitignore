@@ -2,9 +2,6 @@
 .env.docker
 /.clinic
 yarn.lock
-Dockerfile
-docker-compose.yaml
-.dockerignore
 /.clinic
 logstash.conf
 

@@ -1,5 +1,3 @@
-const { async } = require('rxjs');
-
 //\ 다시보기 후원하기 페이지, 알림 연결
 const params = window.location.pathname;
 const splits = params.split('/');

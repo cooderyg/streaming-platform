@@ -10,7 +10,7 @@ let banList = [];
 const getUserData = async () => {
   try {
     const response = await fetch('/api/users');
-    // if (!response.ok) return;
+    if (!response.ok) return;
     const data = await response.json();
     user = data;
   } catch (error) {
@@ -58,6 +58,7 @@ chatInput.addEventListener('keydown', (e) => {
 });
 
 chatInput.addEventListener('focus', (e) => {
+  console.log('...');
   if (!user) {
     e.currentTarget.blur();
     return alert('로그인 후 이용해주세요.');
