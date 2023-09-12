@@ -19,7 +19,8 @@
 📌서비스 이용 안내 : https://truthful-actor-498.notion.site/Freely-B-24175c3b86da4ccbba357adf11dc864d?pvs=4 <br>
 <br>
 # ⚙️서비스 아키텍쳐 소개
-![Group 297420 (1)](https://github.com/cooderyg/streaming-platform/assets/122774009/c87082c1-2395-4a00-be13-565dc5fe2606)
+![20230912_170920](https://github.com/cooderyg/streaming-platform/assets/122774009/74ac904a-c68b-417f-bba7-5c3b3711e814)
+
 
 ## 사용한 기술
 #### NestJS
