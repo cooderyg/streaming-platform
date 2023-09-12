@@ -79,23 +79,24 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     } else {
       socket.data.user = user;
     }
+    if (user.id) {
+      const roomId = socket.handshake.headers['room-id'];
 
-    const roomId = socket.handshake.headers['room-id'];
+      this.server.of('/').to(roomId).emit('chat', {
+        user,
+        chat,
+      });
 
-    this.server.of('/').to(roomId).emit('chat', {
-      user,
-      chat,
-    });
-
-    // mongoDB에 채팅 저장
-    const createChatDto: CreateChatDto = {
-      liveId: roomId.toString(),
-      userId: user.id,
-      email: user.email,
-      nickname: user.nickname,
-      content: data.chat,
-    };
-    this.chatsService.createChat(createChatDto);
+      // mongoDB에 채팅 저장
+      const createChatDto: CreateChatDto = {
+        liveId: roomId.toString(),
+        userId: user.id,
+        email: user.email,
+        nickname: user.nickname,
+        content: data.chat,
+      };
+      this.chatsService.createChat(createChatDto);
+    }
   }
 
   @SubscribeMessage('donation')
