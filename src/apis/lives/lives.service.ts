@@ -224,54 +224,68 @@ export class LivesService {
   }
 
   async getElasticsearch({ keyword, page, size }) {
-    const lives = await this.elasticsearchService.search({
-      index: 'test13',
-      size: size,
-      from: (page - 1) * size,
-      query: {
-        bool: {
-          must: {
-            multi_match: {
-              query: keyword,
-              fields: ['title', 'tags', 'channel_name'],
-            },
-          },
-          must_not: {
-            exists: {
-              field: 'end_date',
-            },
-          },
-        },
-      },
-    });
-    return lives;
-  }
-
-  async getElasticsearchReplaies({ keyword, page, size }) {
-    const lives = await this.elasticsearchService.search({
-      index: 'test13',
-      size: size,
-      from: (page - 1) * size,
-      query: {
-        bool: {
-          must: [
-            {
+    try {
+      const lives = await this.elasticsearchService.search({
+        index: 'test13',
+        size: size,
+        from: (page - 1) * size,
+        query: {
+          bool: {
+            must: {
               multi_match: {
                 query: keyword,
                 fields: ['title', 'tags', 'channel_name'],
               },
             },
-            {
+            must_not: {
               exists: {
-                field: 'replay_url',
+                field: 'end_date',
               },
             },
-          ],
+          },
         },
-      },
-    });
+      });
+      return lives;
+    } catch (error) {
+      throw new HttpException(
+        error?.body?.error?.type || 'ES',
+        error?.body?.status || 500,
+      );
+    }
+  }
 
-    return lives;
+  async getElasticsearchReplaies({ keyword, page, size }) {
+    try {
+      const lives = await this.elasticsearchService.search({
+        index: 'test13',
+        size: size,
+        from: (page - 1) * size,
+        query: {
+          bool: {
+            must: [
+              {
+                multi_match: {
+                  query: keyword,
+                  fields: ['title', 'tags', 'channel_name'],
+                },
+              },
+              {
+                exists: {
+                  field: 'replay_url',
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      return lives;
+    } catch (error) {
+      throw new HttpException(
+        error?.body?.error?.type || 'ES',
+        error?.body?.status || 500,
+      );
+    }
   }
 
   async createLive({
