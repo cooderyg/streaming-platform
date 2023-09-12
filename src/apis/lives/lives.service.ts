@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  HttpException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -375,7 +376,8 @@ export class LivesService {
 
   async closeOBS({ liveId }: ILivesServiceCloseOBS): Promise<void> {
     const live = await this.getLiveById({ liveId });
-    if (!live) throw new NotFoundException();
+    if (!live)
+      throw new HttpException('라이브 아이디가 유효하지 않습니다.', 404);
 
     const now = new Date();
     const playtime = Math.floor(
