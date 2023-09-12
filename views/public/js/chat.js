@@ -6,6 +6,7 @@ const chatContainerEl = document.querySelector('#chat-container');
 let user;
 let channelId;
 let banList = [];
+let isUserInBanList;
 
 const getUserData = async () => {
   try {
@@ -22,6 +23,10 @@ getUserData();
 const getChannelId = async () => {
   try {
     const response = await fetch(`/api/lives/${roomId}`);
+    if (!response.ok) {
+      window.location.href = '/';
+      alert('방송을 찾을 수 없습니다.');
+    }
     const data = await response.json();
     channelId = data.channel.id;
   } catch (error) {
@@ -33,19 +38,22 @@ getChannelId();
 const getBanList = async () => {
   try {
     const response = await fetch(`/api/channel/${channelId}/ban`);
+    if (!response.ok) return;
     banList = await response.json();
+    isUserInBanList = banList.some((item) => item.user.id === user.id);
   } catch (error) {
     console.log(error);
   }
 };
 getBanList();
 
-// 블랙리스트 확인
-const isUserInBanList = banList.some((item) => item.user.id === user.id);
-if (isUserInBanList) {
-  window.location.href = '/';
-  alert('블랙리스트 유저입니다');
-}
+const kickUser = function () {
+  if (isUserInBanList) {
+    window.location.href = '/';
+    alert('블랙리스트 유저입니다');
+  }
+};
+kickUser();
 
 const socket = io('/', {
   extraHeaders: {
@@ -255,4 +263,5 @@ socket.on('ban', () => {
   getUserData();
   getChannelId();
   getBanList();
+  kickUser();
 });
