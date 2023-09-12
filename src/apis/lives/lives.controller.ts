@@ -153,7 +153,7 @@ export class LivesController {
 
   @Post('/start/:liveId')
   async startLive(@Param('liveId') liveId: string): Promise<MessageResDto> {
-    this.livesService.startLive({ liveId });
+    await this.livesService.startLive({ liveId });
     return { message: '전달완료' };
   }
 
