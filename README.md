@@ -19,7 +19,8 @@
 📌서비스 이용 안내 : https://truthful-actor-498.notion.site/Freely-B-24175c3b86da4ccbba357adf11dc864d?pvs=4 <br>
 <br>
 # ⚙️서비스 아키텍쳐 소개
-![Untitled (1)](https://github.com/cooderyg/streaming-platform/assets/122774009/18f6bc1f-793d-48ec-a825-5d42a35ff08d)
+![Group 297420 (1)](https://github.com/cooderyg/streaming-platform/assets/122774009/c87082c1-2395-4a00-be13-565dc5fe2606)
+
 ## 사용한 기술
 #### NestJS
 - Express.js보다 구조화된 코드 작성에 유리하여 팀 단위 협업에 좋으며, 확장성이 좋다고 판단
