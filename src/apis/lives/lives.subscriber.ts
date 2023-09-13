@@ -8,7 +8,6 @@ import {
 import { Live } from './entities/live.entity';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Tag } from '../tags/entities/tag.entity';
-import { HttpException } from '@nestjs/common';
 
 @EventSubscriber()
 export class Livesubscriber implements EntitySubscriberInterface {
@@ -30,10 +29,9 @@ export class Livesubscriber implements EntitySubscriberInterface {
     if (live.tags.length) {
       tags = live.tags.map((tag: Tag) => tag.name).join(',');
     }
-
     try {
       await this.elasticsearchService.create({
-        index: 'test7',
+        index: 'test13',
         id: live.id,
         document: {
           id: live.id,
@@ -63,8 +61,8 @@ export class Livesubscriber implements EntitySubscriberInterface {
         tags = live.tags.map((tag: Tag) => tag.name).join(',');
       }
       await this.elasticsearchService.update({
-        index: 'test7',
-        id: 'djqtsms',
+        index: 'test13',
+        id: live.id,
         doc: {
           id: live.id,
           title: live.title,
