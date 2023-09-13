@@ -34,6 +34,15 @@
   .alert-delete-btn {
     padding: 4px;
   }
+
+  #alert-list #alert-null-message {
+    display: none;
+  }
+
+  #alert-list.off #alert-null-message {
+    display: block;
+    text-align: center;
+  }
 </style>
 
 <nav
@@ -125,6 +134,7 @@
             class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4"
             aria-labelledby="dropdownMenuButton"
           >
+            <li id="alert-null-message">수신된 알림이 없습니다.</li>
             <!-- <li class="mb-2">
               <a class="dropdown-item border-radius-md" href="javascript:;">
                 <div class="d-flex py-1">
@@ -273,9 +283,14 @@
       const data = await response.json();
       if (!response.ok) {
         alertCount.classList.add('off');
+        alertListEl.classList.add('off');
         return;
       }
-      if (!data.length) alertCount.classList.add('off');
+      if (!data.length) {
+        alertCount.classList.add('off');
+        alertListEl.classList.add('off');
+        return;
+      }
       alertCountNum.innerText = data.length;
 
       const temp = data
@@ -313,7 +328,7 @@
           `;
         })
         .join('');
-      alertListEl.innerHTML = temp;
+      alertListEl.insertAdjacentHTML('afterbegin', temp);
 
       alertListEl.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -330,11 +345,20 @@
           });
           if (!response.ok) return;
           const data = await response.json();
-          if (data.message === '수정완료') alertLiEl.remove();
+          if (data.message === '수정완료') {
+            alertLiEl.remove();
+            alertCountNum.innerText = Number(alertCountNum.innerText) - 1;
+
+            if (Number(alertCountNum.innerText) === 0) {
+              alertCount.classList.add('off');
+              alertListEl.classList.add('off');
+            }
+          }
         });
       });
     } else {
       alertCount.classList.add('off');
+      alertListEl.classList.add('off');
     }
   };
 
@@ -357,6 +381,7 @@
         socket.on('alert', (data) => {
           if (alertCount.classList.contains('off')) {
             alertCount.classList.remove('off');
+            alertListEl.classList.remove('off');
           }
           alertBell.classList.add('animate__animated', 'animate__swing');
           setTimeout(() => {
@@ -412,6 +437,7 @@
             if (Number(alertCountNum.innerText) - 1 === 0) {
               alertCountNum.innerText = 0;
               alertCount.classList.add('off');
+              alertListEl.classList.add('off');
             } else {
               alertCountNum.innerText = Number(alertCountNum.innerText) - 1;
             }
