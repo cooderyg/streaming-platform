@@ -12,8 +12,9 @@ COPY ./package.json /app/
 COPY ./yarn.lock /app/
 WORKDIR /app/
 RUN yarn install
-
+# RUN yarn global add pm2
 COPY . /app/
 
+# RUN yarn build
 # 3. 도커 안에서 index.js 실행시키기
 CMD yarn start:dev

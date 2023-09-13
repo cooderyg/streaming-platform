@@ -44,7 +44,7 @@ const getBanUser = async () => {
 };
 getBanUser();
 
-const kickUser = function () {
+const kickUser = () => {
   if (isUserInBanList) {
     window.location.href = '/';
     alert('블랙리스트 유저입니다');
@@ -257,7 +257,6 @@ socket.on('donation', (data) => {
 
 // 블랙리스트 정보 업데이트
 socket.on('ban', () => {
-  getUserData();
   getBanUser();
   kickUser();
 });

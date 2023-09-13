@@ -161,41 +161,40 @@ const getData = async () => {
 getData();
 
 // 채팅 밴
-document.addEventListener('DOMContentLoaded', function () {
-  const banUserBtn = document.getElementById('user-ban-btn');
 
-  banUserBtn.addEventListener('click', async () => {
-    const userNickname = document.getElementById('ban-user-input').value;
-    const banReason = document.getElementById('ban-reason-input').value;
+const banUserBtn = document.getElementById('user-ban-btn');
 
-    await fetch(`/api/channel/${channelId}/ban`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userNickname: userNickname,
-        reason: banReason,
-      }),
+banUserBtn.addEventListener('click', async () => {
+  const userNickname = document.getElementById('ban-user-input').value;
+  const banReason = document.getElementById('ban-reason-input').value;
+
+  await fetch(`/api/channel/${channelId}/ban`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userNickname: userNickname,
+      reason: banReason,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((errorData) => {
+          throw new Error(errorData.message);
+        });
+      }
+      return response.json();
     })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((errorData) => {
-            throw new Error(errorData.message);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        alert(`${userNickname}님의 채팅을 금지했습니다.`);
-        if (data) {
-          socket.emit('ban');
-        }
-      })
-      .catch((error) => {
-        alert(`${error.message}`);
-      });
-  });
+    .then((data) => {
+      alert(`${userNickname}님의 채팅을 금지했습니다.`);
+      if (data) {
+        socket.emit('ban');
+      }
+    })
+    .catch((error) => {
+      alert(`${error.message}`);
+    });
 });
 
 let isLoading;
