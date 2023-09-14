@@ -13,6 +13,10 @@ export interface ILivesServiceGetLiveById {
   liveId: string;
 }
 
+export interface ILivesServiceGetRecentReplays {
+  pageReqDto: PageReqDto;
+}
+
 export interface ILivesServiceGetReplaysByChannelId {
   channelId: string;
   pageReqDto: PageReqDto;
