@@ -1,4 +1,8 @@
 <style>
+  #alert-container.off {
+    display: none !important;
+  }
+
   #alert-count {
     display: flex;
     justify-content: center;
@@ -118,7 +122,10 @@
             <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
           </a>
         </li> -->
-        <li class="nav-item dropdown pe-2 d-flex align-items-center">
+        <li
+          id="alert-container"
+          class="nav-item dropdown pe-2 d-flex align-items-center"
+        >
           <div id="alert-count"><span id="alert-count-num"></span></div>
           <a
             href="javascript:;"
@@ -245,7 +252,7 @@
     const signinBtn = document.getElementById('signin-btn');
     const signoutBtn = document.getElementById('signout-btn');
     const myChannelBtn = document.getElementById('my-channel-btn');
-
+    const alertContainerEl = document.querySelector('#alert-container');
     function getCookie(token) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${token}=`);
@@ -263,6 +270,7 @@
       signinBtn.style.display = 'block';
       signoutBtn.style.display = 'none';
       myChannelBtn.style.display = 'none';
+      alertContainerEl.classList.add('off');
     }
 
     signoutBtn.addEventListener('click', async (event) => {
