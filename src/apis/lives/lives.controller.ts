@@ -44,9 +44,13 @@ export class LivesController {
   }
 
   @Get('replay/:channelId')
-  async getReplays(@Param() params: { channelId: string }): Promise<Live[]> {
+  async getReplays(
+    @Param() params: { channelId: string },
+    @Query() pageReqDto: PageReqDto,
+  ): Promise<Live[]> {
     const replays = await this.livesService.getReplaysByChannelId({
       channelId: params.channelId,
+      pageReqDto,
     });
     return replays;
   }

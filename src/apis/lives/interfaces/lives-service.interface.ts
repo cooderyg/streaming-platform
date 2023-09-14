@@ -15,6 +15,7 @@ export interface ILivesServiceGetLiveById {
 
 export interface ILivesServiceGetReplaysByChannelId {
   channelId: string;
+  pageReqDto: PageReqDto;
 }
 
 export interface ILivesServiceGetLivesForAdmin {

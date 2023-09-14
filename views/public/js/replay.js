@@ -95,16 +95,19 @@ const getData = async () => {
   subscribeBtn.setAttribute('data-channelId', `${channelId}`);
 
   // 다시보기 불러오기
+  let io;
+  let isFirst = true;
+  let count = 1;
+  let lastDiv;
   const replayContainer = document.getElementById('replay-container');
-  const resReplay = await fetch(`/api/lives/replay/${channelId}`);
-  const dataReplay = await resReplay.json();
-  dataReplay.forEach((e) => {
-    const liveId = e.id;
-    const liveTitle = e.title;
-    const createdAt = e.createdAt.split('T')[0];
-    const thumbnailUrl = e.thumbnailUrl;
+  const setReplay = (data) => {
+    data.forEach((e) => {
+      const liveId = e.id;
+      const liveTitle = e.title;
+      const createdAt = e.createdAt.split('T')[0];
+      const thumbnailUrl = e.thumbnailUrl;
 
-    const temp_html = `
+      const temp_html = `
     <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
     <div class="card card-blog card-plain">
       <div class="position-relative">
@@ -123,12 +126,103 @@ const getData = async () => {
         <a href="javascript:;">
           <h5>${liveTitle}</h5>
         </a>
-        <p class="mb-4 text-sm">#부트스트랩 #코딩</p>
       </div>
     </div>
   </div>`;
-    replayContainer.insertAdjacentHTML('beforeend', temp_html);
-  });
+      replayContainer.insertAdjacentHTML('beforeend', temp_html);
+    });
+    replayEls.forEach((replayEl) => {
+      replayEl.addEventListener('click', (e) => {
+        const liveId = e.currentTarget.getAttribute('data-live-id');
+        window.location.href = `/replay/${liveId}`;
+      });
+    });
+  };
+
+  const getReplays = async () => {
+    console.log('겟');
+    if (!isFirst) {
+      io.disconnect();
+    }
+    isFirst = false;
+    count = 1;
+
+    io = new IntersectionObserver((entries, observer) => {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          count++;
+          io.unobserve(lastDiv);
+          const ioFetch = async () => {
+            try {
+              const response = await fetch(
+                `/api/lives/replay/${channelId}?page=${count}&size=8`,
+              );
+              const data = await response.json();
+
+              if (data.length) {
+                setReplay(data);
+                lastDiv = document.querySelector(
+                  '#replay-container > div:last-child',
+                );
+                io.observe(lastDiv);
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          };
+          ioFetch();
+        }
+      });
+    });
+
+    try {
+      const resReplay = await fetch(
+        `/api/lives/replay/${channelId}?page=${count}&size=8`,
+      );
+      const dataReplay = await resReplay.json();
+      dataReplay.forEach((e) => {
+        const liveId = e.id;
+        const liveTitle = e.title;
+        const createdAt = e.createdAt.split('T')[0];
+        const thumbnailUrl = e.thumbnailUrl;
+
+        const temp_html = `
+      <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
+      <div class="card card-blog card-plain">
+        <div class="position-relative">
+          <a class="d-block shadow-xl border-radius-xl">
+            <img
+              src="${thumbnailUrl}"
+              alt="img-blur-shadow"
+              class="img-fluid shadow border-radius-xl"
+            />
+          </a>
+        </div>
+        <div class="card-body px-1 pb-0">
+          <p class="text-gradient text-dark mb-2 text-sm">
+            ${createdAt}
+          </p>
+          <a href="javascript:;">
+            <h5>${liveTitle}</h5>
+          </a>
+        </div>
+      </div>
+    </div>`;
+        replayContainer.insertAdjacentHTML('beforeend', temp_html);
+      });
+      const replayEls = document.querySelectorAll('.replay');
+      replayEls.forEach((replayEl) => {
+        replayEl.addEventListener('click', (e) => {
+          const liveId = e.currentTarget.getAttribute('data-live-id');
+          window.location.href = `/replay/${liveId}`;
+        });
+      });
+      lastDiv = document.querySelector('#replay-container > div:last-child');
+      io.observe(lastDiv);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const replayEls = document.querySelectorAll('.replay');
   replayEls.forEach((replayEl) => {

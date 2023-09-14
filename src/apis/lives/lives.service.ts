@@ -116,7 +116,9 @@ export class LivesService {
 
   async getReplaysByChannelId({
     channelId,
+    pageReqDto,
   }: ILivesServiceGetReplaysByChannelId): Promise<Live[]> {
+    const { page, size } = pageReqDto;
     return await this.livesRepository
       .createQueryBuilder('live')
       .select([
@@ -132,6 +134,8 @@ export class LivesService {
       .where('channel.id = :id', { id: channelId })
       .andWhere('live.endDate IS NOT NULL')
       .orderBy('live.createdAt', 'DESC')
+      .take(size)
+      .skip((page - 1) * size)
       .getMany();
   }
 
