@@ -124,11 +124,16 @@ export class LivesService {
         'live.title',
         'live.createdAt',
         'live.thumbnailUrl',
+        'tag.id',
         'tag.name',
         'channel.id',
+        'channel.name',
+        'user.id',
+        'user.imageUrl',
       ])
       .leftJoin('live.channel', 'channel')
       .leftJoin('live.tags', 'tag')
+      .leftJoin('channel.user', 'user')
       .where('live.endDate IS NOT NULL')
       .orderBy('live.createdAt', 'DESC')
       .take(size)

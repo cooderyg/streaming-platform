@@ -236,7 +236,7 @@ const setReplay = (data) => {
     const liveId = e.id;
     const liveTitle = e.title;
     const createdAt = e.createdAt.split('T')[0];
-    const thumbnailUrl = e.thumbnailUrl;
+    const thumbnailUrl = e.thumbnailUrl || '../img/freelyb-banner.png';
 
     const temp_html = `
     <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
@@ -315,7 +315,7 @@ const getReplays = async () => {
       const liveId = e.id;
       const liveTitle = e.title;
       const createdAt = e.createdAt.split('T')[0];
-      const thumbnailUrl = e.thumbnailUrl;
+      const thumbnailUrl = e.thumbnailUrl || '../img/freelyb-banner.png';
 
       const temp_html = `
       <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
