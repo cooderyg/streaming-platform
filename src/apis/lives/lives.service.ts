@@ -22,6 +22,7 @@ import {
   ILivesServiceGetLiveIncome,
   ILivesServiceGetLives,
   ILivesServiceGetLivesForAdmin,
+  ILivesServiceGetRecentReplays,
   ILivesServiceGetReplaysByChannelId,
   ILivesServiceSearch,
   ILivesServiceStartLive,
@@ -112,6 +113,29 @@ export class LivesService {
       .leftJoin('live.channel', 'channel')
       .where('channel.id = :id', { id: channelId })
       .getMany();
+  }
+
+  async getRecentReplays({ pageReqDto }: ILivesServiceGetRecentReplays) {
+    const { page, size } = pageReqDto;
+    const replays = await this.livesRepository
+      .createQueryBuilder('live')
+      .select([
+        'live.id',
+        'live.title',
+        'live.createdAt',
+        'live.thumbnailUrl',
+        'tag.name',
+        'channel.id',
+      ])
+      .leftJoin('live.channel', 'channel')
+      .leftJoin('live.tags', 'tag')
+      .where('live.endDate IS NOT NULL')
+      .orderBy('live.createdAt', 'DESC')
+      .take(size)
+      .skip((page - 1) * size)
+      .getMany();
+
+    return replays;
   }
 
   async getReplaysByChannelId({
