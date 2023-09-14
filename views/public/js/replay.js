@@ -108,7 +108,7 @@ const getData = async () => {
       const thumbnailUrl = e.thumbnailUrl;
 
       const temp_html = `
-    <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
+    <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-replay-id=${liveId}>
     <div class="card card-blog card-plain">
       <div class="position-relative">
         <a class="d-block shadow-xl border-radius-xl">
@@ -133,7 +133,7 @@ const getData = async () => {
     });
     replayEls.forEach((replayEl) => {
       replayEl.addEventListener('click', (e) => {
-        const liveId = e.currentTarget.getAttribute('data-live-id');
+        const liveId = e.currentTarget.getAttribute('data-replay-id');
         window.location.href = `/replay/${liveId}`;
       });
     });
@@ -187,7 +187,7 @@ const getData = async () => {
         const thumbnailUrl = e.thumbnailUrl;
 
         const temp_html = `
-      <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
+      <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-replay-id=${liveId}>
       <div class="card card-blog card-plain">
         <div class="position-relative">
           <a class="d-block shadow-xl border-radius-xl">
@@ -213,7 +213,7 @@ const getData = async () => {
       const replayEls = document.querySelectorAll('.replay');
       replayEls.forEach((replayEl) => {
         replayEl.addEventListener('click', (e) => {
-          const liveId = e.currentTarget.getAttribute('data-live-id');
+          const liveId = e.currentTarget.getAttribute('data-replay-id');
           window.location.href = `/replay/${liveId}`;
         });
       });
@@ -223,6 +223,7 @@ const getData = async () => {
       console.error(err);
     }
   };
+  getReplays();
 
   const replayEls = document.querySelectorAll('.replay');
   replayEls.forEach((replayEl) => {

@@ -291,6 +291,7 @@ const setReplay = (data) => {
   </div>`;
     replayContainer.insertAdjacentHTML('beforeend', temp_html);
   });
+  const replayEls = document.querySelectorAll('.replay');
   replayEls.forEach((replayEl) => {
     replayEl.addEventListener('click', (e) => {
       const liveId = e.currentTarget.getAttribute('data-live-id');
