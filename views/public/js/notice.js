@@ -35,26 +35,19 @@ async function getMyChannelData(channelId) {
   return [channelName, streamerImg];
 }
 
-// notice-comment get
-async function getNoticeComment(noticeId) {
-  const res = await fetch(`/api/${noticeId}/notice-comments`);
-  const data = await res.json();
-  return data;
-}
-
 async function getMyChannelNoticeData(channelId, channelName, profileImg) {
   const res = await fetch(`/api/${channelId}/notices`);
   const data = await res.json();
 
   const noticeContainer = document.getElementById('notice-container');
+  noticeContainer.innerHTML = ''
   data.forEach(async (notice) => {
     const noticeDate = notice.createdAt.split('T')[0];
     const noticeContent = notice.content;
     const noticeId = notice.id;
     const noticeImg = notice.imageUrl;
+    const noticeCommentData = notice.noticeComment
 
-    // 코멘트 가져오기
-    const noticeCommentData = await getNoticeComment(noticeId);
     noticeContainer.insertAdjacentHTML(
       'beforeend',
       `<div class="card mt-3" data-notice-id=${noticeId}>

@@ -45,11 +45,13 @@ async function getNoticeComment(noticeId) {
   return data;
 }
 
+// one notice-content
 async function getMyChannelNoticeData(channelName, profileImg) {
   const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
   const notice = await res.json();
 
   const noticeContainer = document.getElementById('notice-container');
+  noticeContainer.innerHTML = '';
 
   const noticeDate = notice.createdAt.split('T')[0];
   const noticeContent = notice.content;
@@ -57,6 +59,7 @@ async function getMyChannelNoticeData(channelName, profileImg) {
 
   // 코멘트 가져오기
   const noticeCommentData = await getNoticeComment(noticeId);
+
   console.log(noticeCommentData);
   noticeContainer.insertAdjacentHTML(
     'beforeend',
@@ -86,19 +89,37 @@ async function getMyChannelNoticeData(channelName, profileImg) {
       <div class="ms-3 mt-3 me-3 mb-3">
         <!-- 여기에 댓글 입력란이 들어가야 합니다. -->
         <div>
-          <input type="text" placeholder="댓글다는자리">
+          <input type="text" placeholder="댓글을 입력해 주세요">
         </div>
       </div>
     </div>`,
   );
-  
-  noticeCommentData`<div class="ms-3 mt-3 me-3 mb-3">
-      <div>
-        댓글들 들어갈 자리
-      </div>
-    </div>`;
+  const noticeCard = document.getElementById('notice-card');
+  noticeCommentData.forEach((comment) => {
+    noticeCard.insertAdjacentHTML(
+      'beforeend',
+      `<div class="ms-3 mt-3 me-3 mb-3 row gx-4">
+        <div
+          class="col-auto"
+          id="channel-profile-image"
+          style="width: 35px; height: 35px;
+          background-image: url(${
+            comment.user.imageUrl || '/img/profile.jpg'
+          }); background-size: cover; border-radius: 10px;">
+        </div>
+        <div class="col-auto my-auto">
+          <a href="#">${comment.user.nickname}</a>
+          <span style="font-size: 13px;">${
+            comment.createdAt.split('T')[0]
+          }</span>
+        </div>
+        <div class="my-auto" style="padding: 0; padding-left: 47px;">
+          <span>${comment.content}</span>
+        </div>
+      </div>`,
+    );
+  });
 }
-
 // 시작
 (async () => {
   // Channel 데이터 뿌려주기 + Id 획득
