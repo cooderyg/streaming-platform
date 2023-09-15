@@ -46,7 +46,11 @@ async function getNoticeComment(noticeId) {
 }
 
 // one notice-content
-async function getMyChannelNoticeData(channelName, profileImg) {
+async function getMyChannelNoticeData(
+  channelName,
+  profileImg,
+  noticeCommentData,
+) {
   const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
   const notice = await res.json();
 
@@ -57,10 +61,6 @@ async function getMyChannelNoticeData(channelName, profileImg) {
   const noticeContent = notice.content;
   const noticeImg = notice.imageUrl;
 
-  // 코멘트 가져오기
-  const noticeCommentData = await getNoticeComment(noticeId);
-
-  console.log(noticeCommentData);
   noticeContainer.insertAdjacentHTML(
     'beforeend',
     `<div class="card mt-3" data-notice-id=${noticeId} id="notice-card">
@@ -89,11 +89,14 @@ async function getMyChannelNoticeData(channelName, profileImg) {
       <div class="ms-3 mt-3 me-3 mb-3">
         <!-- 여기에 댓글 입력란이 들어가야 합니다. -->
         <div>
-          <input type="text" placeholder="댓글을 입력해 주세요">
+          <form id="comment-form" action="#" method="post">
+            <input class="form-control-sm col-10" placeholder="댓글 추가..." type="text" id="comment-input" name="comment" required size=60 style="border: none; border-bottom: 1px solid; border-radius: 0px;">
+          </form>
         </div>
       </div>
     </div>`,
   );
+
   const noticeCard = document.getElementById('notice-card');
   noticeCommentData.forEach((comment) => {
     noticeCard.insertAdjacentHTML(
@@ -120,10 +123,38 @@ async function getMyChannelNoticeData(channelName, profileImg) {
     );
   });
 }
+
 // 시작
 (async () => {
   // Channel 데이터 뿌려주기 + Id 획득
   const [channelName, profileImg] = await getMyChannelData(channelId);
 
-  await getMyChannelNoticeData(channelName, profileImg);
+  // 코멘트 가져오기
+  const noticeCommentData = await getNoticeComment(noticeId);
+
+  await getMyChannelNoticeData(channelName, profileImg, noticeCommentData);
+
+  // 댓글 작성
+  document
+    .getElementById('comment-form')
+    .addEventListener('submit', async (e) => {
+      e.preventDefault(); // 폼 제출 이벤트 기본 동작을 막습니다.
+
+      // 입력된 댓글 내용 가져오기
+      const commentText = document.getElementById('comment-input').value;
+
+      const data = {
+        content: commentText,
+      };
+
+      // POST 요청 보내기
+      const response = fetch(`/api/${noticeId}/notice-comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      window.location.reload();
+    });
 })();
