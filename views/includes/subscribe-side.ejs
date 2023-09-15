@@ -30,10 +30,6 @@
     </a>
   </div>
   <hr class="horizontal dark mt-0" />
-  <a href="/recent-replay"
-    ><h4 class="subscribe-title">최근 종료된 라이브</h4></a
-  >
-  <hr class="horizontal dark mt-0" />
   <h4 class="subscribe-title">구독 채널</h4>
   <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
     <ul class="navbar-nav" id="subscribe-channel-nav">
@@ -51,6 +47,11 @@
       try {
         const response = await fetch('/api/channels/subscribe/profiles');
         const data = await response.json();
+
+        if (!data.length) {
+          subscribeChannelNavEl.innerHTML = `<li style="margin: 0.4rem 1rem;">좋아하는 채널을 구독하세요!</li>`;
+          return;
+        }
         const temp = data
           .map((data) => {
             const imgTemp = data.profileImgUrl || '/img/profile.jpg';
@@ -77,6 +78,8 @@
       } catch (error) {
         console.error(error);
       }
+    } else {
+      subscribeChannelNavEl.innerHTML = `<li style="margin: 0.4rem 1rem;">로그인 후 채널을 구독하세요!</li>`;
     }
   };
   getSubscribeData();
