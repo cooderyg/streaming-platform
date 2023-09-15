@@ -10,8 +10,8 @@ import { Channel } from '../channels/entities/channel.entity';
 import { EventsModule } from '../events/events.module';
 import { AlertsModule } from '../alerts/alerts.module';
 import { UsersModule } from '../users/users.module';
-// import { ElasticsearchModule } from '@nestjs/elasticsearch';
-// import { Livesubscriber } from './lives.subscriber';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import { Livesubscriber } from './lives.subscriber';
 import { BullModule } from '@nestjs/bull';
 import { LivesProcessor } from './lives.processor';
 import { SubscribesModule } from '../subscribes/subscribes.module';
@@ -23,16 +23,16 @@ import { SubscribesModule } from '../subscribes/subscribes.module';
     ChannelsModule,
     CreditHistoriesModule,
     EventsModule,
-    // ElasticsearchModule.register({
-    //   node: process.env.ELASTIC_SEARCH_NODE,
-    // }),
+    ElasticsearchModule.register({
+      node: process.env.ELASTIC_SEARCH_NODE,
+    }),
     SubscribesModule,
     TagsModule,
     TypeOrmModule.forFeature([Live, Channel]),
     UsersModule,
   ],
   controllers: [LivesController],
-  providers: [LivesService, LivesProcessor],
+  providers: [LivesService, Livesubscriber, LivesProcessor],
   exports: [LivesService],
 })
 export class LivesModule {}
