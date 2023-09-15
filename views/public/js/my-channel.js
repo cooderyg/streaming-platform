@@ -253,6 +253,43 @@ async function writeMyChannel(channelId) {
     }),
   });
 }
+
+// 유저 정보 수정
+async function writeUser() {
+  // 유저 데이터
+  const res = await fetch(`/api/users`);
+  const data = await res.json();
+  const userNickname = data.nickname;
+  const userImgUrl = data.imageUrl || '/img/profile.jpg';
+
+  // 변경할 닉네임 값 가져오기
+  const changeNickname = document.getElementById('user-name-input').value;
+
+  // 변경할 프로필 값 가져오기
+  let changeImgUrl = document.getElementById('user-img-input').value;
+  const fileInput = document.getElementById('user-img-input');
+  let formData = new FormData();
+  formData.append('file', fileInput.files[0]);
+  const uploadRes = await fetch('/api/uploads/profile-image', {
+    method: 'POST',
+    cache: 'no-cache',
+    body: formData, // body 부분에 폼데이터 변수를 할당
+  });
+  const uploadData = await uploadRes.json();
+  changeImgUrl = uploadData.url;
+
+  await fetch('/api/users', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      nickname: changeNickname || userNickname,
+      imageUrl: changeImgUrl || userImgUrl,
+    }),
+  });
+}
+
 // 시작
 (async () => {
   // Channel 데이터 뿌려주기 + Id 획득
@@ -275,5 +312,11 @@ async function writeMyChannel(channelId) {
   const channelWriteIcon = document.getElementById('channel-write-btn');
   channelWriteIcon.addEventListener('click', () => {
     writeMyChannel(channelId);
+  });
+
+  // User 수정 이벤트 등록
+  const userWriteIcon = document.getElementById('user-write-btn');
+  userWriteIcon.addEventListener('click', () => {
+    writeUser();
   });
 })();
