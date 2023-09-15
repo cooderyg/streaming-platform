@@ -50,7 +50,7 @@ async function getMyChannelNoticeData(channelId) {
       channelNotices.insertAdjacentHTML(
         'beforeend',
         `<div>
-        <p data-notice-id=${noticeId} style=" white-space: nowrap; overflow: hidden;text-overflow: ellipsis; margin-bottom: 0;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></p>
+        <a href="/comments/${channelId}?noticeId=${noticeId}" data-notice-id=${noticeId} style=" white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0;">${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></a>
         <p style="font-size: 10px;">${noticeDate}</p>
         </div>`,
       );
@@ -58,7 +58,7 @@ async function getMyChannelNoticeData(channelId) {
       channelNotices.insertAdjacentHTML(
         'beforeend',
         `<div>
-        <p data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis; margin-bottom: 0;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}</p>
+        <a href="/comments/${channelId}?noticeId=${noticeId}" data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis; margin-bottom: 0;">${noticeContent}</a>
         <p style="font-size: 10px;">${noticeDate}</p>
         </div>`,
       );
@@ -66,37 +66,37 @@ async function getMyChannelNoticeData(channelId) {
   });
 }
 
-// 공지 상세 받아오기
-const getNoticeDetail = async (channelId) => {
-  const noticeDetailModal = document.getElementById('notice-detail-modal');
-  noticeDetailModal.addEventListener('shown.bs.modal', async (event) => {
-    const notice = event.relatedTarget;
-    const noticeId = notice.getAttribute('data-notice-id');
-    const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
-    const data = await res.json();
-    if (data.imageUrl) {
-      const temp = `<img src="${
-        data.imageUrl
-      }" style="width: 100%; height: 100%; object-fit: contain;">
-      <div>${data.content}</div>
-      <div style="font-size: 10px; margin-top:5px;">${
-        data.createdAt.split('T')[0]
-      }</div>`;
-      document.getElementById('notice-detail-body').innerHTML = temp;
-    } else {
-      const temp = `
-      <div>${data.content}</div>
-      <div style="font-size: 10px; margin-top:5px;">${
-        data.createdAt.split('T')[0]
-      }</div>`;
-      document.getElementById('notice-detail-body').innerHTML = temp;
-    }
-    document
-      .getElementById('notice-delete-btn')
-      .setAttribute('data-notice-id', noticeId);
-    deleteNotice(channelId);
-  });
-};
+// // 공지 상세 받아오기
+// const getNoticeDetail = async (channelId) => {
+//   const noticeDetailModal = document.getElementById('notice-detail-modal');
+//   noticeDetailModal.addEventListener('shown.bs.modal', async (event) => {
+//     const notice = event.relatedTarget;
+//     const noticeId = notice.getAttribute('data-notice-id');
+//     const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
+//     const data = await res.json();
+//     if (data.imageUrl) {
+//       const temp = `<img src="${
+//         data.imageUrl
+//       }" style="width: 100%; height: 100%; object-fit: contain;">
+//       <div>${data.content}</a></div>
+//       <div style="font-size: 10px; margin-top:5px;">${
+//         data.createdAt.split('T')[0]
+//       }</div>`;
+//       document.getElementById('notice-detail-body').innerHTML = temp;
+//     } else {
+//       const temp = `
+//       <div>${data.content}</div>
+//       <div style="font-size: 10px; margin-top:5px;">${
+//         data.createdAt.split('T')[0]
+//       }</div>`;
+//       document.getElementById('notice-detail-body').innerHTML = temp;
+//     }
+//     document
+//       .getElementById('notice-delete-btn')
+//       .setAttribute('data-notice-id', noticeId);
+//     deleteNotice(channelId);
+//   });
+// };
 
 //공지 삭제
 const deleteNotice = (channelId) => {
@@ -390,11 +390,15 @@ const getReplays = async (channelId) => {
   // Channel 데이터 뿌려주기 + Id 획득
   const channelId = await getMyChannelData();
 
+  document
+    .getElementById('notice-label')
+    .setAttribute('href', `/notice/${channelId}`);
+
   // Notice 데이터 뿌려주기
   await getMyChannelNoticeData(channelId);
 
-  // NoticeDetail 모달 활성화
-  await getNoticeDetail(channelId);
+  // // NoticeDetail 모달 활성화
+  // await getNoticeDetail(channelId);
 
   //후원 top5명 뿌려주기
   await getChannelDonationTop5(channelId);
