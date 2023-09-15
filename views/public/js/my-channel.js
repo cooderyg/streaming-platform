@@ -6,12 +6,12 @@ async function getMyChannelData() {
   // Todo:  배너,프로필 구분 필요
   const channelBannerImg =
     data.bannerImgUrl || '/img/curved-images/curved0.jpg';
-  const streamerImg = data.user.profileImgUrl || '/img/profile.jpg';
+  const streamerImg = data.user.imageUrl || '/img/profile.jpg';
   const channelCreatedAt = data.createdAt.split('T')['0'];
   const subscribeCount = data.subscribes.length;
   const streamerEmail = data.user.email;
   const channelInfo = data.introduction || '';
-
+  console.log(streamerImg);
   document.getElementById(
     'channel-banner-img',
   ).style.backgroundImage = `url(${channelBannerImg})`;
@@ -34,6 +34,8 @@ async function getMyChannelData() {
     'channel-info-container',
   ).innerText = `${channelInfo}`;
 
+  document.getElementById('channel-img-preview').src = channelBannerImg;
+  document.getElementById('user-img-preview').src = streamerImg;
   return data.id;
 }
 
@@ -194,13 +196,12 @@ categoryCheckboxes.forEach((checkbox) => {
   });
 });
 
-// 변경할 베너 이미지 값 가져오기
-let bannerImgUrl = document.getElementById('channel-img-input').value;
+// 변경할 베너 이미지 값 가져오기 & 미리보기
+let bannerImgUrl;
 
-const channelImageUploadBtn = document.getElementById(
-  'channel-image-upload-btn',
-);
-channelImageUploadBtn.addEventListener('click', async () => {
+const channelPreviewImg = document.getElementById('channel-img-input');
+const channelImgPreview = document.getElementById('channel-img-preview');
+channelPreviewImg.addEventListener('change', async () => {
   const fileInput = document.getElementById('channel-img-input');
   let formData = new FormData();
   formData.append('file', fileInput.files[0]);
@@ -211,6 +212,7 @@ channelImageUploadBtn.addEventListener('click', async () => {
   });
   const uploadData = await uploadRes.json();
   bannerImgUrl = uploadData.url;
+  channelImgPreview.src = bannerImgUrl;
 });
 
 async function writeMyChannel(channelId) {
@@ -254,6 +256,24 @@ async function writeMyChannel(channelId) {
   });
 }
 
+// 변경할 프로필 이미지 값 가져오기 & 미리보기
+const userImgInput = document.getElementById('user-img-input');
+const userImgPreview = document.getElementById('user-img-preview');
+let changeUserImgUrl;
+userImgInput.addEventListener('change', async () => {
+  // 변경할 프로필 값 가져오기
+  let formData = new FormData();
+  formData.append('file', userImgInput.files[0]);
+  const uploadRes = await fetch('/api/uploads/profile-image', {
+    method: 'POST',
+    cache: 'no-cache',
+    body: formData, // body 부분에 폼데이터 변수를 할당
+  });
+  const uploadData = await uploadRes.json();
+  changeUserImgUrl = uploadData.url;
+  userImgPreview.src = changeUserImgUrl;
+});
+
 // 유저 정보 수정
 async function writeUser() {
   // 유저 데이터
@@ -265,19 +285,6 @@ async function writeUser() {
   // 변경할 닉네임 값 가져오기
   const changeNickname = document.getElementById('user-name-input').value;
 
-  // 변경할 프로필 값 가져오기
-  let changeImgUrl = document.getElementById('user-img-input').value;
-  const fileInput = document.getElementById('user-img-input');
-  let formData = new FormData();
-  formData.append('file', fileInput.files[0]);
-  const uploadRes = await fetch('/api/uploads/profile-image', {
-    method: 'POST',
-    cache: 'no-cache',
-    body: formData, // body 부분에 폼데이터 변수를 할당
-  });
-  const uploadData = await uploadRes.json();
-  changeImgUrl = uploadData.url;
-
   await fetch('/api/users', {
     method: 'PUT',
     headers: {
@@ -285,7 +292,17 @@ async function writeUser() {
     },
     body: JSON.stringify({
       nickname: changeNickname || userNickname,
-      imageUrl: changeImgUrl || userImgUrl,
+      imageUrl: changeUserImgUrl || userImgUrl,
+    }),
+  });
+
+  await fetch(`/api/channels/update/${channelId}/profile`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      profileImgUrl: changeUserImgUrl || userImgUrl,
     }),
   });
 }
@@ -336,7 +353,7 @@ const setReplay = (data) => {
 };
 
 const getReplays = async (channelId) => {
-  console.log('겟');
+  // console.log('겟');
   if (!isFirst) {
     io.disconnect();
   }
@@ -451,8 +468,7 @@ const getReplays = async (channelId) => {
   // User 수정 이벤트 등록
   const userWriteIcon = document.getElementById('user-write-btn');
   userWriteIcon.addEventListener('click', () => {
-    writeUser();
+    writeUser(channelId);
   });
   getReplays(channelId);
-
 })();

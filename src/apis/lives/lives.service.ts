@@ -30,7 +30,7 @@ import {
   ILivesServiceVerifyOwner,
   ILivesServiceVerifyOwnerRetrun,
 } from './interfaces/lives-service.interface';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
+// import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { UsersService } from '../users/users.service';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
@@ -49,7 +49,7 @@ export class LivesService {
     private readonly eventsGateway: EventsGateway,
     private readonly subscribesService: SubscribesService,
     private readonly tagsService: TagsService,
-    private readonly elasticsearchService: ElasticsearchService,
+    // private readonly elasticsearchService: ElasticsearchService,
     private readonly usersService: UsersService,
   ) {}
   async getLives({ pageReqDto }: ILivesServiceGetLives): Promise<Live[]> {
@@ -256,70 +256,70 @@ export class LivesService {
     return lives;
   }
 
-  async getElasticsearch({ keyword, page, size }) {
-    try {
-      const lives = await this.elasticsearchService.search({
-        index: 'test13',
-        size: size,
-        from: (page - 1) * size,
-        query: {
-          bool: {
-            must: {
-              multi_match: {
-                query: keyword,
-                fields: ['title', 'tags', 'channel_name'],
-              },
-            },
-            must_not: {
-              exists: {
-                field: 'end_date',
-              },
-            },
-          },
-        },
-      });
-      return lives;
-    } catch (error) {
-      throw new HttpException(
-        error?.body?.error?.type || 'ES',
-        error?.body?.status || 500,
-      );
-    }
-  }
+  // async getElasticsearch({ keyword, page, size }) {
+  //   try {
+  //     const lives = await this.elasticsearchService.search({
+  //       index: 'test13',
+  //       size: size,
+  //       from: (page - 1) * size,
+  //       query: {
+  //         bool: {
+  //           must: {
+  //             multi_match: {
+  //               query: keyword,
+  //               fields: ['title', 'tags', 'channel_name'],
+  //             },
+  //           },
+  //           must_not: {
+  //             exists: {
+  //               field: 'end_date',
+  //             },
+  //           },
+  //         },
+  //       },
+  //     });
+  //     return lives;
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       error?.body?.error?.type || 'ES',
+  //       error?.body?.status || 500,
+  //     );
+  //   }
+  // }
 
-  async getElasticsearchReplaies({ keyword, page, size }) {
-    try {
-      const lives = await this.elasticsearchService.search({
-        index: 'test13',
-        size: size,
-        from: (page - 1) * size,
-        query: {
-          bool: {
-            must: [
-              {
-                multi_match: {
-                  query: keyword,
-                  fields: ['title', 'tags', 'channel_name'],
-                },
-              },
-              {
-                exists: {
-                  field: 'replay_url',
-                },
-              },
-            ],
-          },
-        },
-      });
+  // async getElasticsearchReplaies({ keyword, page, size }) {
+  //   try {
+  //     const lives = await this.elasticsearchService.search({
+  //       index: 'test13',
+  //       size: size,
+  //       from: (page - 1) * size,
+  //       query: {
+  //         bool: {
+  //           must: [
+  //             {
+  //               multi_match: {
+  //                 query: keyword,
+  //                 fields: ['title', 'tags', 'channel_name'],
+  //               },
+  //             },
+  //             {
+  //               exists: {
+  //                 field: 'replay_url',
+  //               },
+  //             },
+  //           ],
+  //         },
+  //       },
+  //     });
 
-      return lives;
-    } catch (error) {
-      throw new HttpException(
-        error?.body?.error?.type || 'ES',
-        error?.body?.status || 500,
-      );
-    }
-  }
+  //     return lives;
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       error?.body?.error?.type || 'ES',
+  //       error?.body?.status || 500,
+  //     );
+  //   }
+  // }
 
   async createLive({
     userId,
