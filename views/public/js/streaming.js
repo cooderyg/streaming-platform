@@ -51,41 +51,6 @@ const getData = async () => {
     .getElementById('channel-contact-email')
     .insertAdjacentText('beforeend', streamerEmail);
 
-  // 공지 조회
-  const resNotice = await fetch(`/api/${channelId}/notices`);
-  const dataNotice = await resNotice.json();
-
-  if (dataNotice.length) {
-    noticeId = dataNotice[0].id;
-    document.querySelector('.channel-notice').innerText = dataNotice[0].content;
-    document
-      .querySelector('.channel-notice-img')
-      .insertAdjacentHTML(
-        'beforeEnd',
-        `<img src="${dataNotice[0].imageUrl}" style="max-width: 800px">`,
-      );
-  } else {
-    const commentContaierEl = document.querySelector('#comment-container');
-    commentContaierEl.remove();
-  }
-
-  // 공지 댓글 조회
-  const resComment = await fetch(`/api/${noticeId}/notice-comments`);
-  const dataComment = await resComment.json();
-  const commentList = document.querySelector('.notice-comments');
-  if (dataComment.length) {
-    commentList.insertAdjacentHTML(
-      'beforeEnd',
-      `<p> 댓글(${dataComment.length})</p>`,
-    );
-    dataComment.forEach((comment) => {
-      commentList.insertAdjacentHTML(
-        'beforeEnd',
-        `<p style="padding: 0px; margin-bottom: 1px;">${comment.user.nickname} | ${comment.content}</p>`,
-      );
-    });
-  }
-
   // 구독여부 확인
   fetch(`/api/subscribes/check/${channelId}`)
     .then((res) => res.json())
@@ -224,17 +189,6 @@ subscribeBtn.addEventListener('click', async (e) => {
   }
 
   isLoading = false;
-});
-
-const channelNoticeBtn = document.getElementById('notice-btn');
-const channelInfoBtn = document.getElementById('channel-info-btn');
-channelInfoBtn.addEventListener('click', () => {
-  document.getElementById('channel-notice-row').style.display = 'none';
-  document.getElementById('channel-info-row').style.display = '';
-});
-channelNoticeBtn.addEventListener('click', () => {
-  document.getElementById('channel-info-row').style.display = 'none';
-  document.getElementById('channel-notice-row').style.display = '';
 });
 
 //비디오 플레이어 설정
