@@ -64,6 +64,7 @@ export class ChannelsService {
         'subscribes.id',
         'user.email',
         'user.id',
+        'user.imageUrl',
       ])
       .leftJoin('channel.categories', 'categoryChannel')
       .leftJoin('channel.subscribes', 'subscribes')
