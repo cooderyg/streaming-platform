@@ -258,5 +258,4 @@ socket.on('donation', (data) => {
 // 블랙리스트 정보 업데이트
 socket.on('ban', () => {
   getBanUser();
-  kickUser();
 });
