@@ -1,0 +1,173 @@
+<!--
+=========================================================
+* Soft UI Dashboard - v1.0.7
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
+* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="apple-touch-icon" sizes="76x76" href="../img/apple-icon.png" />
+    <%-include('includes/head.ejs') %>
+    <!--     Fonts and icons     -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"
+      rel="stylesheet"
+    />
+    <!-- Nucleo Icons -->
+    <link href="../css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script
+      src="https://kit.fontawesome.com/42d5adcbca.js"
+      crossorigin="anonymous"
+    ></script>
+    <link href="../css/nucleo-svg.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link
+      id="pagestyle"
+      href="../css/soft-ui-dashboard.css?v=1.0.7"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/8691ffe7bb.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <script defer src="/js/comment.js"></script>
+  </head>
+
+  <body class="g-sidenav-show bg-gray-100">
+    <!-- side navbar start -->
+    <%-include('includes/side-navbar.ejs') %>
+    <!-- side navbar end -->
+    <div
+      class="main-content position-relative bg-gray-100 max-height-vh-100 h-100"
+    >
+      <!-- header Navbar start -->
+      <%-include('includes/header-navbar.ejs') %>
+      <!-- header Navbar end -->
+      <div class="container-fluid" style="max-width: 1200px">
+        <!-- 채널 배너이미지 -->
+        <div
+          class="page-header min-height-300 border-radius-xl mt-4"
+          id="channel-banner-img"
+          style="background-image: url(''); background-position-y: 50%"
+        >
+          <span class="mask bg-gradient-primary opacity-6"></span>
+        </div>
+        <div class="card card-body blur shadow-blur mx-4 mt-n6 overflow-hidden">
+          <div class="row gx-4">
+            <div class="col-auto">
+              <div class="avatar avatar-xl position-relative" id="channel-img">
+                <!-- 채널 프로필이미지 자리 -->
+              </div>
+            </div>
+            <div class="col-auto my-auto">
+              <div class="h-100">
+                <a class="mb-1" style="font-size: 20px; " id="channel-name"></a>
+                <p
+                  class="mb-0 font-weight-bold text-sm"
+                  id="channel-subscribe-count"
+                ></p>
+              </div>
+            </div>
+          </div>
+          <div id="channel-info">
+            <!-- 채널 소개 자리 -->
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid py-4" style="max-width: 800px">
+        <div class="row">
+          <div class="col-12" id="notice-container">
+            <!-- 공지 카드 시작 -->
+            <div class="card mt-3" id="notice-card">
+              <!-- 여기에 프로필사진, 채널명이 들어가야 합니다 -->
+              <div class="ms-3 mt-3 me-3 row">
+                <div 
+                class="col-auto"
+                id="channel-profile-image" 
+                style="width: 50px; height: 50px; 
+                background-image: url(http://localhost:3000/img/profile.jpg); background-size: cover; border-radius: 10px;">
+                </div>
+                <div class="col-auto">
+                  <div>이슈봄봄TV</div>
+                  <div style="font-size: 13px;">작성일자</div>
+                </div>
+              </div>
+              <!-- 여기에 공지 내용이 들어가야 합니다. (시작)-->
+              <span class="ms-3 mt-3 me-3">
+                내용이 들어갑니다 아주 긴 내용이 들어갑니다. </br>
+                줄바꿈이 가능해야 합니다
+              </span>
+              <!-- 여기에 공지 내용이 들어가야 합니다. (끝)-->
+              <!-- 여기에 사진이 들어가야 합니다 (시작) -->
+              <div class="ms-3 mt-3 me-3" id="notice-image" style="width: auto;">
+                <!-- 이것은 예시 -->
+                <img src="https://streaming-service-bucket.s3.ap-northeast-2.amazonaws.com/images/team-2-1694161755828.jpg" 
+                style="width: 80%; object-fit: contain; border-radius: 20px;">
+              </div>
+              <!-- 여기에 사진이 들어가야 합니다 (끝) -->
+              <div class="ms-3 mt-3 me-3 mb-3" id="notice-comments">
+                <!-- 댓글 아이콘과 개수 -->
+                <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                <a href="#">여기 댓글 수를 띄워주세요</a>
+              </div>
+              <!-- 여기에 댓글 입력란이 들어가야 합니다. -->
+              <div>
+                <input type="text">
+              </div>
+              <!-- 여기에 작성된 댓글들이 보여야 합니다. -->
+              <div>
+                댓글들 들어갈 자리
+              </div>
+            </div>
+            <!-- 공지 카드 종료 -->
+          </div>
+        </div>
+        <footer class="footer pt-3">
+          <div class="container-fluid">
+            <div class="row align-items-center justify-content-lg-between">
+              <div class="mb-lg-0 mb-4">
+                <div
+                  class="copyright text-center text-sm text-muted text-lg-start"
+                >
+                  ©
+                  <script>
+                    document.write(new Date().getFullYear());
+                  </script>
+                  , made with <i class="fa fa-heart"></i> by
+                  <a
+                    href="https://www.creative-tim.com"
+                    class="font-weight-bold"
+                    target="_blank"
+                    >Creative Tim</a
+                  >
+                  for a better web.
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

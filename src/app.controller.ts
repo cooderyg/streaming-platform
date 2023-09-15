@@ -82,4 +82,16 @@ export class AppController {
   getSearch() {
     return { title: 'Title' };
   }
+
+  @Get('notice/:channelId')
+  @Render('notice')
+  getNotice() {
+    return { title: 'Title' };
+  }
+
+  @Get('comments/:noticeId')
+  @Render('comment')
+  getNoticeComment() {
+    return { title: 'Title' };
+  }
 }

@@ -98,30 +98,30 @@ export class LivesController {
     return lives;
   }
 
-  @Get('search/elastic-search')
-  async getElasticSearch(@Query() searchReqDto: SearchReqDto) {
-    const { keyword, page, size } = searchReqDto;
+  // @Get('search/elastic-search')
+  // async getElasticSearch(@Query() searchReqDto: SearchReqDto) {
+  //   const { keyword, page, size } = searchReqDto;
 
-    const lives = await this.livesService.getElasticsearch({
-      keyword,
-      page,
-      size,
-    });
+  //   const lives = await this.livesService.getElasticsearch({
+  //     keyword,
+  //     page,
+  //     size,
+  //   });
 
-    return lives;
-  }
+  //   return lives;
+  // }
 
-  @Get('search/elastic-search/replaies')
-  async getElasticSearchReplays(@Query() searchReqDto: SearchReqDto) {
-    const { keyword, page, size } = searchReqDto;
+  // @Get('search/elastic-search/replaies')
+  // async getElasticSearchReplays(@Query() searchReqDto: SearchReqDto) {
+  //   const { keyword, page, size } = searchReqDto;
 
-    const lives = await this.livesService.getElasticsearchReplaies({
-      keyword,
-      page,
-      size,
-    });
-    return lives;
-  }
+  //   const lives = await this.livesService.getElasticsearchReplaies({
+  //     keyword,
+  //     page,
+  //     size,
+  //   });
+  //   return lives;
+  // }
 
   @UseGuards(AccessAuthGuard)
   @Post()
