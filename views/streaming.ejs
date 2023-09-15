@@ -213,17 +213,17 @@
                 <div class="row">
                   <div class="col-md-8 d-flex align-items-center">
                     <div
-                      class="btn-group pt-4 ps-6"
+                      class="btn-group pt-4"
                       role="group"
                       aria-label="Basic example"
                     >
-                      <button
+                      <!-- <button
                         type="button"
                         class="btn btn-primary"
                         id="notice-btn"
                       >
                         공지사항
-                      </button>
+                      </button> -->
                       <!-- Todo: 다시보기페이지 링크 -->
                       <!-- <button type="button" class="btn btn-primary">
                         다시보기
@@ -250,55 +250,13 @@
                   </div>
                 </div>
               </div>
-              <div class="row" id="channel-notice-row">
-                <div class="card-body ps-6 col-xl-6 col-me-12">
-                  <p class="text-sm channel-notice">
-                    <!-- 공지 내용 -->
-                  </p>
-                  <div class="card channel-notice-img">
-                    <!-- 공지 이미지 -->
-                  </div>
-                  <hr class="horizontal gray-light my-4" />
-                </div>
-                <div
-                  id="comment-container"
-                  class="card-body col-xl-6 col-md-12"
-                  style="
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                  "
-                >
-                  <div class="p-6 notice-comments">
-                    <!-- 공지댓글자리  -->
-                  </div>
-                  <div class="input-group mb-3 p-3">
-                    <input
-                      type="text"
-                      style="height: 40px"
-                      class="form-control comment-input"
-                      placeholder="댓글을 입력하세요"
-                      aria-label="Recipient's username"
-                      aria-describedby="button-addon2"
-                    />
-                    <button
-                      class="btn btn-outline-secondary comment-input-btn"
-                      style="height: 40px"
-                      type="button"
-                      id="button-addon2"
-                    >
-                      작성
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="row" id="channel-info-row" style="display: none">
+              <div class="row" id="channel-info-row">
                 <div class="col-12">
                   <div class="card h-100">
                     <div class="card-header pb-0 p-3">
                       <div class="row">
                         <div class="col-md-8 d-flex align-items-center">
-                          <h6 class="mb-0">Channel Information</h6>
+                          <h6 class="mb-0">채널정보</h6>
                         </div>
                       </div>
                     </div>
@@ -306,7 +264,10 @@
                       <p class="text-sm" id="channel-info">
                         <!-- 채널 설명 -->
                       </p>
-                      <hr class="horizontal gray-light my-4" />
+                      <hr
+                        class="horizontal my-2"
+                        style="background-color: #ccc"
+                      />
                       <ul class="list-group">
                         <li
                           class="list-group-item border-0 ps-0 text-sm"
