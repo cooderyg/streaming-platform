@@ -18,7 +18,7 @@ const getChannelData = async () => {
   channelInfo = data.introduction || '';
   // Todo:  배너,프로필 구분 필요
   channelBannerImg = data.bannerImgUrl || '../img/curved-images/curved0.jpg';
-  const streamerImg = data.user.profileImgUrl || '/img/profile.jpg';
+  const streamerImg = data.user.imageUrl || '/img/profile.jpg';
   const channelCreatedAt = data.createdAt.split('T')['0'];
   const subscribeCount = data.subscribes.length;
   const streamerEmail = data.user.email;

@@ -4,7 +4,6 @@ const query = window.location.search;
 
 const channelId = params.split('/')[2];
 const noticeId = query.split('=')[1];
-
 async function getMyChannelData(channelId) {
   // 채널 데이터
   // const res = await fetch('/api/channels');
@@ -14,10 +13,10 @@ async function getMyChannelData(channelId) {
   // Todo:  배너,프로필 구분 필요
   const channelBannerImg =
     data.bannerImgUrl || '/img/curved-images/curved0.jpg';
-  const streamerImg = data.user.profileImgUrl || '/img/profile.jpg';
+  const streamerImg = data.user.imageUrl || '/img/profile.jpg';
   const subscribeCount = data.subscribes.length;
   const channelInfo = data.introduction || '';
-
+  console.log(data.user);
   document.getElementById(
     'channel-banner-img',
   ).style.backgroundImage = `url(${channelBannerImg})`;

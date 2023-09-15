@@ -11,7 +11,7 @@ async function getMyChannelData(channelId) {
   // Todo:  배너,프로필 구분 필요
   const channelBannerImg =
     data.bannerImgUrl || '/img/curved-images/curved0.jpg';
-  const streamerImg = data.user.profileImgUrl || '/img/profile.jpg';
+  const streamerImg = data.user.imageUrl || '/img/profile.jpg';
   const subscribeCount = data.subscribes.length;
   const channelInfo = data.introduction || '';
 
@@ -40,13 +40,13 @@ async function getMyChannelNoticeData(channelId, channelName, profileImg) {
   const data = await res.json();
 
   const noticeContainer = document.getElementById('notice-container');
-  noticeContainer.innerHTML = ''
+  noticeContainer.innerHTML = '';
   data.forEach(async (notice) => {
     const noticeDate = notice.createdAt.split('T')[0];
     const noticeContent = notice.content;
     const noticeId = notice.id;
     const noticeImg = notice.imageUrl;
-    const noticeCommentData = notice.noticeComment
+    const noticeCommentData = notice.noticeComment;
 
     noticeContainer.insertAdjacentHTML(
       'beforeend',

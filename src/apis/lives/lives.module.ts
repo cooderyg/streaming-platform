@@ -32,7 +32,7 @@ import { SubscribesModule } from '../subscribes/subscribes.module';
     UsersModule,
   ],
   controllers: [LivesController],
-  providers: [LivesService, Livesubscriber, LivesProcessor],
+  providers: [LivesService, LivesProcessor], //Livesubscriber,
   exports: [LivesService],
 })
 export class LivesModule {}
