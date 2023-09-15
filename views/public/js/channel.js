@@ -1,11 +1,5 @@
 const params = window.location.pathname;
 const channelId = params.split('/')[2];
-
-// '공지 사항' 링크 추가
-document
-  .getElementById('notice-label')
-  .setAttribute('href', `/notice/${channelId}`);
-
 let channelName;
 let channelInfo;
 let channelBannerImg;
@@ -51,7 +45,6 @@ const getChannelNoticeData = async () => {
   const data = await res.json();
   const channelNotices = document.getElementById('channel-notices');
   data.forEach((notice) => {
-    const noticeDate = notice.createdAt.split('T')[0];
     const noticeContent = notice.content;
     const noticeId = notice.id;
     const noticeImg = notice.imageUrl;
@@ -59,44 +52,42 @@ const getChannelNoticeData = async () => {
       channelNotices.insertAdjacentHTML(
         'beforeend',
         `<div>
-        <a href="/comments/${channelId}?noticeId=${noticeId}" data-notice-id=${noticeId} style=" white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0;">${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></a>
-        <p style="font-size: 10px;">${noticeDate}</p>
+        <p data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></p>
         </div>`,
       );
     } else {
       channelNotices.insertAdjacentHTML(
         'beforeend',
         `<div>
-        <a href="/comments/${channelId}?noticeId=${noticeId}" data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis; margin-bottom: 0;">${noticeContent}</a>
-        <p style="font-size: 10px;">${noticeDate}</p>
+        <p data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}</p>
         </div>`,
       );
     }
   });
 };
-// // 공지 상세 받아오기
-// const getNoticeDetail = async (channelId) => {
-//   const noticeDetailModal = document.getElementById('notice-detail-modal');
-//   noticeDetailModal.addEventListener('shown.bs.modal', async (event) => {
-//     const notice = event.relatedTarget;
-//     const noticeId = notice.getAttribute('data-notice-id');
-//     const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
-//     const data = await res.json();
-//     if (data.imageUrl) {
-//       const temp = `<img src="${
-//         data.imageUrl
-//       }" style="width: 100%; height: 100%; object-fit: contain;">
-//       <div>${data.content}</div>
-//       <div>${data.createdAt.split('T')[0]}`;
-//       document.getElementById('notice-detail-body').innerHTML = temp;
-//     } else {
-//       const temp = `
-//       <div>${data.content}</div>
-//       <div>${data.createdAt.split('T')[0]}`;
-//       document.getElementById('notice-detail-body').innerHTML = temp;
-//     }
-//   });
-// };
+// 공지 상세 받아오기
+const getNoticeDetail = async (channelId) => {
+  const noticeDetailModal = document.getElementById('notice-detail-modal');
+  noticeDetailModal.addEventListener('shown.bs.modal', async (event) => {
+    const notice = event.relatedTarget;
+    const noticeId = notice.getAttribute('data-notice-id');
+    const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
+    const data = await res.json();
+    if (data.imageUrl) {
+      const temp = `<img src="${
+        data.imageUrl
+      }" style="width: 100%; height: 100%; object-fit: contain;">
+      <div>${data.content}</div>
+      <div>${data.createdAt.split('T')[0]}`;
+      document.getElementById('notice-detail-body').innerHTML = temp;
+    } else {
+      const temp = `
+      <div>${data.content}</div>
+      <div>${data.createdAt.split('T')[0]}`;
+      document.getElementById('notice-detail-body').innerHTML = temp;
+    }
+  });
+};
 
 getChannelData();
 getChannelNoticeData();
