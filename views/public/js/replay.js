@@ -43,43 +43,16 @@ const getData = async () => {
 
   document
     .getElementById('channel-info')
-    .insertAdjacentText('beforeend', channelInfo);
+    .insertAdjacentText(
+      'beforeend',
+      channelInfo || '이 채널의 정보가 등록되지 않았습니다.',
+    );
   document
     .getElementById('channel-created-at')
     .insertAdjacentText('beforeend', channelCreatedAt);
   document
     .getElementById('channel-contact-email')
     .insertAdjacentText('beforeend', streamerEmail);
-
-  // 공지 조회
-  const resNotice = await fetch(`/api/${channelId}/notices`);
-  const dataNotice = await resNotice.json();
-
-  if (dataNotice.length) {
-    noticeId = dataNotice[0].id;
-    document.querySelector('.channel-notice').innerText = dataNotice[0].content;
-    document
-      .querySelector('.channel-notice-img')
-      .insertAdjacentHTML(
-        'beforeEnd',
-        `<img src="${dataNotice[0].imageUrl}" style="max-width: 800px">`,
-      );
-  }
-
-  // 공지 댓글 조회
-  const resComment = await fetch(`/api/${noticeId}/notice-comments`);
-  const dataComment = await resComment.json();
-  const commentList = document.querySelector('.notice-comments');
-  commentList.insertAdjacentHTML(
-    'beforeEnd',
-    `<p> 댓글(${dataComment.length})</p>`,
-  );
-  dataComment.forEach((comment) => {
-    commentList.insertAdjacentHTML(
-      'beforeEnd',
-      `<p style="padding: 0px; margin-bottom: 1px;">${comment.user.nickname} | ${comment.content}</p>`,
-    );
-  });
 
   // 구독여부 확인
   fetch(`/api/subscribes/check/${channelId}`)
@@ -95,17 +68,20 @@ const getData = async () => {
   subscribeBtn.setAttribute('data-channelId', `${channelId}`);
 
   // 다시보기 불러오기
+  let io;
+  let isFirst = true;
+  let count = 1;
+  let lastDiv;
   const replayContainer = document.getElementById('replay-container');
-  const resReplay = await fetch(`/api/lives/replay/${channelId}`);
-  const dataReplay = await resReplay.json();
-  dataReplay.forEach((e) => {
-    const liveId = e.id;
-    const liveTitle = e.title;
-    const createdAt = e.createdAt.split('T')[0];
-    const thumbnailUrl = e.thumbnailUrl;
+  const setReplay = (data) => {
+    data.forEach((e) => {
+      const liveId = e.id;
+      const liveTitle = e.title;
+      const createdAt = e.createdAt.split('T')[0];
+      const thumbnailUrl = e.thumbnailUrl;
 
-    const temp_html = `
-    <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
+      const temp_html = `
+    <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-replay-id=${liveId}>
     <div class="card card-blog card-plain">
       <div class="position-relative">
         <a class="d-block shadow-xl border-radius-xl">
@@ -123,12 +99,104 @@ const getData = async () => {
         <a href="javascript:;">
           <h5>${liveTitle}</h5>
         </a>
-        <p class="mb-4 text-sm">#부트스트랩 #코딩</p>
       </div>
     </div>
   </div>`;
-    replayContainer.insertAdjacentHTML('beforeend', temp_html);
-  });
+      replayContainer.insertAdjacentHTML('beforeend', temp_html);
+    });
+    replayEls.forEach((replayEl) => {
+      replayEl.addEventListener('click', (e) => {
+        const liveId = e.currentTarget.getAttribute('data-replay-id');
+        window.location.href = `/replay/${liveId}`;
+      });
+    });
+  };
+
+  const getReplays = async () => {
+    console.log('겟');
+    if (!isFirst) {
+      io.disconnect();
+    }
+    isFirst = false;
+    count = 1;
+
+    io = new IntersectionObserver((entries, observer) => {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          count++;
+          io.unobserve(lastDiv);
+          const ioFetch = async () => {
+            try {
+              const response = await fetch(
+                `/api/lives/replay/${channelId}?page=${count}&size=8`,
+              );
+              const data = await response.json();
+
+              if (data.length) {
+                setReplay(data);
+                lastDiv = document.querySelector(
+                  '#replay-container > div:last-child',
+                );
+                io.observe(lastDiv);
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          };
+          ioFetch();
+        }
+      });
+    });
+
+    try {
+      const resReplay = await fetch(
+        `/api/lives/replay/${channelId}?page=${count}&size=8`,
+      );
+      const dataReplay = await resReplay.json();
+      dataReplay.forEach((e) => {
+        const liveId = e.id;
+        const liveTitle = e.title;
+        const createdAt = e.createdAt.split('T')[0];
+        const thumbnailUrl = e.thumbnailUrl;
+
+        const temp_html = `
+      <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-replay-id=${liveId}>
+      <div class="card card-blog card-plain">
+        <div class="position-relative">
+          <a class="d-block shadow-xl border-radius-xl">
+            <img
+              src="${thumbnailUrl}"
+              alt="img-blur-shadow"
+              class="img-fluid shadow border-radius-xl"
+            />
+          </a>
+        </div>
+        <div class="card-body px-1 pb-0">
+          <p class="text-gradient text-dark mb-2 text-sm">
+            ${createdAt}
+          </p>
+          <a href="javascript:;">
+            <h5>${liveTitle}</h5>
+          </a>
+        </div>
+      </div>
+    </div>`;
+        replayContainer.insertAdjacentHTML('beforeend', temp_html);
+      });
+      const replayEls = document.querySelectorAll('.replay');
+      replayEls.forEach((replayEl) => {
+        replayEl.addEventListener('click', (e) => {
+          const liveId = e.currentTarget.getAttribute('data-replay-id');
+          window.location.href = `/replay/${liveId}`;
+        });
+      });
+      lastDiv = document.querySelector('#replay-container > div:last-child');
+      io.observe(lastDiv);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  getReplays();
 
   const replayEls = document.querySelectorAll('.replay');
   replayEls.forEach((replayEl) => {
@@ -168,18 +236,6 @@ subscribeBtn.addEventListener('click', async (e) => {
   }
 
   isLoading = false;
-});
-
-// 공지버튼 <-> 채널정보 버튼
-const channelNoticeBtn = document.getElementById('notice-btn');
-const channelInfoBtn = document.getElementById('channel-info-btn');
-channelInfoBtn.addEventListener('click', () => {
-  document.getElementById('channel-notice-row').style.display = 'none';
-  document.getElementById('channel-info-row').style.display = '';
-});
-channelNoticeBtn.addEventListener('click', () => {
-  document.getElementById('channel-info-row').style.display = 'none';
-  document.getElementById('channel-notice-row').style.display = '';
 });
 
 //비디오플레이어 설정

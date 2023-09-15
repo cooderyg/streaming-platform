@@ -44,7 +44,7 @@ const getBanUser = async () => {
 };
 getBanUser();
 
-const kickUser = function () {
+const kickUser = () => {
   if (isUserInBanList) {
     window.location.href = '/';
     alert('블랙리스트 유저입니다');

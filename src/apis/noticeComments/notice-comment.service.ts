@@ -33,6 +33,7 @@ export class NoticeCommentsService {
         'noticeComment.updatedAt',
         'user.id',
         'user.nickname',
+        'user.imageUrl',
       ])
       .leftJoin('noticeComment.notice', 'notice')
       .leftJoin('noticeComment.user', 'user')

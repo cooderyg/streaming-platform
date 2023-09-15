@@ -1,4 +1,8 @@
 <style>
+  #alert-container.off {
+    display: none !important;
+  }
+
   #alert-count {
     display: flex;
     justify-content: center;
@@ -33,6 +37,15 @@
   }
   .alert-delete-btn {
     padding: 4px;
+  }
+
+  #alert-list #alert-null-message {
+    display: none;
+  }
+
+  #alert-list.off #alert-null-message {
+    display: block;
+    text-align: center;
   }
 </style>
 
@@ -73,7 +86,7 @@
         <li id="signin-btn">
           <a href="/sign-in" class="nav-item d-flex align-items-center d-block">
             <i class="fa fa-key me-sm-1"></i>
-            <span class="d-sm-inline d-none">Sign In</span>
+            <span class="d-sm-inline d-none">로그인</span>
           </a>
         </li>
         <li id="my-channel-btn">
@@ -82,13 +95,13 @@
             class="nav-item d-flex align-items-center d-block"
           >
             <i class="fa fa-user me-sm-1"></i>
-            <span class="d-sm-inline d-none">My Channel</span>
+            <span class="d-sm-inline d-none">내 채널</span>
           </a>
         </li>
         <li id="signout-btn">
           <a href="#" class="nav-item d-flex align-items-center d-block">
             <i class="fa fa-key me-sm-1"></i>
-            <span class="d-sm-inline d-none">Sign Out</span>
+            <span class="d-sm-inline d-none">로그아웃</span>
           </a>
         </li>
         <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
@@ -109,7 +122,10 @@
             <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
           </a>
         </li> -->
-        <li class="nav-item dropdown pe-2 d-flex align-items-center">
+        <li
+          id="alert-container"
+          class="nav-item dropdown pe-2 d-flex align-items-center"
+        >
           <div id="alert-count"><span id="alert-count-num"></span></div>
           <a
             href="javascript:;"
@@ -125,6 +141,7 @@
             class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4"
             aria-labelledby="dropdownMenuButton"
           >
+            <li id="alert-null-message">수신된 알림이 없습니다.</li>
             <!-- <li class="mb-2">
               <a class="dropdown-item border-radius-md" href="javascript:;">
                 <div class="d-flex py-1">
@@ -235,7 +252,7 @@
     const signinBtn = document.getElementById('signin-btn');
     const signoutBtn = document.getElementById('signout-btn');
     const myChannelBtn = document.getElementById('my-channel-btn');
-
+    const alertContainerEl = document.querySelector('#alert-container');
     function getCookie(token) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${token}=`);
@@ -253,6 +270,7 @@
       signinBtn.style.display = 'block';
       signoutBtn.style.display = 'none';
       myChannelBtn.style.display = 'none';
+      alertContainerEl.classList.add('off');
     }
 
     signoutBtn.addEventListener('click', async (event) => {
@@ -273,9 +291,14 @@
       const data = await response.json();
       if (!response.ok) {
         alertCount.classList.add('off');
+        alertListEl.classList.add('off');
         return;
       }
-      if (!data.length) alertCount.classList.add('off');
+      if (!data.length) {
+        alertCount.classList.add('off');
+        alertListEl.classList.add('off');
+        return;
+      }
       alertCountNum.innerText = data.length;
 
       const temp = data
@@ -313,7 +336,7 @@
           `;
         })
         .join('');
-      alertListEl.innerHTML = temp;
+      alertListEl.insertAdjacentHTML('afterbegin', temp);
 
       alertListEl.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -330,11 +353,20 @@
           });
           if (!response.ok) return;
           const data = await response.json();
-          if (data.message === '수정완료') alertLiEl.remove();
+          if (data.message === '수정완료') {
+            alertLiEl.remove();
+            alertCountNum.innerText = Number(alertCountNum.innerText) - 1;
+
+            if (Number(alertCountNum.innerText) === 0) {
+              alertCount.classList.add('off');
+              alertListEl.classList.add('off');
+            }
+          }
         });
       });
     } else {
       alertCount.classList.add('off');
+      alertListEl.classList.add('off');
     }
   };
 
@@ -357,6 +389,7 @@
         socket.on('alert', (data) => {
           if (alertCount.classList.contains('off')) {
             alertCount.classList.remove('off');
+            alertListEl.classList.remove('off');
           }
           alertBell.classList.add('animate__animated', 'animate__swing');
           setTimeout(() => {
@@ -412,6 +445,7 @@
             if (Number(alertCountNum.innerText) - 1 === 0) {
               alertCountNum.innerText = 0;
               alertCount.classList.add('off');
+              alertListEl.classList.add('off');
             } else {
               alertCountNum.innerText = Number(alertCountNum.innerText) - 1;
             }

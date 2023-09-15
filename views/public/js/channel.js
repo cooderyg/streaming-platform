@@ -1,5 +1,11 @@
 const params = window.location.pathname;
 const channelId = params.split('/')[2];
+
+// '공지 사항' 링크 추가
+document
+  .getElementById('notice-label')
+  .setAttribute('href', `/notice/${channelId}`);
+
 let channelName;
 let channelInfo;
 let channelBannerImg;
@@ -45,6 +51,7 @@ const getChannelNoticeData = async () => {
   const data = await res.json();
   const channelNotices = document.getElementById('channel-notices');
   data.forEach((notice) => {
+    const noticeDate = notice.createdAt.split('T')[0];
     const noticeContent = notice.content;
     const noticeId = notice.id;
     const noticeImg = notice.imageUrl;
@@ -52,42 +59,44 @@ const getChannelNoticeData = async () => {
       channelNotices.insertAdjacentHTML(
         'beforeend',
         `<div>
-        <p data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></p>
+        <a href="/comments/${channelId}?noticeId=${noticeId}" data-notice-id=${noticeId} style=" white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0;">${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></a>
+        <p style="font-size: 10px;">${noticeDate}</p>
         </div>`,
       );
     } else {
       channelNotices.insertAdjacentHTML(
         'beforeend',
         `<div>
-        <p data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis;" data-bs-toggle="modal" data-bs-target="#notice-detail-modal">${noticeContent}</p>
+        <a href="/comments/${channelId}?noticeId=${noticeId}" data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis; margin-bottom: 0;">${noticeContent}</a>
+        <p style="font-size: 10px;">${noticeDate}</p>
         </div>`,
       );
     }
   });
 };
-// 공지 상세 받아오기
-const getNoticeDetail = async (channelId) => {
-  const noticeDetailModal = document.getElementById('notice-detail-modal');
-  noticeDetailModal.addEventListener('shown.bs.modal', async (event) => {
-    const notice = event.relatedTarget;
-    const noticeId = notice.getAttribute('data-notice-id');
-    const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
-    const data = await res.json();
-    if (data.imageUrl) {
-      const temp = `<img src="${
-        data.imageUrl
-      }" style="width: 100%; height: 100%; object-fit: contain;">
-      <div>${data.content}</div>
-      <div>${data.createdAt.split('T')[0]}`;
-      document.getElementById('notice-detail-body').innerHTML = temp;
-    } else {
-      const temp = `
-      <div>${data.content}</div>
-      <div>${data.createdAt.split('T')[0]}`;
-      document.getElementById('notice-detail-body').innerHTML = temp;
-    }
-  });
-};
+// // 공지 상세 받아오기
+// const getNoticeDetail = async (channelId) => {
+//   const noticeDetailModal = document.getElementById('notice-detail-modal');
+//   noticeDetailModal.addEventListener('shown.bs.modal', async (event) => {
+//     const notice = event.relatedTarget;
+//     const noticeId = notice.getAttribute('data-notice-id');
+//     const res = await fetch(`/api/${channelId}/notices/${noticeId}`);
+//     const data = await res.json();
+//     if (data.imageUrl) {
+//       const temp = `<img src="${
+//         data.imageUrl
+//       }" style="width: 100%; height: 100%; object-fit: contain;">
+//       <div>${data.content}</div>
+//       <div>${data.createdAt.split('T')[0]}`;
+//       document.getElementById('notice-detail-body').innerHTML = temp;
+//     } else {
+//       const temp = `
+//       <div>${data.content}</div>
+//       <div>${data.createdAt.split('T')[0]}`;
+//       document.getElementById('notice-detail-body').innerHTML = temp;
+//     }
+//   });
+// };
 
 getChannelData();
 getChannelNoticeData();
@@ -226,16 +235,17 @@ const writeChannel = async () => {
 // });
 
 // 다시보기 불러오기
-const getReplays = async () => {
-  // 다시보기 불러오기
-  const replayContainer = document.getElementById('replay-container');
-  const resReplay = await fetch(`/api/lives/replay/${channelId}`);
-  const dataReplay = await resReplay.json();
-  dataReplay.forEach((e) => {
+let io;
+let isFirst = true;
+let count = 1;
+let lastDiv;
+const replayContainer = document.getElementById('replay-container');
+const setReplay = (data) => {
+  data.forEach((e) => {
     const liveId = e.id;
     const liveTitle = e.title;
     const createdAt = e.createdAt.split('T')[0];
-    const thumbnailUrl = e.thumbnailUrl;
+    const thumbnailUrl = e.thumbnailUrl || '../img/freelyb-banner.png';
 
     const temp_html = `
     <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
@@ -256,13 +266,11 @@ const getReplays = async () => {
         <a href="javascript:;">
           <h5>${liveTitle}</h5>
         </a>
-        <p class="mb-4 text-sm">#부트스트랩 #코딩</p>
       </div>
     </div>
   </div>`;
     replayContainer.insertAdjacentHTML('beforeend', temp_html);
   });
-
   const replayEls = document.querySelectorAll('.replay');
   replayEls.forEach((replayEl) => {
     replayEl.addEventListener('click', (e) => {
@@ -272,8 +280,92 @@ const getReplays = async () => {
   });
 };
 
-getReplays();
+const getReplays = async () => {
+  console.log('겟');
+  if (!isFirst) {
+    io.disconnect();
+  }
+  isFirst = false;
+  count = 1;
 
+  io = new IntersectionObserver((entries, observer) => {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        count++;
+        io.unobserve(lastDiv);
+        const ioFetch = async () => {
+          try {
+            const response = await fetch(
+              `/api/lives/replay/${channelId}?page=${count}&size=8`,
+            );
+            const data = await response.json();
+
+            if (data.length) {
+              setReplay(data);
+              lastDiv = document.querySelector(
+                '#replay-container > div:last-child',
+              );
+              io.observe(lastDiv);
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        };
+        ioFetch();
+      }
+    });
+  });
+
+  try {
+    const resReplay = await fetch(
+      `/api/lives/replay/${channelId}?page=${count}&size=8`,
+    );
+    const dataReplay = await resReplay.json();
+    dataReplay.forEach((e) => {
+      const liveId = e.id;
+      const liveTitle = e.title;
+      const createdAt = e.createdAt.split('T')[0];
+      const thumbnailUrl = e.thumbnailUrl || '../img/freelyb-banner.png';
+
+      const temp_html = `
+      <div class="col-xl-3 col-md-6 mb-xl-0 mb-4 replay" data-live-id=${liveId}>
+      <div class="card card-blog card-plain">
+        <div class="position-relative">
+          <a class="d-block shadow-xl border-radius-xl">
+            <img
+              src="${thumbnailUrl}"
+              alt="img-blur-shadow"
+              class="img-fluid shadow border-radius-xl"
+            />
+          </a>
+        </div>
+        <div class="card-body px-1 pb-0">
+          <p class="text-gradient text-dark mb-2 text-sm">
+            ${createdAt}
+          </p>
+          <a href="javascript:;">
+            <h5>${liveTitle}</h5>
+          </a>
+        </div>
+      </div>
+    </div>`;
+      replayContainer.insertAdjacentHTML('beforeend', temp_html);
+    });
+    const replayEls = document.querySelectorAll('.replay');
+    replayEls.forEach((replayEl) => {
+      replayEl.addEventListener('click', (e) => {
+        const liveId = e.currentTarget.getAttribute('data-live-id');
+        window.location.href = `/replay/${liveId}`;
+      });
+    });
+    lastDiv = document.querySelector('#replay-container > div:last-child');
+    io.observe(lastDiv);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+getReplays();
 //후원랭킹top5
 async function getChannelDonationTop5(channelId) {
   const historyRes = await fetch(`/api/credit-histories/channels/${channelId}`);

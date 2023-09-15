@@ -87,23 +87,22 @@
       </div>
       <div class="container-fluid py-4" style="max-width: 1200px;">
         <div class="row">
-          <div class="col-12 col-xl-4">
+          <div class="col-12 col-xl-4 mt-4">
             <div class="card h-100">
-              <h3 class="ms-3 mt-3">Channel Notices&nbsp;
-                <!-- <i class="fa-regular fa-pen-to-square fa-sm" type="button" class="btn btn-primary"
-                  id="notice-write-icon" data-bs-toggle="modal" data-bs-target="#writeNoticeModal"></i> -->
+              <h3 class="ms-3 mt-3">
+                <a id="notice-label" href="#">공지 사항</a>              
               </h3>
               <div class="ms-3 mt-3 mb-3" id="channel-notices">
 
               </div>
             </div>
           </div>
-          <div class="col-12 col-xl-4">
+          <div class="col-12 col-xl-4 mt-4">
             <div class="card h-100">
               <div class="card-header pb-0 p-3">
                 <div class="row">
                   <div class="col-md-8 d-flex align-items-center">
-                    <h6 class="mb-0">Channel Information</h6>
+                    <h6 class="mb-0">채널 정보</h6>
                   </div>
                   <div class="col-md-4 text-end">
                     <a href="javascript:;">
@@ -128,10 +127,10 @@
               </div>
             </div>
           </div>
-          <div class="col-12 col-xl-4">
+          <div class="col-12 col-xl-4 mt-4">
             <div class="card h-100">
               <div class="card-header pb-0 p-3">
-                <h6 class="mb-0">Donation Top5</h6>
+                <h6 class="mb-0">후원자 목록</h6>
               </div>
               <div class="card-body p-3">
                 <ul class="list-group" id="donation-top5">
@@ -142,7 +141,7 @@
             </div>
           </div>
           <!-- 공지 내용표시  모달 -->
-          <div class="modal fade" id="notice-detail-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <!-- <div class="modal fade" id="notice-detail-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
@@ -157,89 +156,8 @@
                 </div>
               </div>
             </div>
-          </div>
-          <!-- 공지 내용표시 모달 끝 -->
-          <!-- 공지작성 모달 -->
-          <div class="modal fade" id="writeNoticeModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">
-                    공지 작성
-                  </h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <label>본문</label>
-                  <textarea class="form-control form-control-sm" id="notice-content-input" placeholder="내용을 입력해주세요."
-                    aria-label=".form-control-sm example"></textarea>
-                  <label>사진 첨부</label>
-                  <input class="form-control form-control-sm col-10" id="notice-img-input" type="file"
-                    placeholder="사진을 첨부해주세요." aria-label=".form-control-sm example" />
-                  <button type="button" class="btn btn-primary" id="notice-image-upload-btn">사진 업로드</button>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    닫기
-                  </button>
-                  <button type="button" class="btn btn-primary" id="notice-write-btn" data-bs-dismiss="modal">
-                    공지 작성
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- 공지작성 모달 끝 -->
-
-          <!-- 수정 Modal -->
-          <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">채널 정보수정</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form>
-                    <div class="mb-3">
-                      <label>채널타이틀</label>
-                      <textarea class="form-control form-control-sm" id="channel-name-input"
-                        placeholder="변경할 채널명을 입력해주세요." aria-label=".form-control-sm example"></textarea>
-                    </div>
-                    <div class="mb-3">
-                      <label>채널소개</label>
-                      <textarea class="form-control form-control-sm" id="channel-introduction-input"
-                        placeholder="채널소개 입력해주세요." aria-label=".form-control-sm example"></textarea>
-                    </div>
-                    <div class="mb-3">
-                      <label>카테고리</label>
-                      <textarea class="form-control form-control-sm" id="channel-category-input"
-                        placeholder="카테고리를 입력해주세요." aria-label=".form-control-sm example"></textarea>
-                    </div>
-                    <div class="mb-3">
-                      <label for="exampleInputbannerImgUrl" class="form-label">배너이미지</label>
-                      <label>사진 첨부</label>
-                      <input class="form-control form-control-sm col-10" id="channel-img-input" type="file"
-                        placeholder="사진을 첨부해주세요." aria-label=".form-control-sm example" />
-                      <button type="button" class="btn btn-primary" id="channel-image-upload-btn">사진 업로드</button>
-                    </div>
-                  </form>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    닫기
-                  </button>
-                  <button type="button" class="btn btn-primary" id="channel-write-btn">
-                    수정완료
-                  </button>
-                </div>
-              </div>
-            </div>
           </div> -->
-          <!-- Modal 끝 -->
-
+          <!-- 공지 내용표시 모달 끝 -->
           <div class="col-12 mt-4">
             <div class="card mb-4">
               <div class="card-header pb-0 p-3">

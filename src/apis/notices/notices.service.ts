@@ -35,8 +35,11 @@ export class NoticesService {
         'notice.imageUrl',
         'notice.createdAt',
         'notice.updatedAt',
+        'noticeComment.id',
+        'noticeComment.content',
       ])
       .leftJoin('notice.channel', 'channel')
+      .leftJoin('notice.noticeComment', 'noticeComment')
       .where('channel.id = :channelId', { channelId })
       .orderBy({ 'notice.createdAt': 'DESC' })
       .take(size)

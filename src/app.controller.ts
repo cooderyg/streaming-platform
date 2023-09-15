@@ -65,6 +65,12 @@ export class AppController {
     return { title: 'Title' };
   }
 
+  @Get('recent-replay')
+  @Render('recent-replay')
+  getRecentReplay() {
+    return { title: 'Title' };
+  }
+
   @Get('replay/:liveId')
   @Render('replay')
   getReplay() {
@@ -80,6 +86,18 @@ export class AppController {
   @Get('search')
   @Render('search')
   getSearch() {
+    return { title: 'Title' };
+  }
+
+  @Get('notice/:channelId')
+  @Render('notice')
+  getNotice() {
+    return { title: 'Title' };
+  }
+
+  @Get('comments/:noticeId')
+  @Render('comment')
+  getNoticeComment() {
     return { title: 'Title' };
   }
 }

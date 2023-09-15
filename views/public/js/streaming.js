@@ -43,48 +43,16 @@ const getData = async () => {
 
   document
     .getElementById('channel-info')
-    .insertAdjacentText('beforeend', channelInfo);
+    .insertAdjacentText(
+      'beforeend',
+      channelInfo || '이 채널의 정보가 등록되지 않았습니다.',
+    );
   document
     .getElementById('channel-created-at')
     .insertAdjacentText('beforeend', channelCreatedAt);
   document
     .getElementById('channel-contact-email')
     .insertAdjacentText('beforeend', streamerEmail);
-
-  // 공지 조회
-  const resNotice = await fetch(`/api/${channelId}/notices`);
-  const dataNotice = await resNotice.json();
-
-  if (dataNotice.length) {
-    noticeId = dataNotice[0].id;
-    document.querySelector('.channel-notice').innerText = dataNotice[0].content;
-    document
-      .querySelector('.channel-notice-img')
-      .insertAdjacentHTML(
-        'beforeEnd',
-        `<img src="${dataNotice[0].imageUrl}" style="max-width: 800px">`,
-      );
-  } else {
-    const commentContaierEl = document.querySelector('#comment-container');
-    commentContaierEl.remove();
-  }
-
-  // 공지 댓글 조회
-  const resComment = await fetch(`/api/${noticeId}/notice-comments`);
-  const dataComment = await resComment.json();
-  const commentList = document.querySelector('.notice-comments');
-  if (dataComment.length) {
-    commentList.insertAdjacentHTML(
-      'beforeEnd',
-      `<p> 댓글(${dataComment.length})</p>`,
-    );
-    dataComment.forEach((comment) => {
-      commentList.insertAdjacentHTML(
-        'beforeEnd',
-        `<p style="padding: 0px; margin-bottom: 1px;">${comment.user.nickname} | ${comment.content}</p>`,
-      );
-    });
-  }
 
   // 구독여부 확인
   fetch(`/api/subscribes/check/${channelId}`)
@@ -161,41 +129,40 @@ const getData = async () => {
 getData();
 
 // 채팅 밴
-document.addEventListener('DOMContentLoaded', function () {
-  const banUserBtn = document.getElementById('user-ban-btn');
 
-  banUserBtn.addEventListener('click', async () => {
-    const userNickname = document.getElementById('ban-user-input').value;
-    const banReason = document.getElementById('ban-reason-input').value;
+const banUserBtn = document.getElementById('user-ban-btn');
 
-    await fetch(`/api/channel/${channelId}/ban`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userNickname: userNickname,
-        reason: banReason,
-      }),
+banUserBtn.addEventListener('click', async () => {
+  const userNickname = document.getElementById('ban-user-input').value;
+  const banReason = document.getElementById('ban-reason-input').value;
+
+  await fetch(`/api/channel/${channelId}/ban`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userNickname: userNickname,
+      reason: banReason,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((errorData) => {
+          throw new Error(errorData.message);
+        });
+      }
+      return response.json();
     })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((errorData) => {
-            throw new Error(errorData.message);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        alert(`${userNickname}님의 채팅을 금지했습니다.`);
-        if (data) {
-          socket.emit('ban');
-        }
-      })
-      .catch((error) => {
-        alert(`${error.message}`);
-      });
-  });
+    .then((data) => {
+      alert(`${userNickname}님의 채팅을 금지했습니다.`);
+      if (data) {
+        socket.emit('ban');
+      }
+    })
+    .catch((error) => {
+      alert(`${error.message}`);
+    });
 });
 
 let isLoading;
@@ -225,17 +192,6 @@ subscribeBtn.addEventListener('click', async (e) => {
   }
 
   isLoading = false;
-});
-
-const channelNoticeBtn = document.getElementById('notice-btn');
-const channelInfoBtn = document.getElementById('channel-info-btn');
-channelInfoBtn.addEventListener('click', () => {
-  document.getElementById('channel-notice-row').style.display = 'none';
-  document.getElementById('channel-info-row').style.display = '';
-});
-channelNoticeBtn.addEventListener('click', () => {
-  document.getElementById('channel-info-row').style.display = 'none';
-  document.getElementById('channel-notice-row').style.display = '';
 });
 
 //비디오 플레이어 설정
