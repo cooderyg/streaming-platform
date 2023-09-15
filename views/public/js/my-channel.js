@@ -52,7 +52,7 @@ async function getMyChannelNoticeData(channelId) {
       channelNotices.insertAdjacentHTML(
         'beforeend',
         `<div>
-        <a href="/comments/${channelId}?noticeId=${noticeId}" data-notice-id=${noticeId} style=" white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0;">${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></a>
+        <a href="/comments/${channelId}?noticeId=${noticeId}" data-notice-id=${noticeId} style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: inline-block; margin-bottom: 0;">${noticeContent}&nbsp;<i class="fa-regular fa-image"></i></a>
         <p style="font-size: 10px;">${noticeDate}</p>
         </div>`,
       );
@@ -60,7 +60,7 @@ async function getMyChannelNoticeData(channelId) {
       channelNotices.insertAdjacentHTML(
         'beforeend',
         `<div>
-        <a href="/comments/${channelId}?noticeId=${noticeId}" data-notice-id=${noticeId} style=" white-space: nowrap;  overflow: hidden;text-overflow: ellipsis; margin-bottom: 0;">${noticeContent}</a>
+        <a href="/comments/${channelId}?noticeId=${noticeId}" data-notice-id=${noticeId} style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: inline-block; margin-bottom: 0;">${noticeContent}</a>
         <p style="font-size: 10px;">${noticeDate}</p>
         </div>`,
       );
