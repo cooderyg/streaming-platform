@@ -43,7 +43,10 @@ const getData = async () => {
 
   document
     .getElementById('channel-info')
-    .insertAdjacentText('beforeend', channelInfo);
+    .insertAdjacentText(
+      'beforeend',
+      channelInfo || '이 채널의 정보가 등록되지 않았습니다.',
+    );
   document
     .getElementById('channel-created-at')
     .insertAdjacentText('beforeend', channelCreatedAt);
