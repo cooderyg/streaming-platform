@@ -107,6 +107,7 @@ chatBtn.addEventListener('click', () => {
 async function pastChat(roomId) {
   const chatRes = await fetch(`/api/chats/${roomId}`);
   const chatData = await chatRes.json();
+  console.log('쳇데이타', chatData);
   chatData.forEach((data) => {
     const chat = data.content;
     const nickname = data.nickname;
