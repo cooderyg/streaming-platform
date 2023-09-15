@@ -22,6 +22,7 @@ import {
   ILivesServiceGetLiveIncome,
   ILivesServiceGetLives,
   ILivesServiceGetLivesForAdmin,
+  ILivesServiceGetRecentReplays,
   ILivesServiceGetReplaysByChannelId,
   ILivesServiceSearch,
   ILivesServiceStartLive,
@@ -114,9 +115,39 @@ export class LivesService {
       .getMany();
   }
 
+  async getRecentReplays({ pageReqDto }: ILivesServiceGetRecentReplays) {
+    const { page, size } = pageReqDto;
+    const replays = await this.livesRepository
+      .createQueryBuilder('live')
+      .select([
+        'live.id',
+        'live.title',
+        'live.createdAt',
+        'live.thumbnailUrl',
+        'tag.id',
+        'tag.name',
+        'channel.id',
+        'channel.name',
+        'user.id',
+        'user.imageUrl',
+      ])
+      .leftJoin('live.channel', 'channel')
+      .leftJoin('live.tags', 'tag')
+      .leftJoin('channel.user', 'user')
+      .where('live.endDate IS NOT NULL')
+      .orderBy('live.createdAt', 'DESC')
+      .take(size)
+      .skip((page - 1) * size)
+      .getMany();
+
+    return replays;
+  }
+
   async getReplaysByChannelId({
     channelId,
+    pageReqDto,
   }: ILivesServiceGetReplaysByChannelId): Promise<Live[]> {
+    const { page, size } = pageReqDto;
     return await this.livesRepository
       .createQueryBuilder('live')
       .select([
@@ -132,6 +163,8 @@ export class LivesService {
       .where('channel.id = :id', { id: channelId })
       .andWhere('live.endDate IS NOT NULL')
       .orderBy('live.createdAt', 'DESC')
+      .take(size)
+      .skip((page - 1) * size)
       .getMany();
   }
 

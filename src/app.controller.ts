@@ -65,6 +65,12 @@ export class AppController {
     return { title: 'Title' };
   }
 
+  @Get('recent-replay')
+  @Render('recent-replay')
+  getRecentReplay() {
+    return { title: 'Title' };
+  }
+
   @Get('replay/:liveId')
   @Render('replay')
   getReplay() {
