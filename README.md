@@ -7,8 +7,7 @@
 팀원 : 박민영, 김종현<br>
 
 # 🎥 Freely B - 쉽고 자유로운 실시간 스트리밍 플랫폼
-
-![Group 297420](https://github.com/cooderyg/streaming-platform/assets/122774009/fb109816-404a-4381-8d61-ec69f65cbe30)
+<img width="100%" alt="Group 297441" src="https://github.com/cooderyg/streaming-platform/assets/123794148/47a0de2c-99f4-4bf2-a1b4-1ebb114f7a1b">
 
 # 📣 프로젝트 소개
 `Freely B`는 HLS 방식을 이용한 실시간 방송 스트리밍 서비스 입니다.
