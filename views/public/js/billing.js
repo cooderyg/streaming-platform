@@ -18,11 +18,6 @@ const paymentContainerEl = document.querySelector('#payment-container');
 const getPayments = async () => {
   const response = await fetch('/api/payments');
   const data = await response.json();
-  const cancelTemp = `
-    <div class="ms-auto text-end">
-        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;" >결제 취소하기</a>
-    </div>
-    `;
 
   const temp = data
     .map((data) => {
@@ -53,13 +48,38 @@ const getPayments = async () => {
                 ></span
             >
             </div>
-            ${data.status === 'PAYMENT' ? cancelTemp : ''}
+            ${
+              data.status === 'PAYMENT'
+                ? `<div class="ms-auto text-end">
+                <a class="btn btn-link text-danger text-gradient px-3 mb-0 delete-btn" data-id=${data.id} >결제 취소하기</a>
+            </div>`
+                : ''
+            }
         </li>  
     `;
     })
     .join('');
 
   paymentContainerEl.innerHTML = temp;
+  paymentContainerEl.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('delete-btn')) {
+      const paymentId = e.target.getAttribute('data-id');
+
+      const response = await fetch('/api/payments/cancel', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ paymentId }),
+      });
+      const data = await response.json();
+
+      if (data.message) {
+        return alert(data.message);
+      }
+      window.location.reload();
+    }
+  });
 };
 getPayments();
 
