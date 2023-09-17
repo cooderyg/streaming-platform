@@ -43,7 +43,8 @@
 
 # 📐 ERD 설계
 
-![freelyb-erd](https://github.com/cooderyg/streaming-platform/assets/122774009/8d954128-252a-4172-bf24-ffead5ebdabe)
+![Screenshot from 2023-09-17 14-49-56](https://github.com/cooderyg/streaming-platform/assets/123794148/abdf5abd-c191-4943-8b97-814c73d9281c)
+
 
 # 💡 기술적 의사결정
 
