@@ -205,6 +205,7 @@ donationBtn.addEventListener('click', async (e) => {
 
   const donaitonAmount = Number(donationAmountInputEl.value);
   if (!donaitonAmount) return alert('금액을 입력해주세요!');
+  if (donaitonAmount < 0) return alert('정확한 금액을 입력해주세요!');
   if (donaitonAmount > creditAmount) {
     if (
       confirm(
