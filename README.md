@@ -16,7 +16,8 @@
 
 누구나 쉽고 자유롭게 방송할 수 있는 실시간 스트리밍 방송 플랫폼을 만들고자 하였습니다.  
 > 📌 서비스 바로가기: https://freelyb.site  
-> 📌 서비스 이용 안내: [링크](https://truthful-actor-498.notion.site/Freely-B-24175c3b86da4ccbba357adf11dc864d?pvs=4)
+> 📌 서비스 이용 안내: [링크](https://truthful-actor-498.notion.site/Freely-B-24175c3b86da4ccbba357adf11dc864d?pvs=4)  
+> 📌 서비스 시연 영상: https://youtu.be/yVLhM1GJ8bI?si=q2cEcxJptWhQZj_q
 
 # ⚙️ 서비스 아키텍쳐 소개
 
