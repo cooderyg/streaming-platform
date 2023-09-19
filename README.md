@@ -1,4 +1,5 @@
 # 🎇 Freely B
+![8](https://github.com/cooderyg/streaming-platform/assets/122774009/56f031bc-07b9-4f6c-a532-b4a9c560464b)
 
 ## 🎖️Node.js 6기 챌린지 B팀
 
