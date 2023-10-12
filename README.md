@@ -197,7 +197,7 @@ CPU intensive한 작업을 맡는 Consumer 서버를 하나 더 사용하는 방
 
 ### 해결방안 2
 
-#### 작업을 나눠 Bull Queue에 적재하고 병렬로 처리하는 방식
+#### 작업을 나눠 Bull Queue에 적재하고 동시 처리하는 방식
 
 구독자를 pagenation해서 작업의 양을 줄이고 횟수를 늘리는 방식으로 해결 할 수 있었습니다. 이 과정에서 Bull Queue에 작업을 올리고 concurrency옵션을 통해 병렬적으로 처리할 수 있게 했습니다.  
 
